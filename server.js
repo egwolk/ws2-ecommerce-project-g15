@@ -23,21 +23,21 @@ app.set('view engine', 'ejs');
 const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri);
 async function main() {
-try {
-await client.connect();
-console.log("Connected to MongoDB Atlas");
-// Select database
-const database = client.db("ecommerceDB");
-// Temporary test route
-app.get('/', (req, res) => {
-res.send("Hello, MongoDB is connected!");
-});
-// Start server
-app.listen(port, () => {
-console.log(`Server running at http://localhost:${port}`);
-});
-} catch (err) {
-console.error("MongoDB connection failed", err);
-}
+    try {
+        await client.connect();
+        console.log("Connected to MongoDB Atlas");
+        // Select database
+        const database = client.db("ecommerceDB");
+        // Temporary test route
+        app.get('/', (req, res) => {
+        res.send("Hello, MongoDB is connected!");
+        });
+        // Start server
+        app.listen(PORT, () => {
+        console.log(`Server running at http://localhost:${PORT}`);
+        });
+    } catch (err) {
+        console.error("MongoDB connection failed", err);
+    }
 }
 main();

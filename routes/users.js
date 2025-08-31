@@ -2,14 +2,18 @@ const express = require('express');
 const router = express.Router();
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
+const { ObjectId } = require('mongodb');
+
 // MongoDB setup
 const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri);
 const dbName = "ecommerceDB";
+
 // Show registration form
 router.get('/register', (req, res) => {
     res.render('register', { title: "Register" });
 });
+
 // Handle form submission
 router.post('/register', async (req, res) => {
     try {
@@ -30,6 +34,7 @@ router.post('/register', async (req, res) => {
         res.send("Something went wrong.");
     }
 });
+
 // Show all registered users
 router.get('/list', async (req, res) => {
     try {
@@ -43,6 +48,7 @@ router.get('/list', async (req, res) => {
         res.send("Something went wrong.");
     }
 });
+
 // Show edit form
 router.get('/edit/:id', async (req, res) => {
     try {
@@ -61,6 +67,7 @@ router.get('/edit/:id', async (req, res) => {
         res.send("Something went wrong.");
     }
 });
+
 // Handle update form
 router.post('/edit/:id', async (req, res) => {
     try {
@@ -77,6 +84,7 @@ router.post('/edit/:id', async (req, res) => {
         res.send("Something went wrong.");
     }
 });
+
 // Delete user
 router.post('/delete/:id', async (req, res) => {
     try {
