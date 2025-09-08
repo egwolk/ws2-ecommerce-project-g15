@@ -3,6 +3,10 @@ const router = express.Router();
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
+const { Resend } = require('resend');
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+
 
 // Show registration form
 router.get('/register', (req, res) => {
@@ -27,6 +31,10 @@ router.post('/register', async (req, res) => {
 
         // 3. Create verification token
         const token = uuidv4();
+        // Base URL: local (http://localhost:3000) or deployed (https://ws2-ecommerce-project-g15.onrender.com)
+        const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+        const verificationUrl = `${baseUrl}/users/verify/${token}`;
+
 
         // 4. Build new user object
         const newUser = {
@@ -46,15 +54,35 @@ router.post('/register', async (req, res) => {
         // 5. Insert into database
         await usersCollection.insertOne(newUser);
         
+        try {
+            const emailResponse = await resend.emails.send({
+                from: process.env.RESEND_FROM_EMAIL,
+                to: newUser.email,
+                subject: 'Verify your account',
+                html: `
+                    <h2>Welcome, ${newUser.firstName}!</h2>
+                    <p>Thank you for registering. Please verify your email by clicking the link below:</p>
+                    <a href="${verificationUrl}">${verificationUrl}</a>
+                `
+            });
+            console.log("Email sent response:", emailResponse);
+        } catch (emailError) {
+            console.error("Failed to send email:", emailError);
+            // Continue with the response even if email fails
+        }
+
         res.send(`
             <h2>Registration Successful!</h2>
 
             <!-- <p>User ${newUser.firstName} ${newUser.lastName} registered with ID:
             ${newUser.userId}</p>
-            <a href="/users/login">Proceed to Login</a> -->
+            <a href="/users/login">Proceed to Login</a> 
 
             <p>Please verify your account before logging in.</p>
-            <p><a href="/users/verify/${token}">Click here to verify</a></p>
+            <p><a href="/users/verify/${token}">Click here to verify</a></p> -->
+            
+            <p>A verification link has been sent to your email address.</p>
+            <p>Please check your inbox and verify your account before logging in.</p>
         `);
     } catch (err) {
         console.error("Error saving user:", err);
@@ -178,6 +206,11 @@ router.get('/logout', (req, res) => {
     res.redirect('/users/login');
     });
 });
+
+// const passwordRoute = require('./routes/password');
+// app.use('/password', passwordRoute);
+
+
 
 // Show all registered users
 router.get('/list', async (req, res) => {
