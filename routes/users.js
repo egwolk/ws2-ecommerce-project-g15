@@ -80,7 +80,7 @@ router.post('/register', async (req, res) => {
 
             <p>Please verify your account before logging in.</p>
             <p><a href="/users/verify/${token}">Click here to verify</a></p> -->
-            
+
             <p>A verification link has been sent to your email address.</p>
             <p>Please check your inbox and verify your account before logging in.</p>
         `);
@@ -207,8 +207,7 @@ router.get('/logout', (req, res) => {
     });
 });
 
-// const passwordRoute = require('./routes/password');
-// app.use('/password', passwordRoute);
+
 
 
 

@@ -31,8 +31,11 @@ app.set('view engine', 'ejs');
 // Routes
 const indexRoute = require('./routes/index');
 const usersRoute = require('./routes/users');
+const passwordRoute = require('./routes/password');
 app.use('/', indexRoute);
 app.use('/users', usersRoute);
+app.use('/password', passwordRoute);
+
 
 
 // MongoDB Setup
