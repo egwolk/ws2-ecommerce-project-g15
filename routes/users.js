@@ -128,7 +128,18 @@ router.get('/verify/:token', async (req, res) => {
 
 // Show login form
 router.get('/login', (req, res) => {
-res.render('login', { title: "Login" });
+let message = null;
+    
+    if (req.query.message === 'logout') {
+        message = 'You have been logged out.';
+    } else if (req.query.message === 'expired') {
+        message = 'Your session has expired. Please log in again.';
+    }
+    
+    res.render('login', { 
+        title: "Login", 
+        message: message 
+    });
 });
 
 // Handle login form submission
@@ -203,7 +214,7 @@ router.get('/logout', (req, res) => {
         console.error("Error destroying session:", err);
         return res.send("Something went wrong during logout.");
     }
-    res.redirect('/users/login');
+    res.redirect('/users/login?message=logout');
     });
 });
 

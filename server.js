@@ -25,6 +25,13 @@ app.use(session({
         maxAge: 1 * 60 * 1000 // 15 minutes (in milliseconds)
     }
 }));
+app.use((req, res, next) => {
+    if (req.session.user && req.session.cookie.expires < new Date()) {
+        req.session.destroy();
+        return res.redirect('/users/login?message=expired');
+    }
+    next();
+});
 app.set('view engine', 'ejs');
 
 
