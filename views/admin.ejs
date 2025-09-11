@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title><%= title %></title>
     </head>
-    <body>
+    <body class="authenticated-page">
         <h1>Admin Dashboard</h1>
         <p>Welcome, <%= currentUser.firstName %> (<%= currentUser.role %>)</p>
         <table>
@@ -35,5 +35,9 @@
 
         <p><a href="/users/dashboard">Back to Dashboard</a></p>
         
+
+
+        <script src="/client.scripts/session-monitor.js"></script>
     </body>
 </html>
+
