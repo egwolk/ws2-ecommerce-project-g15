@@ -31,75 +31,15 @@ router.get('/admin', (req, res) => req.userController.showAdminDashboard(req, re
 // Logout route
 router.get('/logout', (req, res) => req.userController.logoutUser(req, res));
 
+// Delete user route
+router.post('/delete/:id', async (req, res) => req.userController.deleteUser(req, res));
 
+// Edit form route
+router.get('/edit/:id', async (req, res) => req.userController.showEditForm(req, res));
+router.post('/edit/:id', async (req, res) => req.userController.updateUser(req, res));
 
-/*
-
-// Show all registered users
-router.get('/list', async (req, res) => {
-    try {
-        await client.connect();
-        const db = client.db(dbName);
-        const usersCollection = db.collection('users');
-        const users = await usersCollection.find().toArray();
-        res.render('users-list', { title: "Registered Users", users: users });
-    } catch (err) {
-        console.error("Error fetching users:", err);
-        res.send("Something went wrong.");
-    }
-});
-
-// Show edit form
-router.get('/edit/:id', async (req, res) => {
-    try {
-        await client.connect();
-        const db = client.db(dbName);
-        const usersCollection = db.collection('users');
-        
-        const user = await usersCollection.findOne({ _id: new
-        ObjectId(req.params.id) });
-        if (!user) {
-        return res.send("User not found.");
-        }
-        res.render('edit-user', { title: "Edit User", user: user });
-    } catch (err) {
-        console.error("Error loading user:", err);
-        res.send("Something went wrong.");
-    }
-});
-
-// Handle update form
-router.post('/edit/:id', async (req, res) => {
-    try {
-        await client.connect();
-        const db = client.db(dbName);
-        const usersCollection = db.collection('users');
-        await usersCollection.updateOne(
-        { _id: new ObjectId(req.params.id) },
-        { $set: { name: req.body.name, email: req.body.email } }
-        );
-        res.redirect('/users/list');
-    } catch (err) {
-        console.error("Error updating user:", err);
-        res.send("Something went wrong.");
-    }
-});
-
-// Delete user
-router.post('/delete/:id', async (req, res) => {
-    try {
-        await client.connect();
-        const db = client.db(dbName);
-        const usersCollection = db.collection('users');
-        
-        await usersCollection.deleteOne({ _id: new ObjectId(req.params.id) });
-        res.redirect('/users/list');
-    } catch (err) {
-        console.error("Error deleting user:", err);
-        res.send("Something went wrong.");
-    }
-});
-*/
-
+// Edit profile routes
+router.get('/edit-profile/:id', async (req, res) => req.userController.showEditProfileForm(req, res));
+router.post('/edit-profile/:id', async (req, res) => req.userController.updateUserProfile(req, res));
 
 module.exports = router;

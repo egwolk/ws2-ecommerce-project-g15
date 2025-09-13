@@ -1,0 +1,32 @@
+<h1>Edit User</h1>
+<form action="/users/edit-profile/<%= user._id %>" method="POST">
+    <label for="firstName">First Name:</label><br>
+    <input type="text" name="firstName" value="<%= user.firstName %>" required><br><br>
+
+    <label for="lastName">Last Name:</label><br>
+    <input type="text" name="lastName" value="<%= user.lastName %>" required><br><br>
+
+    <label for="email">Email:</label><br>
+    <input type="email" name="email" value="<%= user.email %>" required><br><br>
+
+    <label for="password">New Password (leave blank to keep current):</label><br>
+    <input type="password" name="password"><br><br>
+
+    <label for="confirmPassword">Confirm New Password:</label><br>
+    <input type="password" name="confirmPassword" id="confirmPassword"><br><br>
+
+    <button type="submit">Update</button>
+</form>
+
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    if (password && password !== confirmPassword) {
+        e.preventDefault();
+        alert('Passwords do not match!');
+        return false;
+    }
+});
+</script>

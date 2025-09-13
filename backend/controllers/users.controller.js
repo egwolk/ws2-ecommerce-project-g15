@@ -112,6 +112,7 @@ class UserController {
             if (isPasswordValid) {
                 // Store session
                 req.session.user = {
+                    _id: user._id,
                     userId: user.userId,
                     firstName: user.firstName,
                     lastName: user.lastName,
@@ -155,6 +156,82 @@ class UserController {
             }
             res.redirect('/users/login?message=logout');
         });
+    }
+
+    async deleteUser(req, res) {
+        try {
+            if (!req.session.user || req.session.user.role !== 'admin') {
+                return res.status(403).send("Access denied.");
+            }
+            
+            await this.userService.deleteUser(req.params.id);
+            res.redirect('/users/admin');
+        } catch (err) {
+            console.error("Error deleting user:", err);
+            res.send("Something went wrong.");
+        }
+    }
+    async showEditForm(req, res) {
+        try {
+            if (!req.session.user || req.session.user.role !== 'admin') {
+            return res.status(403).send("Access denied.");
+            }
+            
+            const user = await this.userService.getUserById(req.params.id);
+            if (!user) {
+                return res.send("User not found.");
+            }
+            res.render('edit-user', { title: "Edit User", user: user });
+        } catch (err) {
+            console.error("Error loading user:", err);
+            res.send("Something went wrong.");
+        }
+    }
+
+    async updateUser(req, res) {
+        try {
+            if (!req.session.user || req.session.user.role !== 'admin') {
+                return res.status(403).send("Access denied.");
+            }
+            await this.userService.updateUser(req.params.id, req.body);
+            res.redirect('/users/admin');
+        } catch (err) {
+            console.error("Error updating user:", err);
+            res.send("Something went wrong.");
+        }
+    }
+
+    async showEditProfileForm(req, res) {
+        try {
+            if (!req.session.user) {
+                return res.status(403).send("Access denied.");
+            }
+            const user = await this.userService.getUserById(req.params.id);
+            if (!user) {
+                return res.send("User not found.");
+            }
+            res.render('edit-profile', { title: "Edit Profile", user: user });
+        } catch (err) {
+            console.error("Error loading user:", err);
+            res.send("Something went wrong.");
+        }
+    }
+
+    async updateUserProfile(req, res) {
+        try {
+            if (!req.session.user) {
+                return res.status(403).send("Access denied.");
+            }
+            const { password, confirmPassword } = req.body;
+            if (password && password !== confirmPassword) {
+                return res.send("Passwords do not match.");
+            }
+            await this.userService.updateUser(req.params.id, req.body);
+            res.redirect('/users/dashboard');
+        } catch (err) {
+            console.error("Error updating user profile:", err);
+            res.send("Something went wrong.");
+        }
     }
 }
 

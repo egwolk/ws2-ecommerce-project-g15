@@ -1,10 +1,20 @@
 <h1>Edit User</h1>
 <form action="/users/edit/<%= user._id %>" method="POST">
-    <label for="name">Name:</label><br>
-
-    <input type="text" name="name" value="<%= user.name %>" required><br><br>
+    <label for="firstName">First Name:</label><br>
+    <input type="text" name="firstName" value="<%= user.firstName %>" required><br><br>
+    <label for="lastName">Last Name:</label><br>
+    <input type="text" name="lastName" value="<%= user.lastName %>" required><br><br>
     <label for="email">Email:</label><br>
-    <input type="email" name="email" value="<%= user.email %>"
-    required><br><br>
+    <input type="email" name="email" value="<%= user.email %>" required><br><br>
+    <label for="accountStatus">Account Status:</label><br>
+    <select name="accountStatus" required>
+        <option value="active" <%= user.accountStatus === 'active' ? 'selected' : '' %>>Active</option>
+        <option value="inactive" <%= user.accountStatus === 'inactive' ? 'selected' : '' %>>Inactive</option>
+    </select><br><br>
+    <label for="role">Role:</label><br>
+    <select name="role" required>
+        <option value="user" <%= user.role === 'user' ? 'selected' : '' %>>User</option>
+        <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>Admin</option>
+    </select><br><br>
     <button type="submit">Update</button>
 </form>

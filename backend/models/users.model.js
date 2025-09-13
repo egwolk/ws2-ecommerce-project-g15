@@ -4,6 +4,7 @@ const saltRounds = 12;
 
 class User {
     constructor(data = {}) {
+        this._id = data._id;
         this.userId = data.userId || uuidv4();
         this.firstName = data.firstName || '';
         this.lastName = data.lastName || '';
@@ -22,6 +23,7 @@ class User {
     static fromDocument(doc) {
         if (!doc) return null;
         return new User({
+            _id: doc._id,
             userId: doc.userId,
             firstName: doc.firstName,
             lastName: doc.lastName,
@@ -53,6 +55,7 @@ class User {
             createdAt: this.createdAt,
             updatedAt: this.updatedAt
         };
+        
     }
 
     // Get user's full name
@@ -69,6 +72,7 @@ class User {
     // Create session user object
     getSessionUser() {
         return {
+            _id: this._id, 
             userId: this.userId,
             firstName: this.firstName,
             lastName: this.lastName,

@@ -1,5 +1,5 @@
 <h1>Admin Dashboard</h1>
-<p>Welcome, <%= currentUser.firstName %> (<%= currentUser.role %>)</p>
+<p>Welcome, <%= user.firstName %> (<%= user.role %>)</p>
 <table>
     <thead>
         <tr>
@@ -12,14 +12,20 @@
         </tr>
     </thead>
     <tbody>
-        <% users.forEach(user => { %>
+        <% users.forEach(userItem => { %>
             <tr>
-                <td><%= user.userId %></td>
-                <td><%= user.firstName %> <%= user.lastName %></td>
-                <td><%= user.email %></td>
-                <td><%= user.role %></td>
-                <td><%= user.accountStatus %></td>
-                <td><%= new Date(user.createdAt).toLocaleDateString() %></td>
+                <td><%= userItem.userId %></td>
+                <td><%= userItem.firstName %> <%= userItem.lastName %></td>
+                <td><%= userItem.email %></td>
+                <td><%= userItem.role %></td>
+                <td><%= userItem.accountStatus %></td>
+                <td><%= new Date(userItem.createdAt).toLocaleDateString() %></td>
+                <td>
+                    <a href="/users/edit/<%= userItem._id %>">Edit</a> |
+                    <form action="/users/delete/<%= userItem._id %>" method="POST" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
             </tr>
         <% }) %>
     </tbody>

@@ -68,6 +68,39 @@ class UserService {
         const docs = await db.collection('users').find().toArray();
         return docs.map(doc => User.fromDocument(doc));
     }
+
+    async deleteUser(userId) {
+        await this.client.connect();
+        const db = this.client.db(this.dbName);
+        const usersCollection = db.collection('users');
+        
+        const { ObjectId } = require('mongodb');
+        return await usersCollection.deleteOne({ _id: new ObjectId(userId) });
+    }
+
+    async getUserById(userId) {
+        const db = this.client.db(this.dbName);
+        const { ObjectId } = require('mongodb');
+        const doc = await db.collection('users').findOne({ _id: new ObjectId(userId) });
+        return User.fromDocument(doc);
+    }
+    async updateUser(userId, updateData) {
+        const db = this.client.db(this.dbName);
+        const { ObjectId } = require('mongodb');
+        // Hash password if provided
+        if (updateData.password) {
+            updateData.passwordHash = await User.hashPassword(updateData.password);
+            delete updateData.password; // Remove plain text password
+            delete updateData.confirmPassword; // Remove confirm password
+        }
+        
+        updateData.updatedAt = new Date();
+        
+        await db.collection('users').updateOne(
+            { _id: new ObjectId(userId) },
+            { $set: updateData }
+        );
+    }
 }
 
 module.exports = UserService;
