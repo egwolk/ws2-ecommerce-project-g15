@@ -15,6 +15,8 @@ class User {
         this.isEmailVerified = data.isEmailVerified || false;
         this.verificationToken = data.verificationToken || null;
         this.tokenExpiry = data.tokenExpiry || null;
+        this.resetToken = data.resetToken || null;        
+        this.resetExpiry = data.resetExpiry || null; 
         this.createdAt = data.createdAt || new Date();
         this.updatedAt = data.updatedAt || new Date();
     }
@@ -34,6 +36,8 @@ class User {
             isEmailVerified: doc.isEmailVerified,
             verificationToken: doc.verificationToken,
             tokenExpiry: doc.tokenExpiry,
+            resetToken: doc.resetToken,        
+            resetExpiry: doc.resetExpiry,
             createdAt: doc.createdAt,
             updatedAt: doc.updatedAt
         });

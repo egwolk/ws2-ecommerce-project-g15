@@ -227,6 +227,8 @@ class UserController {
                 return res.send("Passwords do not match.");
             }
             await this.userService.updateUser(req.params.id, req.body);
+            const updatedUser = await this.userService.getUserById(req.params.id);
+            req.session.user = updatedUser.getSessionUser();
             res.redirect('/users/dashboard');
         } catch (err) {
             console.error("Error updating user profile:", err);
