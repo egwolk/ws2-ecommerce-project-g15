@@ -16,7 +16,7 @@ class UserController {
             const { user: newUser, token } = await this.userService.createUser(req.body);
             
             // Send verification email
-            const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+            const baseUrl = process.env.BASE_URL;
             const verificationUrl = `${baseUrl}/users/verify/${token}`;
             
             try {
@@ -233,6 +233,51 @@ class UserController {
         } catch (err) {
             console.error("Error updating user profile:", err);
             res.send("Something went wrong.");
+        }
+    }
+    showAdminCreateForm(req, res) {
+        if (!req.session.user || req.session.user.role !== 'admin') {
+            return res.status(403).send("Access denied.");
+        }
+        res.render('admin-create', { title: "Add New User" });
+    }
+
+    async createUserByAdmin(req, res) {
+        try {
+            if (!req.session.user || req.session.user.role !== 'admin') {
+                return res.status(403).send("Access denied.");
+            }
+
+            // Check if user already exists
+            const existingUser = await this.userService.getUserByEmail(req.body.email);
+            if (existingUser) {
+                return res.render('admin-create', { 
+                    title: "Add New User", 
+                    error: "User already exists with this email.",
+                    formData: req.body 
+                });
+            }
+
+            // Use the new admin creation method
+            await this.userService.createUserByAdmin(req.body);
+            res.redirect('/users/admin');
+        } catch (err) {
+            console.error("Error creating user by admin:", err);
+            
+            // Handle validation errors specifically
+            if (err.message.includes('Invalid user data')) {
+                return res.render('admin-create', { 
+                    title: "Add New User", 
+                    error: err.message,
+                    formData: req.body 
+                });
+            }
+            
+            res.render('admin-create', { 
+                title: "Add New User", 
+                error: "Something went wrong: " + err.message,
+                formData: req.body 
+            });
         }
     }
 }

@@ -101,6 +101,37 @@ class UserService {
             { $set: updateData }
         );
     }
+
+    async createUserByAdmin(userData) {
+        const db = this.client.db(this.dbName);
+        
+        // Check if user already exists
+        const existingUser = await this.getUserByEmail(userData.email);
+        if (existingUser) {
+            throw new Error('User already exists with this email.');
+        }
+        
+        const passwordHash = await User.hashPassword(userData.password);
+        
+        const newUser = new User({
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            email: userData.email,
+            passwordHash: passwordHash,
+            role: userData.role || 'customer',
+            accountStatus: userData.accountStatus || 'active',
+            isEmailVerified: userData.isEmailVerified === 'true' || userData.isEmailVerified === true,
+            // No verification token needed for admin creation
+        });
+        
+        const validation = newUser.validate();
+        if (!validation.isValid) {
+            throw new Error('Invalid user data: ' + JSON.stringify(validation.errors));
+        }
+        
+        const result = await db.collection('users').insertOne(newUser.toDocument());
+        return { ...newUser, _id: result.insertedId };
+    }
 }
 
 module.exports = UserService;

@@ -1,5 +1,7 @@
 <h1>Admin Dashboard</h1>
 <p>Welcome, <%= user.firstName %> (<%= user.role %>)</p>
+
+<a href="/users/admin/create" >Add New User</a>
 <% if (users.length <= 0) { %>
     <p>No users found.</p>
 <% } else { %>

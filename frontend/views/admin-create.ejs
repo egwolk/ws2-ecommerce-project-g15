@@ -1,0 +1,40 @@
+<h1>Add New User</h1>
+<% if (typeof error !== 'undefined' && error) { %>
+    <div style="color: red; margin-bottom: 15px;">
+        <strong>Error:</strong> <%= error %>
+    </div>
+<% } %>
+
+<form action="/users/admin/create" method="POST">
+    <label for="firstName">First Name:</label><br>
+    <input type="text" id="firstName" name="firstName" required><br><br>
+
+    <label for="lastName">Last Name:</label><br>
+    <input type="text" id="lastName" name="lastName" required><br><br>
+
+    <label for="email">Email:</label><br>
+    <input type="email" id="email" name="email" required><br><br>
+
+    <label for="password">Password:</label><br>
+    <input type="password" id="password" name="password" required><br><br>
+
+    <label for="role">Role:</label><br>
+    <select id="role" name="role" required>
+        <option value="customer">Customer</option>
+        <option value="admin">Admin</option>
+    </select><br><br>
+
+    <label for="accountStatus">Account Status:</label><br>
+    <select id="accountStatus" name="accountStatus">
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+    </select><br><br>
+
+    <label>
+        <input type="checkbox" name="isEmailVerified" value="true" checked>
+        Mark email as verified
+    </label><br><br>
+
+    <button type="submit">Create User</button>
+    <a href="/users/admin">Cancel</a>
+</form>

@@ -3,7 +3,7 @@ const MongoStore = require('connect-mongo');
 
 function setupSession(app) {
     app.use(session({
-        secret: process.env.SESSION_SECRET || 'dev-secret',
+        secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
         store: MongoStore.create({
@@ -11,7 +11,8 @@ function setupSession(app) {
             ttl: 30 * 60 
         }),
         cookie: {
-            secure: process.env.NODE_ENV === 'production', 
+            secure: process.env.NODE_ENV === 'production',
+            httpOnly: true,
             maxAge: 30 * 60 * 1000 
         }
     }));

@@ -42,4 +42,8 @@ router.post('/edit/:id', async (req, res) => req.userController.updateUser(req, 
 router.get('/edit-profile/:id', async (req, res) => req.userController.showEditProfileForm(req, res));
 router.post('/edit-profile/:id', async (req, res) => req.userController.updateUserProfile(req, res));
 
+// Create user routes (admin only)
+router.get('/admin/create', (req, res) => req.userController.showAdminCreateForm(req, res));
+router.post('/admin/create', (req, res) => req.userController.createUserByAdmin(req, res));
+
 module.exports = router;
