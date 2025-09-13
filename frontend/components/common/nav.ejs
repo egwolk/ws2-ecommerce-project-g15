@@ -6,7 +6,7 @@
             <span>Welcome, <%= user ? user.firstName : 'User' %>!</span>
             <a href="/users/dashboard">Dashboard</a>
             <% if (user && user.role === 'admin') { %>
-                <a href="/users/admin">Admin</a>
+                <a href="/users/admin">Users</a>
             <% } %>
             <a href="/users/logout">Logout</a>
         <% } else { %>

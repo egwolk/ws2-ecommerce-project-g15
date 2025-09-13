@@ -3,7 +3,6 @@ const expressLayouts = require('express-ejs-layouts');
 const partials = require('express-partials');
 
 function setupViewEngine(app) {
-    // Set up EJS partials
     app.use(partials());
 
     // Set up EJS layouts
