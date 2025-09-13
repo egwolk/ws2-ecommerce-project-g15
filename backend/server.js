@@ -1,10 +1,17 @@
 const express = require('express');
+const cors = require('cors');
 require('dotenv').config();
 const { client, dbName, connectToMongo } = require('./connection/connection');
 const setupMiddleware = require('./middleware');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(cors({
+    origin: process.env.BASE_URL,
+    credentials: true
+}));
+
 
 // Middlewares
 setupMiddleware(app);

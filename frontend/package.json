@@ -1,0 +1,8 @@
+{
+  "name": "ws2-ecommerce-project-g15-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for DigiMArt e-commerce",
+  "scripts": {
+    "build": "echo \"Add build process here if needed\""
+  }
+}

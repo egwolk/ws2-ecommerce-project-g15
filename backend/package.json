@@ -1,7 +1,7 @@
 {
-  "name": "ws2-ecommerce-project-g15",
+  "name": "ws2-ecommerce-project-g15-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "serve": "nodemon server.js"
   },
@@ -12,6 +12,7 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "body-parser": "^1.11.0",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
