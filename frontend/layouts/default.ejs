@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DigiMArt | <%= title %></title>
 </head>
-<body<% if (typeof authenticated !== 'undefined' && authenticated) { %> class="authenticated-page"<% } %>>
+<body<% if (authenticated) { %> class="authenticated-page"<% } %>>
+    <%- partial('../components/common/nav', locals) %>
     <%- body %>
     <script src="/scripts/session-monitor.js"></script>
 </body>

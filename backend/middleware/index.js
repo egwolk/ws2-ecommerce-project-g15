@@ -1,13 +1,16 @@
-const setupBodyParser = require('./bodyParser');
 const setupSession = require('./session');
-const setupViewEngine = require('./viewEngine');
+const setupBodyParser = require('./bodyParser');
 const setupStaticFiles = require('./staticFiles');
+const setupViewEngine = require('./viewEngine');
+const { addAuthDataToLocals } = require('./auth');
 
 function setupMiddleware(app) {
-    setupBodyParser(app);
     setupSession(app);
-    setupViewEngine(app);
+    setupBodyParser(app);
     setupStaticFiles(app);
+    setupViewEngine(app);
+    
+    app.use(addAuthDataToLocals);
 }
 
 module.exports = setupMiddleware;

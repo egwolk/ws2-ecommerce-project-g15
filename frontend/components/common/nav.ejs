@@ -1,9 +1,18 @@
 <nav>
     <div class="navbar">
-        <ul>
-            <li>
-                aaaaaaaa
-            </li>
-        </ul>
+        <a href="/">Home</a>
+        <% if (authenticated) { %>
+            <!-- Logged in user navigation -->
+            <span>Welcome, <%= user ? user.firstName : 'User' %>!</span>
+            <a href="/users/dashboard">Dashboard</a>
+            <% if (user && user.role === 'admin') { %>
+                <a href="/users/admin">Admin</a>
+            <% } %>
+            <a href="/users/logout">Logout</a>
+        <% } else { %>
+            <!-- Guest navigation -->
+            <a href="/users/login">Login</a>
+            <a href="/users/register">Register</a>
+        <% } %>
     </div>
 </nav>

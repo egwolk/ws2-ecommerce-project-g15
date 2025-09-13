@@ -131,7 +131,7 @@ class UserController {
 
     showDashboard(req, res) {
         if (!req.session.user) return res.redirect('/users/login');
-        res.render('dashboard', { title: "User Dashboard", user: req.session.user, authenticated: true, });
+        res.render('dashboard', { title: "User Dashboard"});
     }
 
     async showAdminDashboard(req, res) {
@@ -143,9 +143,7 @@ class UserController {
         
         res.render('admin', {
             title: "Admin Dashboard",
-            users,
-            currentUser: req.session.user,
-            authenticated: true,
+            users
         });
     }
 

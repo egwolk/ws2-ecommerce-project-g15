@@ -1,7 +1,11 @@
 const path = require('path');
 const expressLayouts = require('express-ejs-layouts');
+const partials = require('express-partials');
 
 function setupViewEngine(app) {
+    // Set up EJS partials
+    app.use(partials());
+
     // Set up EJS layouts
     app.use(expressLayouts);
     app.set('layout', '../layouts/default'); // Looks for views/layouts/default.ejs
