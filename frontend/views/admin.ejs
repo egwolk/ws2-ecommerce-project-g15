@@ -1,34 +1,38 @@
 <h1>Admin Dashboard</h1>
 <p>Welcome, <%= user.firstName %> (<%= user.role %>)</p>
-<table>
-    <thead>
-        <tr>
-            <th>User ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Status</th>
-            <th>Created</th>
-        </tr>
-    </thead>
-    <tbody>
-        <% users.forEach(userItem => { %>
+<% if (users.length <= 0) { %>
+    <p>No users found.</p>
+<% } else { %>
+    <table>
+        <thead>
             <tr>
-                <td><%= userItem.userId %></td>
-                <td><%= userItem.firstName %> <%= userItem.lastName %></td>
-                <td><%= userItem.email %></td>
-                <td><%= userItem.role %></td>
-                <td><%= userItem.accountStatus %></td>
-                <td><%= new Date(userItem.createdAt).toLocaleDateString() %></td>
-                <td>
-                    <a href="/users/edit/<%= userItem._id %>">Edit</a> |
-                    <form action="/users/delete/<%= userItem._id %>" method="POST" style="display:inline;">
-                        <button type="submit">Delete</button>
-                    </form>
-                </td>
+                <th>User ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Created</th>
             </tr>
-        <% }) %>
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            <% users.forEach(userItem => { %>
+                <tr>
+                    <td><%= userItem.userId %></td>
+                    <td><%= userItem.firstName %> <%= userItem.lastName %></td>
+                    <td><%= userItem.email %></td>
+                    <td><%= userItem.role %></td>
+                    <td><%= userItem.accountStatus %></td>
+                    <td><%= new Date(userItem.createdAt).toLocaleDateString() %></td>
+                    <td>
+                        <a href="/users/edit/<%= userItem._id %>">Edit</a> |
+                        <form action="/users/delete/<%= userItem._id %>" method="POST" style="display:inline;">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+<% } %>
 
 <p><a href="/users/dashboard">Back to Dashboard</a></p>

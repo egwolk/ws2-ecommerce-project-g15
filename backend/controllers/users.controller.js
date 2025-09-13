@@ -139,9 +139,9 @@ class UserController {
         if (!req.session.user || req.session.user.role !== 'admin') {
             return res.status(403).send("Access denied.");
         }
-        
-        const users = await this.userService.getAllUsers();
-        
+        const allUsers = await this.userService.getAllUsers();
+
+        const users = allUsers.filter(user => user._id.toString() !== req.session.user._id.toString());
         res.render('admin', {
             title: "Admin Dashboard",
             users

@@ -21,10 +21,12 @@ const indexRoute = require('./routes/index');
 const usersRoute = require('./routes/users');
 const passwordRoute = require('./routes/password');
 const apiRoute = require('./routes/api');
+const productsRoute = require('./routes/products');
 app.use('/', indexRoute);
 app.use('/users', usersRoute);
 app.use('/password', passwordRoute);
 app.use('/api', apiRoute);
+app.use('/products', productsRoute);
 
 
 

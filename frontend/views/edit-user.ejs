@@ -13,7 +13,7 @@
     </select><br><br>
     <label for="role">Role:</label><br>
     <select name="role" required>
-        <option value="user" <%= user.role === 'user' ? 'selected' : '' %>>User</option>
+        <option value="customer" <%= user.role === 'customer' ? 'selected' : '' %>>Customer</option>
         <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>Admin</option>
     </select><br><br>
     <button type="submit">Update</button>

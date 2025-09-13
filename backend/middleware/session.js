@@ -1,28 +1,20 @@
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 
 function setupSession(app) {
     app.use(session({
         secret: process.env.SESSION_SECRET || 'dev-secret',
         resave: false,
         saveUninitialized: false,
+        store: MongoStore.create({
+            mongoUrl: process.env.MONGO_URI, 
+            ttl: 30 * 60 
+        }),
         cookie: {
-            secure: false, // set to true only if using HTTPS
-            maxAge: 30 * 60 * 1000 // 30 minutes (in milliseconds)
+            secure: process.env.NODE_ENV === 'production', 
+            maxAge: 30 * 60 * 1000 
         }
     }));
-    
-    // Session expiration check
-    app.use((req, res, next) => {
-        if (req.session.user) {
-            const now = new Date();
-            const expires = new Date(req.session.cookie._expires);
-            if (now >= expires) {
-                req.session.destroy();
-                return res.redirect('/users/login?message=expired');
-            }
-        }
-        next();
-    });
 }
 
 module.exports = setupSession;
