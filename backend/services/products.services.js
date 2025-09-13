@@ -13,6 +13,13 @@ class ProductService {
         return docs.map(doc => Product.fromDocument(doc));
     }
 
+    // Admin method to get all products including inactive
+    async getAllProductsAdmin() {
+        const db = this.client.db(this.dbName);
+        const docs = await db.collection('products').find().toArray();
+        return docs.map(doc => Product.fromDocument(doc));
+    }
+
     async getProductById(productId) {
         const db = this.client.db(this.dbName);
         const doc = await db.collection('products').findOne({ _id: new ObjectId(productId) });

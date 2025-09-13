@@ -12,13 +12,16 @@ router.use((req, res, next) => {
     next();
 });
 
-// Product routes
+// Admin routes FIRST (before parameterized routes)
+router.get('/admin', (req, res) => req.productController.showAdminProducts(req, res));
+router.get('/admin/create', (req, res) => req.productController.showCreateForm(req, res));
+router.post('/admin/create', (req, res) => req.productController.createProduct(req, res));
+router.get('/admin/:id/edit', (req, res) => req.productController.showEditForm(req, res));
+router.post('/admin/:id/edit', (req, res) => req.productController.updateProduct(req, res));
+router.post('/admin/:id/delete', (req, res) => req.productController.deleteProduct(req, res));
+
+// Public product routes AFTER (parameterized routes last)
 router.get('/', (req, res) => req.productController.showAllProducts(req, res));
-router.get('/create', (req, res) => req.productController.showCreateForm(req, res));
-router.post('/create', (req, res) => req.productController.createProduct(req, res));
 router.get('/:id', (req, res) => req.productController.showProduct(req, res));
-router.get('/:id/edit', (req, res) => req.productController.showEditForm(req, res));
-router.post('/:id/edit', (req, res) => req.productController.updateProduct(req, res));
-router.post('/:id/delete', (req, res) => req.productController.deleteProduct(req, res));
 
 module.exports = router;

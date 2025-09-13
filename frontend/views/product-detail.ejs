@@ -1,0 +1,33 @@
+<div class="product-detail">
+    <h1><%= product.name %></h1>
+    
+    <div>
+        <div>
+            <% if (product.imageUrl) { %>
+                <img src="<%= product.imageUrl %>" alt="<%= product.name %>">
+            <% } else { %>
+                <div>
+                    <span>No Image Available</span>
+                </div>
+            <% } %>
+        </div>
+        
+        <div>
+            <h2>$<%= product.price %></h2>
+            <p><strong>Category:</strong> <%= product.category %></p>
+            <p><strong>Stock:</strong> <%= product.stock %> available</p>
+            <p><strong>Description:</strong></p>
+            <p><%= product.description %></p>
+            
+            <% if (product.stock > 0) { %>
+                <button>Add to Cart</button>
+            <% } else { %>
+                <button disabled>Out of Stock</button>
+            <% } %>
+        </div>
+    </div>
+    
+    <p>
+        <a href="/products">← Back to Products</a>
+    </p>
+</div>

@@ -6,8 +6,26 @@ class ProductController {
     async showAllProducts(req, res) {
         try {
             const products = await this.productService.getAllProducts();
-            res.render('products/index', { 
+            res.render('products', { 
                 title: 'Products', 
+                products 
+            });
+        } catch (err) {
+            console.error("Error fetching products:", err);
+            res.send("Something went wrong.");
+        }
+    }
+
+    // Admin only - show all products including inactive ones
+    async showAdminProducts(req, res) {
+        try {
+            if (!req.session.user || req.session.user.role !== 'admin') {
+                return res.status(403).send("Access denied.");
+            }
+            
+            const products = await this.productService.getAllProductsAdmin();
+            res.render('products-admin', { 
+                title: 'Manage Products', 
                 products 
             });
         } catch (err) {
@@ -22,7 +40,7 @@ class ProductController {
             if (!product) {
                 return res.status(404).send("Product not found.");
             }
-            res.render('products/show', { 
+            res.render('product-detail', { 
                 title: product.name, 
                 product 
             });
@@ -33,13 +51,20 @@ class ProductController {
     }
 
     showCreateForm(req, res) {
-        res.render('products/create', { title: 'Add Product' });
+        if (!req.session.user || req.session.user.role !== 'admin') {
+            return res.status(403).send("Access denied.");
+        }
+        res.render('product-create', { title: 'Add Product' });
     }
 
     async createProduct(req, res) {
         try {
+            if (!req.session.user || req.session.user.role !== 'admin') {
+                return res.status(403).send("Access denied.");
+            }
+            
             await this.productService.createProduct(req.body);
-            res.redirect('/products');
+            res.redirect('/products/admin');
         } catch (err) {
             console.error("Error creating product:", err);
             res.send("Something went wrong.");
@@ -48,11 +73,15 @@ class ProductController {
 
     async showEditForm(req, res) {
         try {
+            if (!req.session.user || req.session.user.role !== 'admin') {
+                return res.status(403).send("Access denied.");
+            }
+            
             const product = await this.productService.getProductById(req.params.id);
             if (!product) {
                 return res.status(404).send("Product not found.");
             }
-            res.render('products/edit', { 
+            res.render('product-edit', { 
                 title: 'Edit Product', 
                 product 
             });
@@ -64,8 +93,12 @@ class ProductController {
 
     async updateProduct(req, res) {
         try {
+            if (!req.session.user || req.session.user.role !== 'admin') {
+                return res.status(403).send("Access denied.");
+            }
+            
             await this.productService.updateProduct(req.params.id, req.body);
-            res.redirect(`/products/${req.params.id}`);
+            res.redirect('/products/admin');
         } catch (err) {
             console.error("Error updating product:", err);
             res.send("Something went wrong.");
@@ -74,8 +107,12 @@ class ProductController {
 
     async deleteProduct(req, res) {
         try {
+            if (!req.session.user || req.session.user.role !== 'admin') {
+                return res.status(403).send("Access denied.");
+            }
+            
             await this.productService.deleteProduct(req.params.id);
-            res.redirect('/products');
+            res.redirect('/products/admin');
         } catch (err) {
             console.error("Error deleting product:", err);
             res.send("Something went wrong.");

@@ -1,0 +1,52 @@
+<div>
+    <h1>Manage Products</h1>
+    <p>Welcome to the Products Administration Page.</p>
+    
+    <a href="/products/admin/create">Add New Product</a>
+    
+    <% if (products.length === 0) { %>
+        <p>No products found.</p>
+    <% } else { %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% products.forEach(product => { %>
+                    <tr>
+                        <td><%= product.name %></td>
+                        <td><%= product.category %></td>
+                        <td>$<%= product.price %></td>
+                        <td><%= product.stock %></td>
+                        <td>
+                            <span>
+                                <%= product.isActive ? 'Active' : 'Inactive' %>
+                            </span>
+                        </td>
+                        <td>
+                            <a href="/products/<%= product._id %>">View</a>
+                            <a href="/products/admin/<%= product._id %>/edit">Edit</a>
+                            <% if (product.isActive) { %>
+                                <form action="/products/admin/<%= product._id %>/delete" method="POST">
+                                    <button type="submit" onclick="return confirm('Are you sure you want to delete this product?')">Delete</button>
+                                </form>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } %>
+    
+    <p>
+        <a href="/users/admin">Back to User Management</a> |
+        <a href="/users/dashboard">Back to Dashboard</a>
+    </p>
+</div>

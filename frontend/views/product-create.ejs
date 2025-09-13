@@ -1,0 +1,37 @@
+<h1>Add New Product</h1>
+
+<form action="/products/admin/create" method="POST">
+    <div>
+        <label for="name">Product Name:</label><br>
+        <input type="text" name="name" id="name" required>
+    </div>
+
+    <div>
+        <label for="description">Description:</label><br>
+        <textarea name="description" id="description" rows="4"></textarea>
+    </div>
+
+    <div>
+        <label for="price">Price:</label><br>
+        <input type="number" name="price" id="price" step="0.01" min="0" required>
+    </div>
+
+    <div>
+        <label for="category">Category:</label><br>
+        <input type="text" name="category" id="category">
+    </div>
+
+    <div>
+        <label for="stock">Stock Quantity:</label><br>
+        <input type="number" name="stock" id="stock" min="0" required>
+    </div>
+
+    <div>
+        <label for="imageUrl">Image URL:</label><br>
+        <input type="url" name="imageUrl" id="imageUrl">
+    </div>
+
+    <button type="submit">Create Product</button>
+</form>
+
+<p><a href="/products/admin">← Back to Manage Products</a></p>
