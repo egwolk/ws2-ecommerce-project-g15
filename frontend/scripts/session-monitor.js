@@ -1,6 +1,6 @@
 (function() {
     if (document.body.classList.contains('authenticated-page')) {
-        const SESSION_CHECK_INTERVAL = 600000; 
+        const SESSION_CHECK_INTERVAL = 60000; 
         
         function checkSession() {
             fetch('/api/check-session')

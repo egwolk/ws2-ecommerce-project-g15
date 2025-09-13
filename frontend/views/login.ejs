@@ -1,27 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title><%= title %></title>
-    </head>
-    <body>
-        <form action="/users/login" method="POST">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+<form action="/users/login" method="POST">
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
 
-            <p><a href="/password/forgot">Forgot Password?</a></p>
-            
-            <button type="submit">Login</button>
-        </form>
-        <% if (typeof message !== 'undefined' && message) { %>
-            <div class="message">
-                <%= message %>
-            </div>
-        <% } %> 
-        <p>Don’t have an account? <a href="/users/register">Register here</a></p>
-    </body>
-</html>
+    <p><a href="/password/forgot">Forgot Password?</a></p>
+    
+    <button type="submit">Login</button>
+</form>
+<% if (typeof message !== 'undefined' && message) { %>
+    <div class="message">
+        <%= message %>
+    </div>
+<% } %> 
+<p>Don’t have an account? <a href="/users/register">Register here</a></p>

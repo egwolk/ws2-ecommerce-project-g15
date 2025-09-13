@@ -3,16 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DigiMArt</title>
-    <!-- <link rel="stylesheet" href="/assets/css/styles.css"> -->
+    <title>DigiMArt | <%= title %></title>
 </head>
-<body>
-    <%- include('../components/navbar') %>
-    
-    <main>
-        <%- body %>
-    </main>
-    
+<body<% if (typeof authenticated !== 'undefined' && authenticated) { %> class="authenticated-page"<% } %>>
+    <%- body %>
     <script src="/scripts/session-monitor.js"></script>
 </body>
 </html>
