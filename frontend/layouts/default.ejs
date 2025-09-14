@@ -8,11 +8,15 @@
     <link rel="stylesheet" href="/styles/forms.css">
 </head>
 <body<% if (authenticated) { %> class="authenticated-page"<% } %>>
+    
     <%- partial('../components/common/header', locals) %>
     <main>
         <%- body %>  
     </main>  
     <%- partial('../components/common/footer', locals) %>
+    <div class="overlay">
+        <div class="scanline-overlay">
+    </div>
     <script src="/scripts/session-monitor.js"></script>
 </body>
 </html>
