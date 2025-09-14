@@ -8,14 +8,18 @@
             <% products.forEach(product => { %>
                 <div class="product-card">
                     <% if (product.imageUrl) { %>
-                        <img src="<%= product.imageUrl %>" alt="<%= product.name %>">
+                        <div class="img-container">
+                            <img src="<%= product.imageUrl %>" alt="<%= product.name %>">
+                        </div>
                     <% } %>
-                    <h3><%= product.name %></h3>
-                    <p><%= product.description %></p>
-                    <p><strong>Price: $<%= product.price %></strong></p>
-                    <p>Category: <%= product.category %></p>
-                    <p>Stock: <%= product.stock %> available</p>
-                    <a href="/products/<%= product._id %>">View Details</a>
+                    <div class="product-text">
+                        <h3><%= product.name %></h3>
+                        <!-- <p><%= product.description %></p> -->
+                        <p><strong>Price: $<%= product.price %></strong></p>
+                        <p>Category: <%= product.category %></p>
+                        <!-- <p>Stock: <%= product.stock %> available</p> -->
+                        <!-- <a href="/products/<%= product._id %>">View Details</a> -->
+                    </div>
                 </div>
             <% }) %>
         </div>
