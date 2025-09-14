@@ -1,0 +1,113 @@
+@import url("https://fonts.cdnfonts.com/css/thegoodmonolith");
+
+.form-container {
+  width: 40%;
+  max-width: 900px;
+  margin: 20px auto 60px;
+  border: 1px solid var(--warm-off-white);
+  font-family: "TheGoodMonolith", monospace;
+}
+
+.form-header {
+  padding: 20px 30px;
+  border-bottom: 1px solid var(--warm-off-white);
+  height: 60px;
+  display: flex;
+  align-items: center;
+}
+.form-title {
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.form-sections {
+  display: flex;
+  flex-direction: column;
+}
+
+.sect {
+  padding: 20px 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.login-info {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+.login-info .utils{
+    text-align: center;
+    margin-bottom: 1rem;
+}
+.sect form sup {
+    text-align: end;
+}
+
+.sect a{
+    color: var(--warm-off-white);
+    text-decoration: none;
+    font-size: 1.4rem;
+    transition: opacity 0.3s ease;
+    opacity: 0.7;
+}
+.sect a:hover {
+  opacity: 1;
+}
+.sect form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center ;
+    width: 70%; 
+    
+}
+.sect form label{
+    margin-bottom: 1rem;
+}
+.sect form input {
+    margin-bottom: 10px;
+    padding: 1rem;
+    background: none;
+    border: 1px solid var(--warm-off-white);
+    color: var(--warm-off-white);
+    font-family: "TheGoodMonolith", monospace;
+}
+
+.sect form .btn-container {
+    display: flex;
+    justify-content: center;
+}
+.sect form button{
+    margin-top: 1rem;
+    width: 150px;
+    text-align: center;
+    background: none;
+    color: var(--warm-off-white);
+    border: 1px solid var(--warm-off-white);
+    padding: 1rem;
+    font-family: "TheGoodMonolith", monospace;
+    text-transform: uppercase;
+    position: relative;
+}
+.sect form button::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background-color: white;
+  z-index: -1;
+  transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.sect form button:hover::after {
+  width: 100%;
+}
+.sect form button:hover {
+  color: black;
+  mix-blend-mode: difference;
+  cursor: pointer;
+}
+

@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DigiMArt | <%= title %></title>
+    <link rel="stylesheet" href="/styles/global.css">
+    <link rel="stylesheet" href="/styles/forms.css">
 </head>
 <body<% if (authenticated) { %> class="authenticated-page"<% } %>>
-    <%- partial('../components/common/nav', locals) %>
-    <%- body %>    
+    <%- partial('../components/common/header', locals) %>
+    <main>
+        <%- body %>  
+    </main>  
+    <%- partial('../components/common/footer', locals) %>
     <script src="/scripts/session-monitor.js"></script>
 </body>
 </html>

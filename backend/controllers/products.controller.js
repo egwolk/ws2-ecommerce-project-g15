@@ -97,7 +97,15 @@ class ProductController {
                 return res.status(403).send("Access denied.");
             }
             
-            await this.productService.updateProduct(req.params.id, req.body);
+            // Convert string values to appropriate types
+            const updateData = {
+                ...req.body,
+                price: parseFloat(req.body.price),
+                stock: parseInt(req.body.stock),
+                isActive: req.body.isActive === 'true' // Convert string to boolean
+            };
+            
+            await this.productService.updateProduct(req.params.id, updateData);
             res.redirect('/products/admin');
         } catch (err) {
             console.error("Error updating product:", err);

@@ -90,45 +90,67 @@ class UserController {
         res.render('register', { title: "Register" });
     }
 
-    async loginUser(req, res) {
-        try {
-            // Find user by email
-            const user = await this.userService.getUserByEmail(req.body.email);
-            if (!user) return res.send("User not found.");
-            
-            // Check if account is active
-            if (user.accountStatus !== 'active') return res.send("Account is not active.");
-
-            // Check if email is verified
-            if (!user.isEmailVerified) {
-                return res.send(`
-                    <p>Please verify your email before logging in.</p>
-                `);
-            }
-
-            // Compare hashed password
-            const isPasswordValid = await this.userService.validatePassword(user, req.body.password);
-            
-            if (isPasswordValid) {
-                // Store session
-                req.session.user = {
-                    _id: user._id,
-                    userId: user.userId,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    email: user.email,
-                    role: user.role,
-                    isEmailVerified: user.isEmailVerified
-                };
-                res.redirect('/users/dashboard');
-            } else {
-                res.send("Invalid password.");
-            }
-        } catch (err) {
-            console.error("Error during login:", err);
-            res.send("Something went wrong.");
+   async loginUser(req, res) {
+    try {
+        // Find user by email
+        const user = await this.userService.getUserByEmail(req.body.email);
+        if (!user) {
+            return res.render('login', { 
+                title: "Login", 
+                message: "User not found with this email address.",
+                formData: req.body // Preserve form data
+            });
         }
+        
+        // Check if account is active
+        if (user.accountStatus !== 'active') {
+            return res.render('login', { 
+                title: "Login", 
+                message: "Account is not active. Please contact support.",
+                formData: req.body
+            });
+        }
+
+        // Check if email is verified
+        if (!user.isEmailVerified) {
+            return res.render('login', { 
+                title: "Login", 
+                message: "Please verify your email before logging in.",
+                formData: req.body
+            });
+        }
+
+        // Compare hashed password
+        const isPasswordValid = await this.userService.validatePassword(user, req.body.password);
+        
+        if (isPasswordValid) {
+            // Store session
+            req.session.user = {
+                _id: user._id,
+                userId: user.userId,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                role: user.role,
+                isEmailVerified: user.isEmailVerified
+            };
+            res.redirect('/users/dashboard');
+        } else {
+            return res.render('login', { 
+                title: "Login", 
+                message: "Invalid password. Please try again.",
+                formData: req.body
+            });
+        }
+    } catch (err) {
+        console.error("Error during login:", err);
+        res.render('login', { 
+            title: "Login", 
+            message: "Something went wrong. Please try again.",
+            formData: req.body
+        });
     }
+}
 
     showDashboard(req, res) {
         if (!req.session.user) return res.redirect('/users/login');

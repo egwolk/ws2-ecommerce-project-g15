@@ -1,17 +1,31 @@
-<form action="/users/login" method="POST">
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
-
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
-
-    <p><a href="/password/forgot">Forgot Password?</a></p>
-    
-    <button type="submit">Login</button>
-</form>
-<% if (typeof message !== 'undefined' && message) { %>
-    <div class="message">
-        <%= message %>
+<div class="form-container">
+    <div class="form-header">
+        <div class="form-title">LOGIN</div>
     </div>
-<% } %> 
-<p>Don’t have an account? <a href="/users/register">Register here</a></p>
+    <div class="form-sections">
+        <div class="sect">
+            <form action="/users/login" method="POST" autocomplete="off">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" autocomplete="off" required value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : '' %>">
+
+                <label for="password">Password:</label>
+                <input type="password" id="password" autocomplete="off" name="password" required>
+                <sup><a href="/password/forgot">Forgot Password?</a></sup>
+                
+                <div class="btn-container">
+                    <button type="submit">Login</button>
+                </div>
+            </form>
+        </div>
+        <div class="sect login-info">
+            <div class="utils">
+                <p>Don’t have an account? <a href="/users/register">Register here</a></p>
+            </div> 
+            <% if (typeof message !== 'undefined' && message) { %>
+                <div class="message">
+                    <%= message %>
+                </div>
+            <% } %> 
+        </div>
+    </div>
+</div>
