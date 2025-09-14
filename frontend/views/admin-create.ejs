@@ -1,40 +1,55 @@
-<h1>Add New User</h1>
-<% if (typeof error !== 'undefined' && error) { %>
-    <div style="color: red; margin-bottom: 15px;">
-        <strong>Error:</strong> <%= error %>
+<div class="form-container">
+    <div class="form-header">
+        <div class="form-title">ADD NEW USER</div>
     </div>
-<% } %>
+    <div class="form-sections">
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="sect login-info">
+                <div class="message error">
+                    <strong>Error:</strong> <%= error %>
+                </div>
+            </div>
+        <% } %>
+        <div class="sect">
+            <form action="/users/admin/create" method="POST" autocomplete="off">
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" name="firstName" autocomplete="off" required>
 
-<form action="/users/admin/create" method="POST">
-    <label for="firstName">First Name:</label><br>
-    <input type="text" id="firstName" name="firstName" required><br><br>
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" name="lastName" autocomplete="off" required>
 
-    <label for="lastName">Last Name:</label><br>
-    <input type="text" id="lastName" name="lastName" required><br><br>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" autocomplete="off" required>
 
-    <label for="email">Email:</label><br>
-    <input type="email" id="email" name="email" required><br><br>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" autocomplete="off" required>
 
-    <label for="password">Password:</label><br>
-    <input type="password" id="password" name="password" required><br><br>
+                <label for="role">Role:</label>
+                <select id="role" name="role" required>
+                    <option value="customer">Customer</option>
+                    <option value="admin">Admin</option>
+                </select>
 
-    <label for="role">Role:</label><br>
-    <select id="role" name="role" required>
-        <option value="customer">Customer</option>
-        <option value="admin">Admin</option>
-    </select><br><br>
+                <label for="accountStatus">Account Status:</label>
+                <select id="accountStatus" name="accountStatus">
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
 
-    <label for="accountStatus">Account Status:</label><br>
-    <select id="accountStatus" name="accountStatus">
-        <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
-    </select><br><br>
+                <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                    <input type="checkbox" name="isEmailVerified" value="true" checked>
+                    Mark email as verified
+                </label>
 
-    <label>
-        <input type="checkbox" name="isEmailVerified" value="true" checked>
-        Mark email as verified
-    </label><br><br>
-
-    <button type="submit">Create User</button>
-    <a href="/users/admin">Cancel</a>
-</form>
+                <div class="btn-container">
+                    <button type="submit">Create User</button>
+                </div>
+            </form>
+        </div>
+        <div class="sect login-info">
+            <div class="utils">
+                <p><a href="/users/admin">← Back to User Management</a></p>
+            </div>
+        </div>
+    </div>
+</div>

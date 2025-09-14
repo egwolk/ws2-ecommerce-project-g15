@@ -17,7 +17,10 @@ class PasswordController {
             // Find user by email
             const user = await this.passwordService.findUserByEmail(email);
             if (!user) {
-                return res.send("If an account with that email exists, a reset link has been sent.");
+                return res.render('forgot-password', { 
+                    title: "Forgot Password", 
+                    message: "If an account with that email exists, a reset link has been sent."
+                });
             }
 
             // Generate reset token
@@ -39,10 +42,17 @@ class PasswordController {
                 `
             });
 
-            res.send("If an account with that email exists, a reset link has been sent.");
+            res.render('forgot-password', { 
+                title: "Forgot Password", 
+                message: "A password reset link has been sent to your email address."
+            });
         } catch (err) {
             console.error("Error in password reset:", err);
-            res.send("Something went wrong.");
+            res.render('forgot-password', { 
+                title: "Forgot Password", 
+                message: "Something went wrong. Please try again.",
+                formData: req.body
+            });
         }
     }
 
@@ -53,13 +63,19 @@ class PasswordController {
             // Verify token is valid
             const user = await this.passwordService.findUserByResetToken(token);
             if (!user) {
-                return res.send("Reset link is invalid or has expired.");
+                return res.render('forgot-password', { 
+                    title: "Forgot Password", 
+                    message: "Reset link is invalid or has expired. Please request a new reset link."
+                });
             }
 
             res.render('reset-password', { title: "Reset Password", token });
         } catch (err) {
             console.error("Error showing reset form:", err);
-            res.send("Something went wrong.");
+            res.render('forgot-password', { 
+                title: "Forgot Password", 
+                message: "Something went wrong. Please try again."
+            });
         }
     }
 
@@ -71,21 +87,35 @@ class PasswordController {
             // Find user by token
             const user = await this.passwordService.findUserByResetToken(token);
             if (!user) {
-                return res.send("Reset link is invalid or has expired.");
+                return res.render('forgot-password', { 
+                    title: "Forgot Password", 
+                    message: "Reset link is invalid or has expired. Please request a new reset link."
+                });
             }
 
             // Check if passwords match
             if (password !== confirm) {
-                return res.send("Passwords do not match.");
+                return res.render('reset-password', { 
+                    title: "Reset Password", 
+                    message: "Passwords do not match. Please try again.",
+                    token: token
+                });
             }
 
             // Reset password
             await this.passwordService.resetPassword(user.email, password);
 
-            res.send("Password has been reset. You can now log in with your new password.");
+            res.render('login', { 
+                title: "Login", 
+                message: "Password has been reset successfully! You can now log in with your new password."
+            });
         } catch (err) {
             console.error("Error resetting password:", err);
-            res.send("Something went wrong.");
+            res.render('reset-password', { 
+                title: "Reset Password", 
+                message: "Something went wrong. Please try again.",
+                token: req.params.token
+            });
         }
     }
 }

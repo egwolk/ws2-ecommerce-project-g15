@@ -52,7 +52,7 @@ class ProductController {
 
     showCreateForm(req, res) {
         if (!req.session.user || req.session.user.role !== 'admin') {
-            return res.status(403).send("Access denied.");
+            return res.redirect('/users/login?message=expired');
         }
         res.render('product-create', { title: 'Add Product' });
     }
@@ -60,26 +60,34 @@ class ProductController {
     async createProduct(req, res) {
         try {
             if (!req.session.user || req.session.user.role !== 'admin') {
-                return res.status(403).send("Access denied.");
+                return res.redirect('/users/login?message=expired');
             }
             
             await this.productService.createProduct(req.body);
             res.redirect('/products/admin');
         } catch (err) {
             console.error("Error creating product:", err);
-            res.send("Something went wrong.");
+            res.render('product-create', { 
+                title: 'Add Product', 
+                message: "Error creating product. Please try again.",
+                formData: req.body
+            });
         }
     }
 
     async showEditForm(req, res) {
         try {
             if (!req.session.user || req.session.user.role !== 'admin') {
-                return res.status(403).send("Access denied.");
+                return res.redirect('/users/login?message=expired');
             }
             
             const product = await this.productService.getProductById(req.params.id);
             if (!product) {
-                return res.status(404).send("Product not found.");
+                return res.render('product-edit', { 
+                    title: 'Edit Product', 
+                    message: "Product not found.",
+                    product: { _id: req.params.id, name: '', description: '', price: 0, category: '', stock: 0, imageUrl: '', isActive: true }
+                });
             }
             res.render('product-edit', { 
                 title: 'Edit Product', 
@@ -87,14 +95,18 @@ class ProductController {
             });
         } catch (err) {
             console.error("Error fetching product:", err);
-            res.send("Something went wrong.");
+            res.render('product-edit', { 
+                title: 'Edit Product', 
+                message: "Something went wrong loading the product.",
+                product: { _id: req.params.id, name: '', description: '', price: 0, category: '', stock: 0, imageUrl: '', isActive: true }
+            });
         }
     }
 
     async updateProduct(req, res) {
         try {
             if (!req.session.user || req.session.user.role !== 'admin') {
-                return res.status(403).send("Access denied.");
+                return res.redirect('/users/login?message=expired');
             }
             
             // Convert string values to appropriate types
@@ -109,7 +121,13 @@ class ProductController {
             res.redirect('/products/admin');
         } catch (err) {
             console.error("Error updating product:", err);
-            res.send("Something went wrong.");
+            const product = await this.productService.getProductById(req.params.id);
+            res.render('product-edit', { 
+                title: 'Edit Product', 
+                message: "Error updating product. Please try again.",
+                product: product || { _id: req.params.id, name: '', description: '', price: 0, category: '', stock: 0, imageUrl: '', isActive: true },
+                formData: req.body
+            });
         }
     }
 

@@ -1,20 +1,40 @@
-<h1>Edit User</h1>
-<form action="/users/edit-profile/<%= user._id %>" method="POST">
-    <label for="firstName">First Name:</label><br>
-    <input type="text" name="firstName" value="<%= user.firstName %>" required><br><br>
+<div class="form-container">
+    <div class="form-header">
+        <div class="form-title">EDIT PROFILE</div>
+    </div>
+    <div class="form-sections">
+        <div class="sect">
+            <form action="/users/edit-profile/<%= user._id %>" method="POST" autocomplete="off">
+                <label for="firstName">First Name:</label>
+                <input type="text" name="firstName" value="<%= user.firstName %>" autocomplete="off" required>
 
-    <label for="lastName">Last Name:</label><br>
-    <input type="text" name="lastName" value="<%= user.lastName %>" required><br><br>
+                <label for="lastName">Last Name:</label>
+                <input type="text" name="lastName" value="<%= user.lastName %>" autocomplete="off" required>
 
-    <label for="email">Email:</label><br>
-    <input type="email" name="email" value="<%= user.email %>" required><br><br>
+                <label for="email">Email:</label>
+                <input type="email" name="email" value="<%= user.email %>" autocomplete="off" required>
 
-    <label for="password">New Password (leave blank to keep current):</label><br>
-    <input type="password" name="password"><br><br>
+                <label for="password">New Password (leave blank to keep current):</label>
+                <input type="password" name="password" autocomplete="off">
 
-    <label for="confirmPassword">Confirm New Password:</label><br>
-    <input type="password" name="confirmPassword" id="confirmPassword"><br><br>
+                <label for="confirmPassword">Confirm New Password:</label>
+                <input type="password" name="confirmPassword" id="confirmPassword" autocomplete="off">
 
-    <button type="submit">Update</button>
-</form>
+                <div class="btn-container">
+                    <button type="submit">Update</button>
+                </div>
+            </form>
+        </div>
+        <div class="sect login-info">
+            <div class="utils">
+                <p><a href="/users/dashboard">← Back to Dashboard</a></p>
+            </div>
+            <% if (typeof message !== 'undefined' && message) { %>
+                <div class="message">
+                    <%= message %>
+                </div>
+            <% } %> 
+        </div>
+    </div>
+</div>
 

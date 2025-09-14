@@ -1,16 +1,36 @@
-<h1>User Registration</h1>
-<form action="/users/register" method="POST">
-    <label for="firstName">First Name:</label>
-    <input type="text" id="firstName" name="firstName" required>
+<div class="form-container">
+    <div class="form-header">
+        <div class="form-title">REGISTER</div>
+    </div>
+    <div class="form-sections">
+        <div class="sect">
+            <form action="/users/register" method="POST" autocomplete="off">
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" name="firstName" autocomplete="off" required>
 
-    <label for="lastName">Last Name:</label>
-    <input type="text" id="lastName" name="lastName" required>
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" name="lastName" autocomplete="off" required>
 
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" autocomplete="off" required>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
-    
-    <button type="submit">Register</button>
-</form>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" autocomplete="off" required>
+                
+                <div class="btn-container">
+                    <button type="submit">Register</button>
+                </div>
+            </form>
+        </div>
+        <div class="sect login-info">
+            <div class="utils">
+                <p>Already have an account? <a href="/users/login">Login here</a></p>
+            </div>
+            <% if (typeof message !== 'undefined' && message) { %>
+                <div class="message">
+                    <%= message %>
+                </div>
+            <% } %> 
+        </div>
+    </div>
+</div>

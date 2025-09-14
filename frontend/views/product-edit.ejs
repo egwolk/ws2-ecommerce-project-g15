@@ -1,45 +1,48 @@
-<h1>Edit Product</h1>
-
-<form action="/products/admin/<%= product._id %>/edit" method="POST">
-    <div>
-        <label for="name">Product Name:</label><br>
-        <input type="text" name="name" id="name" value="<%= product.name %>" required>
+<div class="form-container">
+    <div class="form-header">
+        <div class="form-title">EDIT PRODUCT</div>
     </div>
+    <div class="form-sections">
+        <div class="sect">
+            <form action="/products/admin/<%= product._id %>/edit" method="POST" autocomplete="off">
+                <label for="name">Product Name:</label>
+                <input type="text" name="name" id="name" value="<%= product.name %>" autocomplete="off" required>
 
-    <div>
-        <label for="description">Description:</label><br>
-        <textarea name="description" id="description" rows="4"><%= product.description %></textarea>
+                <label for="description">Description:</label>
+                <textarea name="description" id="description" rows="4"><%= product.description %></textarea>
+
+                <label for="price">Price:</label>
+                <input type="number" name="price" id="price" step="0.01" min="0" value="<%= product.price %>" required>
+
+                <label for="category">Category:</label>
+                <input type="text" name="category" id="category" value="<%= product.category %>" autocomplete="off">
+
+                <label for="stock">Stock Quantity:</label>
+                <input type="number" name="stock" id="stock" min="0" value="<%= product.stock %>" required>
+
+                <label for="imageUrl">Image URL:</label>
+                <input type="url" name="imageUrl" id="imageUrl" value="<%= product.imageUrl %>" autocomplete="off">
+
+                <label for="isActive">Status:</label>
+                <select name="isActive" id="isActive">
+                    <option value="true" <%= product.isActive ? 'selected' : '' %>>Active</option>
+                    <option value="false" <%= !product.isActive ? 'selected' : '' %>>Inactive</option>
+                </select>
+
+                <div class="btn-container">
+                    <button type="submit">Update Product</button>
+                </div>
+            </form>
+        </div>
+        <div class="sect login-info">
+            <div class="utils">
+                <p><a href="/products/admin">← Back to Manage Products</a></p>
+            </div>
+            <% if (typeof message !== 'undefined' && message) { %>
+                <div class="message">
+                    <%= message %>
+                </div>
+            <% } %> 
+        </div>
     </div>
-
-    <div>
-        <label for="price">Price:</label><br>
-        <input type="number" name="price" id="price" step="0.01" min="0" value="<%= product.price %>" required>
-    </div>
-
-    <div>
-        <label for="category">Category:</label><br>
-        <input type="text" name="category" id="category" value="<%= product.category %>">
-    </div>
-
-    <div>
-        <label for="stock">Stock Quantity:</label><br>
-        <input type="number" name="stock" id="stock" min="0" value="<%= product.stock %>" required>
-    </div>
-
-    <div>
-        <label for="imageUrl">Image URL:</label><br>
-        <input type="url" name="imageUrl" id="imageUrl" value="<%= product.imageUrl %>">
-    </div>
-
-    <div>
-        <label for="isActive">Status:</label><br>
-        <select name="isActive" id="isActive">
-            <option value="true" <%= product.isActive ? 'selected' : '' %>>Active</option>
-            <option value="false" <%= !product.isActive ? 'selected' : '' %>>Inactive</option>
-        </select>
-    </div>
-
-    <button type="submit">Update Product</button>
-</form>
-
-<p><a href="/products/admin">← Back to Manage Products</a></p>
+</div>

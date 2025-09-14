@@ -10,7 +10,13 @@ class UserController {
         try {
             // Check if email already exists
             const existingUser = await this.userService.getUserByEmail(req.body.email);
-            if (existingUser) return res.send("User already exists with this email.");
+            if (existingUser) {
+                return res.render('register', { 
+                    title: "Register", 
+                    message: "User already exists with this email address.",
+                    formData: req.body 
+                });
+            }
 
             // Create user
             const { user: newUser, token } = await this.userService.createUser(req.body);
@@ -30,18 +36,25 @@ class UserController {
                         <a href="${verificationUrl}">${verificationUrl}</a>
                     `
                 });
+                
+                res.render('register', { 
+                    title: "Register", 
+                    message: "Registration successful! A verification link has been sent to your email address. Please check your inbox and verify your account before logging in."
+                });
             } catch (emailError) {
                 console.error("Failed to send email:", emailError);
+                res.render('register', { 
+                    title: "Register", 
+                    message: "Registration successful, but there was an issue sending the verification email. Please contact support."
+                });
             }
-
-            res.send(`
-                <h2>Registration Successful!</h2>
-                <p>A verification link has been sent to your email address.</p>
-                <p>Please check your inbox and verify your account before logging in.</p>
-            `);
         } catch (err) {
             console.error("Error saving user:", err);
-            res.send("Something went wrong.");
+            res.render('register', { 
+                title: "Register", 
+                message: "Something went wrong during registration. Please try again.",
+                formData: req.body 
+            });
         }
     }
 
@@ -52,25 +65,33 @@ class UserController {
             
             // Check if token exists
             if (!user) {
-                return res.send("Invalid or expired verification link.");
+                return res.render('login', { 
+                    title: "Login", 
+                    message: "Invalid or expired verification link." 
+                });
             }
             
             // Check if token is still valid
             if (user.tokenExpiry < new Date()) {
-                return res.send("Verification link has expired. Please register again.");
+                return res.render('register', { 
+                    title: "Register", 
+                    message: "Verification link has expired. Please register again." 
+                });
             }
 
             // Update user as verified
             await this.userService.verifyEmail(req.params.token);
             
-            res.send(`
-                <h2>Email Verified!</h2>
-                <p>Your account has been verified successfully.</p>
-                <a href="/users/login">Proceed to Login</a>
-            `);
+            res.render('login', { 
+                title: "Login", 
+                message: "Email verified successfully! You can now log in to your account." 
+            });
         } catch (err) {
             console.error("Error verifying user:", err);
-            res.send("Something went wrong during verification.");
+            res.render('login', { 
+                title: "Login", 
+                message: "Something went wrong during verification. Please try again." 
+            });
         }
     }
 
@@ -87,7 +108,13 @@ class UserController {
     }
 
     showRegisterForm(req, res) {
-        res.render('register', { title: "Register" });
+        let message = null;
+        
+        if (req.query.message === 'verified') {
+            message = 'Email verified successfully! You can now register or login.';
+        }
+        
+        res.render('register', { title: "Register", message: message });
     }
 
    async loginUser(req, res) {
@@ -196,65 +223,132 @@ class UserController {
     async showEditForm(req, res) {
         try {
             if (!req.session.user || req.session.user.role !== 'admin') {
-            return res.status(403).send("Access denied.");
+                return res.redirect('/users/login?message=expired');
             }
             
             const user = await this.userService.getUserById(req.params.id);
             if (!user) {
-                return res.send("User not found.");
+                return res.render('edit-user', { 
+                    title: "Edit User", 
+                    message: "User not found.",
+                    user: { _id: req.params.id } // Minimal user object to prevent template errors
+                });
             }
             res.render('edit-user', { title: "Edit User", user: user });
         } catch (err) {
             console.error("Error loading user:", err);
-            res.send("Something went wrong.");
+            res.render('edit-user', { 
+                title: "Edit User", 
+                message: "Something went wrong loading the user.",
+                user: { _id: req.params.id }
+            });
         }
     }
 
     async updateUser(req, res) {
         try {
             if (!req.session.user || req.session.user.role !== 'admin') {
-                return res.status(403).send("Access denied.");
+                return res.redirect('/users/login?message=expired');
             }
+            
             await this.userService.updateUser(req.params.id, req.body);
             res.redirect('/users/admin');
         } catch (err) {
             console.error("Error updating user:", err);
-            res.send("Something went wrong.");
+            const user = await this.userService.getUserById(req.params.id);
+            res.render('edit-user', { 
+                title: "Edit User", 
+                message: "Error updating user. Please try again.",
+                user: user || { _id: req.params.id },
+                formData: req.body
+            });
         }
     }
 
     async showEditProfileForm(req, res) {
         try {
             if (!req.session.user) {
-                return res.status(403).send("Access denied.");
+                return res.redirect('/users/login?message=expired');
             }
             const user = await this.userService.getUserById(req.params.id);
             if (!user) {
-                return res.send("User not found.");
+                return res.render('edit-profile', { 
+                    title: "Edit Profile", 
+                    message: "User profile not found.",
+                    user: { _id: req.params.id }
+                });
             }
             res.render('edit-profile', { title: "Edit Profile", user: user });
         } catch (err) {
             console.error("Error loading user:", err);
-            res.send("Something went wrong.");
+            res.render('edit-profile', { 
+                title: "Edit Profile", 
+                message: "Something went wrong loading your profile.",
+                user: { _id: req.params.id }
+            });
         }
     }
 
     async updateUserProfile(req, res) {
         try {
             if (!req.session.user) {
-                return res.status(403).send("Access denied.");
+                return res.redirect('/users/login?message=expired');
             }
+            
             const { password, confirmPassword } = req.body;
-            if (password && password !== confirmPassword) {
-                return res.send("Passwords do not match.");
+            
+            // If password is provided, confirmPassword must also be provided and match
+            if (password || confirmPassword) {
+                if (!password || !confirmPassword) {
+                    const user = await this.userService.getUserById(req.params.id);
+                    return res.render('edit-profile', { 
+                        title: "Edit Profile", 
+                        message: "Both password fields are required when changing your password.",
+                        user: user,
+                        formData: req.body
+                    });
+                }
+                
+                if (password !== confirmPassword) {
+                    const user = await this.userService.getUserById(req.params.id);
+                    return res.render('edit-profile', { 
+                        title: "Edit Profile", 
+                        message: "Passwords do not match.",
+                        user: user,
+                        formData: req.body
+                    });
+                }
+                
+                // Optional: Add minimum password length validation
+                if (password.length < 6) {
+                    const user = await this.userService.getUserById(req.params.id);
+                    return res.render('edit-profile', { 
+                        title: "Edit Profile", 
+                        message: "Password must be at least 6 characters long.",
+                        user: user,
+                        formData: req.body
+                    });
+                }
             }
+            
             await this.userService.updateUser(req.params.id, req.body);
             const updatedUser = await this.userService.getUserById(req.params.id);
             req.session.user = updatedUser.getSessionUser();
-            res.redirect('/users/dashboard');
+            
+            res.render('edit-profile', { 
+                title: "Edit Profile", 
+                message: "Profile updated successfully!",
+                user: updatedUser
+            });
         } catch (err) {
             console.error("Error updating user profile:", err);
-            res.send("Something went wrong.");
+            const user = await this.userService.getUserById(req.params.id);
+            res.render('edit-profile', { 
+                title: "Edit Profile", 
+                message: "Something went wrong updating your profile. Please try again.",
+                user: user || { _id: req.params.id },
+                formData: req.body
+            });
         }
     }
     showAdminCreateForm(req, res) {
