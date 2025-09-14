@@ -9,30 +9,22 @@
         </div>
         <nav class="nav-menu">
             <ul class="links">
-                <li><a href="/">HOME</a></li>
-                <li><a href="/products">PRODUCTS</a></li>
+                <li><a href="/" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a></li>
+                <li><a href="/products" class="<%= currentPage === 'products' ? 'active' : '' %>">PRODUCTS</a></li>
                 <% if (authenticated) { %>
-                    <!-- Logged in user navigation -->
-                    <li><a href="/users/dashboard">PROFILE</a></li>
+                    <li><a href="/users/dashboard" class="<%= currentPage === 'dashboard' ? 'active' : '' %>">PROFILE</a></li>
                     <% if (user && user.role === 'admin') { %>
-                        <li><a href="/users/admin">USERS</a></li>
-                        <li><a href="/products/admin">MANAGE PRODUCTS</a></li>
+                        <li><a href="/users/admin" class="<%= currentPage === 'admin' ? 'active' : '' %>">USERS</a></li>
+                        <li><a href="/products/admin" class="<%= currentPage === 'products-admin' ? 'active' : '' %>">MANAGE PRODUCTS</a></li>
                     <% } %>
                     <li><a href="/users/logout">LOGOUT</a></li>
                 <% } else { %>
-                    <!-- Guest navigation -->
-                    <li><a href="/users/login">LOGIN</a></li>
-                    <li><a href="/users/register">REGISTER</a></li>
+                    <li><a href="/users/login" class="<%= currentPage === 'login' ? 'active' : '' %>">LOGIN</a></li>
+                    <li><a href="/users/register" class="<%= currentPage === 'register' ? 'active' : '' %>">REGISTER</a></li>
                 <% } %>
             </ul>
         </nav>
         <div class="contact-link">
-            <a href="#">+GET IN TOUCH</a>
-        </div>
+            <a href="#">+GET IN TOUCH</a></div>
     </div>
 </header>
-
-
-
-    
-    

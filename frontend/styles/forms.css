@@ -6,6 +6,10 @@
   margin: 20px auto 60px;
   border: 1px solid var(--warm-off-white);
   font-family: "PP Neue Montreal", sans-serif;
+  box-shadow: 
+  .7px 0 red,
+    -.5px 0 cyan,
+    .5px 0 lime;
 }
 
 .form-header {
@@ -74,6 +78,32 @@
     font-family: "TheGoodMonolith", monospace;
 }
 
+.sect form select {
+    margin-bottom: 10px;
+    padding: 1rem;
+    background: none;
+    border: 1px solid var(--warm-off-white);
+    color: var(--warm-off-white);
+    font-family: "TheGoodMonolith", monospace;
+    cursor: pointer;
+}
+.sect form select option {
+    background-color: black;
+    color: var(--warm-off-white);
+    font-family: "TheGoodMonolith", monospace;
+    cursor: pointer;
+}
+.sect form select option:hover {
+    background: white;
+    color: black;
+    cursor: pointer !important;
+    
+}
+.sect form select:hover {
+    background: white;
+    color: black;
+    cursor: pointer;
+}
 .sect form .btn-container {
     display: flex;
     justify-content: center;

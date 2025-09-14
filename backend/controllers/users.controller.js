@@ -18,6 +18,32 @@ class UserController {
                 });
             }
 
+            // Validate passwords
+            const { password, confirmPassword } = req.body;
+            if (!password || !confirmPassword) {
+                return res.render('register', { 
+                    title: "Register", 
+                    message: "Both password fields are required.",
+                    formData: req.body 
+                });
+            }
+
+            if (password !== confirmPassword) {
+                return res.render('register', { 
+                    title: "Register", 
+                    message: "Passwords do not match.",
+                    formData: req.body 
+                });
+            }
+
+            if (password.length < 6) {
+                return res.render('register', { 
+                    title: "Register", 
+                    message: "Password must be at least 6 characters long.",
+                    formData: req.body 
+                });
+            }
+
             // Create user
             const { user: newUser, token } = await this.userService.createUser(req.body);
             
@@ -226,21 +252,27 @@ class UserController {
                 return res.redirect('/users/login?message=expired');
             }
             
-            const user = await this.userService.getUserById(req.params.id);
-            if (!user) {
+            const userToEdit = await this.userService.getUserById(req.params.id);
+            if (!userToEdit) {
                 return res.render('edit-user', { 
                     title: "Edit User", 
                     message: "User not found.",
-                    user: { _id: req.params.id } // Minimal user object to prevent template errors
+                    userToEdit: { _id: req.params.id }
+                    // Remove authenticated and user - middleware handles this
                 });
             }
-            res.render('edit-user', { title: "Edit User", user: user });
+            res.render('edit-user', { 
+                title: "Edit User", 
+                userToEdit: userToEdit
+                // Remove authenticated and user - middleware handles this
+            });
         } catch (err) {
             console.error("Error loading user:", err);
             res.render('edit-user', { 
                 title: "Edit User", 
                 message: "Something went wrong loading the user.",
-                user: { _id: req.params.id }
+                userToEdit: { _id: req.params.id }
+                // Remove authenticated and user - middleware handles this
             });
         }
     }
@@ -255,11 +287,11 @@ class UserController {
             res.redirect('/users/admin');
         } catch (err) {
             console.error("Error updating user:", err);
-            const user = await this.userService.getUserById(req.params.id);
+            const userToEdit = await this.userService.getUserById(req.params.id);
             res.render('edit-user', { 
                 title: "Edit User", 
                 message: "Error updating user. Please try again.",
-                user: user || { _id: req.params.id },
+                userToEdit: userToEdit || { _id: req.params.id },
                 formData: req.body
             });
         }
@@ -370,6 +402,32 @@ class UserController {
                 return res.render('admin-create', { 
                     title: "Add New User", 
                     error: "User already exists with this email.",
+                    formData: req.body 
+                });
+            }
+
+            // Validate passwords
+            const { password, confirmPassword } = req.body;
+            if (!password || !confirmPassword) {
+                return res.render('admin-create', { 
+                    title: "Add New User", 
+                    error: "Both password fields are required.",
+                    formData: req.body 
+                });
+            }
+
+            if (password !== confirmPassword) {
+                return res.render('admin-create', { 
+                    title: "Add New User", 
+                    error: "Passwords do not match.",
+                    formData: req.body 
+                });
+            }
+
+            if (password.length < 6) {
+                return res.render('admin-create', { 
+                    title: "Add New User", 
+                    error: "Password must be at least 6 characters long.",
                     formData: req.body 
                 });
             }

@@ -24,6 +24,7 @@ header .nav-container {
     text-decoration: none;
     font-weight: bold;
     font-size: 2rem;
+    
 }
 
 .nav-menu ul {
@@ -43,6 +44,7 @@ header .nav-container {
   background-color: white;
   z-index: -1;
   transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  
 }
 
 .nav-menu a:hover::after {
@@ -54,11 +56,22 @@ header .nav-container {
   mix-blend-mode: difference;
 }
 
+.nav-menu a.active {
+    color: black;
+    background-color: white;
+    mix-blend-mode: difference;
+}
+
+.nav-menu a.active::after {
+    width: 100%;
+    background-color: white;
+}
+
 .nav-menu a {
     color: var(--warm-off-white);
     text-decoration: none;
     font-size: 1.4rem;
-    padding: 0;
+    padding: 0 .3rem;
     display: inline-block;
     z-index: 1;
     position: relative;

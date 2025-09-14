@@ -4,26 +4,26 @@
     </div>
     <div class="form-sections">
         <div class="sect">
-            <form action="/users/edit/<%= user._id %>" method="POST" autocomplete="off">
+            <form action="/users/edit/<%= userToEdit._id %>" method="POST" autocomplete="off">
                 <label for="firstName">First Name:</label>
-                <input type="text" name="firstName" value="<%= user.firstName %>" autocomplete="off" required>
+                <input type="text" name="firstName" value="<%= userToEdit.firstName %>" autocomplete="off" required>
                 
                 <label for="lastName">Last Name:</label>
-                <input type="text" name="lastName" value="<%= user.lastName %>" autocomplete="off" required>
+                <input type="text" name="lastName" value="<%= userToEdit.lastName %>" autocomplete="off" required>
                 
                 <label for="email">Email:</label>
-                <input type="email" name="email" value="<%= user.email %>" autocomplete="off" required>
+                <input type="email" name="email" value="<%= userToEdit.email %>" autocomplete="off" required>
                 
                 <label for="accountStatus">Account Status:</label>
                 <select name="accountStatus" required>
-                    <option value="active" <%= user.accountStatus === 'active' ? 'selected' : '' %>>Active</option>
-                    <option value="inactive" <%= user.accountStatus === 'inactive' ? 'selected' : '' %>>Inactive</option>
+                    <option value="active" <%= userToEdit.accountStatus === 'active' ? 'selected' : '' %>>Active</option>
+                    <option value="inactive" <%= userToEdit.accountStatus === 'inactive' ? 'selected' : '' %>>Inactive</option>
                 </select>
                 
                 <label for="role">Role:</label>
                 <select name="role" required>
-                    <option value="customer" <%= user.role === 'customer' ? 'selected' : '' %>>Customer</option>
-                    <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>Admin</option>
+                    <option value="customer" <%= userToEdit.role === 'customer' ? 'selected' : '' %>>Customer</option>
+                    <option value="admin" <%= userToEdit.role === 'admin' ? 'selected' : '' %>>Admin</option>
                 </select>
                 
                 <div class="btn-container">

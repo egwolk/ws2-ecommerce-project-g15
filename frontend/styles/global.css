@@ -17,6 +17,8 @@
 
 html {
   font-size: calc(100vw / 1512 * 10);
+   -ms-overflow-style: none;  
+  scrollbar-width: none; 
 }
 
 
