@@ -6,20 +6,21 @@
         <div class="sect">
             <form action="/users/register" method="POST" autocomplete="off">
                 <label for="firstName">First Name:</label>
-                <input type="text" id="firstName" name="firstName" autocomplete="off" required>
+                <input type="text" id="firstName" name="firstName" autocomplete="off" required value="<%= typeof formData !== 'undefined' && formData.firstName ? formData.firstName : '' %>">
 
                 <label for="lastName">Last Name:</label>
-                <input type="text" id="lastName" name="lastName" autocomplete="off" required>
+                <input type="text" id="lastName" name="lastName" autocomplete="off" required value="<%= typeof formData !== 'undefined' && formData.lastName ? formData.lastName : '' %>">
 
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" autocomplete="off" required>
+                <input type="email" id="email" name="email" autocomplete="off" required value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : '' %>">
 
                 <label for="password">Password:</label>
-                <input type="password" id="password" name="password" autocomplete="off" required minlength="6">
+                <input type="password" id="password" name="password" autocomplete="new-password" required>
+                <!-- strength meter directly below this field -->
                 
                 <label for="confirmPassword">Confirm Password:</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="off" required>
-                
+                <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="new-password" required>
+                <!-- password match directly below this field -->
                 <div class="btn-container">
                     <button type="submit">Register</button>
                 </div>

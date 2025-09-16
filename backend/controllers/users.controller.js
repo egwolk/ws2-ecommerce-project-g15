@@ -6,6 +6,54 @@ class UserController {
         this.userService = userService;
     }
 
+    validatePassword(password) {
+        // Check length first (highest priority)
+        if (!password || password.length < 8) {
+            return {
+                isValid: false,
+                errors: ["Password must be at least 8 characters long"]
+            };
+        }
+        
+        // Check lowercase letter second
+        if (!/[a-z]/.test(password)) {
+            return {
+                isValid: false,
+                errors: ["Password must include at least one lowercase letter"]
+            };
+        }
+        
+        // Check uppercase letter third
+        if (!/[A-Z]/.test(password)) {
+            return {
+                isValid: false,
+                errors: ["Password must include at least one uppercase letter"]
+            };
+        }
+        
+        // Check number fourth
+        if (!/\d/.test(password)) {
+            return {
+                isValid: false,
+                errors: ["Password must include at least one number"]
+            };
+        }
+        
+        // Check special character last
+        if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+            return {
+                isValid: false,
+                errors: ["Password must include at least one special character"]
+            };
+        }
+        
+        // All validations passed
+        return {
+            isValid: true,
+            errors: []
+        };
+    }
+
     async registerUser(req, res) {
         try {
             // Check if email already exists
@@ -36,10 +84,12 @@ class UserController {
                 });
             }
 
-            if (password.length < 6) {
+            // Validate password strength
+            const passwordValidation = this.validatePassword(password);
+            if (!passwordValidation.isValid) {
                 return res.render('register', { 
                     title: "Register", 
-                    message: "Password must be at least 6 characters long.",
+                    message: passwordValidation.errors.join(" "),
                     formData: req.body 
                 });
             }
@@ -351,12 +401,13 @@ class UserController {
                     });
                 }
                 
-                // Optional: Add minimum password length validation
-                if (password.length < 6) {
+                // Validate password strength
+                const passwordValidation = this.validatePassword(password);
+                if (!passwordValidation.isValid) {
                     const user = await this.userService.getUserById(req.params.id);
                     return res.render('edit-profile', { 
                         title: "Edit Profile", 
-                        message: "Password must be at least 6 characters long.",
+                        message: passwordValidation.errors.join(" "),
                         user: user,
                         formData: req.body
                     });
@@ -424,10 +475,12 @@ class UserController {
                 });
             }
 
-            if (password.length < 6) {
+            // Validate password strength
+            const passwordValidation = this.validatePassword(password);
+            if (!passwordValidation.isValid) {
                 return res.render('admin-create', { 
                     title: "Add New User", 
-                    error: "Password must be at least 6 characters long.",
+                    error: passwordValidation.errors.join(" "),
                     formData: req.body 
                 });
             }
@@ -451,6 +504,130 @@ class UserController {
                 title: "Add New User", 
                 error: "Something went wrong: " + err.message,
                 formData: req.body 
+            });
+        }
+    }
+
+    // Password reset methods
+    showForgotPasswordForm(req, res) {
+        res.render('forgot-password', { title: "Forgot Password" });
+    }
+
+    async sendResetEmail(req, res) {
+        try {
+            const { email } = req.body;
+            
+            // Find user by email
+            const user = await this.userService.getUserByEmail(email);
+            if (!user) {
+                return res.render('forgot-password', { 
+                    title: "Forgot Password", 
+                    message: "If an account with that email exists, a reset link has been sent."
+                });
+            }
+
+            // Generate reset token
+            const { token } = await this.userService.generateResetToken(email);
+
+            // Build reset URL
+            const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+            const resetUrl = `${baseUrl}/password/reset/${token}`;
+
+            // Send email
+            await resend.emails.send({
+                from: process.env.RESEND_FROM_EMAIL,
+                to: user.email,
+                subject: 'Password Reset Request',
+                html: `
+                    <h2>Password Reset</h2>
+                    <p>Click below to reset your password:</p>
+                    <a href="${resetUrl}">${resetUrl}</a>
+                `
+            });
+
+            res.render('forgot-password', { 
+                title: "Forgot Password", 
+                message: "A password reset link has been sent to your email address."
+            });
+        } catch (err) {
+            console.error("Error in password reset:", err);
+            res.render('forgot-password', { 
+                title: "Forgot Password", 
+                message: "Something went wrong. Please try again.",
+                formData: req.body
+            });
+        }
+    }
+
+    async showResetPasswordForm(req, res) {
+        try {
+            const { token } = req.params;
+            
+            // Verify token is valid
+            const user = await this.userService.findUserByResetToken(token);
+            if (!user) {
+                return res.render('forgot-password', { 
+                    title: "Forgot Password", 
+                    message: "Reset link is invalid or has expired. Please request a new reset link."
+                });
+            }
+
+            res.render('reset-password', { title: "Reset Password", token });
+        } catch (err) {
+            console.error("Error showing reset form:", err);
+            res.render('forgot-password', { 
+                title: "Forgot Password", 
+                message: "Something went wrong. Please try again."
+            });
+        }
+    }
+
+    async resetPassword(req, res) {
+        try {
+            const { token } = req.params;
+            const { password, confirm } = req.body;
+
+            // Find user by token
+            const user = await this.userService.findUserByResetToken(token);
+            if (!user) {
+                return res.render('forgot-password', { 
+                    title: "Forgot Password", 
+                    message: "Reset link is invalid or has expired. Please request a new reset link."
+                });
+            }
+
+            // Check if passwords match
+            if (password !== confirm) {
+                return res.render('reset-password', { 
+                    title: "Reset Password", 
+                    message: "Passwords do not match. Please try again.",
+                    token: token
+                });
+            }
+
+            // Validate password strength
+            const passwordValidation = this.validatePassword(password);
+            if (!passwordValidation.isValid) {
+                return res.render('reset-password', { 
+                    title: "Reset Password", 
+                    message: passwordValidation.errors.join(" "),
+                    token: token
+                });
+            }
+
+            // Reset password
+            await this.userService.resetUserPassword(user.email, password);
+
+            res.render('login', { 
+                title: "Login", 
+                message: "Password has been reset successfully! You can now log in with your new password."
+            });
+        } catch (err) {
+            console.error("Error resetting password:", err);
+            res.render('reset-password', { 
+                title: "Reset Password", 
+                message: "Something went wrong. Please try again.",
+                token: req.params.token
             });
         }
     }

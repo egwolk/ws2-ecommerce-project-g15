@@ -13,34 +13,34 @@
         <div class="sect">
             <form action="/users/admin/create" method="POST" autocomplete="off">
                 <label for="firstName">First Name:</label>
-                <input type="text" id="firstName" name="firstName" autocomplete="off" required>
+                <input type="text" id="firstName" name="firstName" autocomplete="given-name" required value="<%= typeof formData !== 'undefined' && formData.firstName ? formData.firstName : '' %>">
 
                 <label for="lastName">Last Name:</label>
-                <input type="text" id="lastName" name="lastName" autocomplete="off" required>
+                <input type="text" id="lastName" name="lastName" autocomplete="family-name" required value="<%= typeof formData !== 'undefined' && formData.lastName ? formData.lastName : '' %>">
 
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" autocomplete="off" required>
+                <input type="email" id="email" name="email" autocomplete="email" required value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : '' %>">
 
                 <label for="password">Password:</label>
-                <input type="password" id="password" name="password" autocomplete="off" required minlength="6">
+                <input type="password" id="password" name="password" autocomplete="new-password" required>
 
                 <label for="confirmPassword">Confirm Password:</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="off" required>
+                <input type="password" id="confirmPassword" name="confirmPassword" autocomplete="new-password" required>
 
                 <label for="role">Role:</label>
                 <select id="role" name="role" required>
-                    <option value="customer">Customer</option>
-                    <option value="admin">Admin</option>
+                    <option value="customer" <%= typeof formData !== 'undefined' && formData.role === 'customer' ? 'selected' : '' %>>Customer</option>
+                    <option value="admin" <%= typeof formData !== 'undefined' && formData.role === 'admin' ? 'selected' : '' %>>Admin</option>
                 </select>
 
                 <label for="accountStatus">Account Status:</label>
                 <select id="accountStatus" name="accountStatus">
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
+                    <option value="active" <%= typeof formData !== 'undefined' && formData.accountStatus === 'active' ? 'selected' : 'selected' %>>Active</option>
+                    <option value="inactive" <%= typeof formData !== 'undefined' && formData.accountStatus === 'inactive' ? 'selected' : '' %>>Inactive</option>
                 </select>
 
                 <label style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                    <input type="checkbox" name="isEmailVerified" value="true" checked>
+                    <input type="checkbox" name="isEmailVerified" value="true" <%= typeof formData !== 'undefined' && formData.isEmailVerified ? 'checked' : 'checked' %>>
                     Mark email as verified
                 </label>
 

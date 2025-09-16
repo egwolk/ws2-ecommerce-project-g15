@@ -6,24 +6,24 @@
         <div class="sect">
             <form action="/users/edit/<%= userToEdit._id %>" method="POST" autocomplete="off">
                 <label for="firstName">First Name:</label>
-                <input type="text" name="firstName" value="<%= userToEdit.firstName %>" autocomplete="off" required>
+                <input type="text" name="firstName" value="<%= typeof formData !== 'undefined' && formData.firstName ? formData.firstName : userToEdit.firstName %>" autocomplete="given-name" required>
                 
                 <label for="lastName">Last Name:</label>
-                <input type="text" name="lastName" value="<%= userToEdit.lastName %>" autocomplete="off" required>
+                <input type="text" name="lastName" value="<%= typeof formData !== 'undefined' && formData.lastName ? formData.lastName : userToEdit.lastName %>" autocomplete="family-name" required>
                 
                 <label for="email">Email:</label>
-                <input type="email" name="email" value="<%= userToEdit.email %>" autocomplete="off" required>
+                <input type="email" name="email" value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : userToEdit.email %>" autocomplete="email" required>
                 
                 <label for="accountStatus">Account Status:</label>
                 <select name="accountStatus" required>
-                    <option value="active" <%= userToEdit.accountStatus === 'active' ? 'selected' : '' %>>Active</option>
-                    <option value="inactive" <%= userToEdit.accountStatus === 'inactive' ? 'selected' : '' %>>Inactive</option>
+                    <option value="active" <%= (typeof formData !== 'undefined' && formData.accountStatus === 'active') || (typeof formData === 'undefined' && userToEdit.accountStatus === 'active') ? 'selected' : '' %>>Active</option>
+                    <option value="inactive" <%= (typeof formData !== 'undefined' && formData.accountStatus === 'inactive') || (typeof formData === 'undefined' && userToEdit.accountStatus === 'inactive') ? 'selected' : '' %>>Inactive</option>
                 </select>
                 
                 <label for="role">Role:</label>
                 <select name="role" required>
-                    <option value="customer" <%= userToEdit.role === 'customer' ? 'selected' : '' %>>Customer</option>
-                    <option value="admin" <%= userToEdit.role === 'admin' ? 'selected' : '' %>>Admin</option>
+                    <option value="customer" <%= (typeof formData !== 'undefined' && formData.role === 'customer') || (typeof formData === 'undefined' && userToEdit.role === 'customer') ? 'selected' : '' %>>Customer</option>
+                    <option value="admin" <%= (typeof formData !== 'undefined' && formData.role === 'admin') || (typeof formData === 'undefined' && userToEdit.role === 'admin') ? 'selected' : '' %>>Admin</option>
                 </select>
                 
                 <div class="btn-container">

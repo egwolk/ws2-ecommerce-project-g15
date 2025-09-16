@@ -6,10 +6,10 @@
         <div class="sect">
             <form action="/users/login" method="POST" autocomplete="off">
                 <label for="email">Email:</label>
-                <input type="email" id="email" name="email" autocomplete="off" required value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : '' %>">
+                <input type="email" id="email" name="email" autocomplete="email" required value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : '' %>">
 
                 <label for="password">Password:</label>
-                <input type="password" id="password" autocomplete="off" name="password" required>
+                <input type="password" id="password" autocomplete="current-password" name="password" required>
                 <sup><a href="/password/forgot">Forgot Password?</a></sup>
                 
                 <div class="btn-container">

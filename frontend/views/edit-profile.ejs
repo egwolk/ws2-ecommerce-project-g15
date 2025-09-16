@@ -6,19 +6,19 @@
         <div class="sect">
             <form action="/users/edit-profile/<%= user._id %>" method="POST" autocomplete="off">
                 <label for="firstName">First Name:</label>
-                <input type="text" name="firstName" value="<%= user.firstName %>" autocomplete="off" required>
+                <input type="text" name="firstName" value="<%= typeof formData !== 'undefined' && formData.firstName ? formData.firstName : user.firstName %>" autocomplete="given-name" required>
 
                 <label for="lastName">Last Name:</label>
-                <input type="text" name="lastName" value="<%= user.lastName %>" autocomplete="off" required>
+                <input type="text" name="lastName" value="<%= typeof formData !== 'undefined' && formData.lastName ? formData.lastName : user.lastName %>" autocomplete="family-name" required>
 
                 <label for="email">Email:</label>
-                <input type="email" name="email" value="<%= user.email %>" autocomplete="off" required>
+                <input type="email" name="email" value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : user.email %>" autocomplete="email" required>
 
                 <label for="password">New Password (leave blank to keep current):</label>
-                <input type="password" name="password" autocomplete="off">
+                <input type="password" name="password" autocomplete="new-password">
 
                 <label for="confirmPassword">Confirm New Password:</label>
-                <input type="password" name="confirmPassword" id="confirmPassword" autocomplete="off">
+                <input type="password" name="confirmPassword" id="confirmPassword" autocomplete="new-password">
 
                 <div class="btn-container">
                     <button type="submit">Update</button>
