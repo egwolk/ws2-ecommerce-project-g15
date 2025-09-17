@@ -1,31 +1,15 @@
 function setupSecurityHeaders(app) {
     app.disable('x-powered-by');
     
-    // Specific middleware for font files to ensure they get security headers
-    app.use('/assets/fonts/', (req, res, next) => {
-        res.setHeader('X-Content-Type-Options', 'nosniff');
-        if (process.env.NODE_ENV === 'production') {
-            res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
-        }
-        next();
-    });
-    
     app.use((req, res, next) => {
-        // Basic security headers for static assets
-        const isStaticAsset = req.url.startsWith('/styles/') || 
-                            req.url.startsWith('/scripts/') || 
-                            req.url.startsWith('/assets/') ||
-                            req.url.match(/\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)(\?.*)?$/);
-        
-        if (isStaticAsset) {
-            res.setHeader('X-Content-Type-Options', 'nosniff');
-            if (process.env.NODE_ENV === 'production') {
-                res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
-            }
+        // Skip security headers for static file routes (they have their own headers)
+        if (req.url.startsWith('/styles/') || 
+            req.url.startsWith('/scripts/') || 
+            req.url.startsWith('/assets/')) {
             return next();
         }
         
-        // Full security headers for HTML pages and API routes
+        // Full security headers for HTML pages and API routes only
         res.setHeader('X-Content-Type-Options', 'nosniff');
         res.setHeader('X-XSS-Protection', '1; mode=block');
         

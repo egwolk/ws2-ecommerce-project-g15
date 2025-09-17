@@ -4,8 +4,9 @@
   font-weight: 400;
 }
 
+/* Hide scrollbars across all browsers */
 ::-webkit-scrollbar {
-  display: none;
+  display: none;             /* Safari and Chrome */
 }
 
 :root {
@@ -24,13 +25,8 @@
 
 html {
   font-size: calc(100vw / 1512 * 10);
-  -ms-overflow-style: none;  
-  scrollbar-width: none;
-  -webkit-scrollbar-width: none;
-}
-
-html::-webkit-scrollbar {
-  display: none;
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;     /* Firefox */
 }
 
 

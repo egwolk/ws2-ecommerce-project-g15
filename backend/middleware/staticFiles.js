@@ -2,10 +2,20 @@ const express = require('express');
 const path = require('path');
 
 function setupStaticFiles(app) {
-    app.use('/styles', express.static(path.join(__dirname, '../../frontend/styles')));
-    app.use('/scripts', express.static(path.join(__dirname, '../../frontend/scripts')));
-    
-    app.use('/assets', express.static(path.join(__dirname, '../../frontend/assets')));
+    // Middleware to add security headers to static files (only necessary ones)
+    const addSecurityHeaders = (req, res, next) => {
+        // Only add headers that are appropriate for static assets
+        res.setHeader('X-Content-Type-Options', 'nosniff');
+        if (process.env.NODE_ENV === 'production') {
+            res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+        }
+        // Note: X-XSS-Protection is not needed for static assets like JS/CSS/fonts/images
+        next();
+    };
+
+    app.use('/styles', addSecurityHeaders, express.static(path.join(__dirname, '../../frontend/styles')));
+    app.use('/scripts', addSecurityHeaders, express.static(path.join(__dirname, '../../frontend/scripts')));
+    app.use('/assets', addSecurityHeaders, express.static(path.join(__dirname, '../../frontend/assets')));
 }
 
 module.exports = setupStaticFiles;
