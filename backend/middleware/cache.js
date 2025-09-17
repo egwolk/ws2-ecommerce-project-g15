@@ -1,17 +1,22 @@
 function setupCacheControl(app) {
     app.use('/styles', (req, res, next) => {
-        // Temporarily disable caching to force refresh after local asset migration
-        res.setHeader('Cache-Control', 'no-cache');
+        const maxAge = process.env.NODE_ENV === 'production' ? 31536000 : 3600; // 1 year in prod, 1 hour in dev
+        res.setHeader('Cache-Control', `public, max-age=${maxAge}, immutable`);
         res.removeHeader('Expires');
-        res.setHeader('ETag', `"${Date.now()}"`);
         next();
     });
     
     app.use('/scripts', (req, res, next) => {
-        const maxAge = process.env.NODE_ENV === 'production' ? 86400 : 3600;
-        res.setHeader('Cache-Control', `public, max-age=${maxAge}`);
+        const maxAge = process.env.NODE_ENV === 'production' ? 31536000 : 3600; // 1 year in prod, 1 hour in dev
+        res.setHeader('Cache-Control', `public, max-age=${maxAge}, immutable`);
         res.removeHeader('Expires');
-        res.setHeader('ETag', `"${Date.now()}"`);
+        next();
+    });
+    
+    app.use('/assets', (req, res, next) => {
+        const maxAge = process.env.NODE_ENV === 'production' ? 31536000 : 3600; // 1 year in prod, 1 hour in dev
+        res.setHeader('Cache-Control', `public, max-age=${maxAge}, immutable`);
+        res.removeHeader('Expires');
         next();
     });
     
