@@ -1,31 +1,39 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
-// Cache for file timestamps to avoid repeated file system calls
-const fileTimestamps = new Map();
+// Cache for file hashes to avoid repeated file system calls
+const fileHashes = new Map();
+
+// Clear cache in development to pick up file changes
+if (process.env.NODE_ENV !== 'production') {
+    setInterval(() => {
+        fileHashes.clear();
+    }, 5000); // Clear cache every 5 seconds in development
+}
 
 /**
- * Generate a cache-busting query parameter based on file modification time
+ * Generate a cache-busting query parameter based on file content hash
  * @param {string} filePath - The path to the file relative to frontend folder
- * @returns {string} - Query parameter like "?v=1694956789123"
+ * @returns {string} - Query parameter like "?v=abc123def"
  */
 function getCacheBuster(filePath) {
     // Return cached version if available
-    if (fileTimestamps.has(filePath)) {
-        return fileTimestamps.get(filePath);
+    if (fileHashes.has(filePath)) {
+        return fileHashes.get(filePath);
     }
 
     try {
         const fullPath = path.join(__dirname, '../../frontend', filePath);
-        const stats = fs.statSync(fullPath);
-        const timestamp = stats.mtime.getTime();
-        const cacheBuster = `?v=${timestamp}`;
+        const fileContent = fs.readFileSync(fullPath);
+        const hash = crypto.createHash('md5').update(fileContent).digest('hex').substring(0, 8);
+        const cacheBuster = `?v=${hash}`;
         
         // Cache the result
-        fileTimestamps.set(filePath, cacheBuster);
+        fileHashes.set(filePath, cacheBuster);
         return cacheBuster;
     } catch (error) {
-        console.warn(`Cache buster warning: Could not get timestamp for ${filePath}`);
+        console.warn(`Cache buster warning: Could not get hash for ${filePath}`);
         return ''; // Return empty string if file doesn't exist
     }
 }
