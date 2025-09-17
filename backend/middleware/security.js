@@ -19,10 +19,10 @@ function setupSecurityHeaders(app) {
         
         res.setHeader('Content-Security-Policy', 
             "default-src 'self'; " +
-            "script-src 'self' 'unsafe-inline' https://fonts.cdnfonts.com; " +
-            "style-src 'self' 'unsafe-inline' https://fonts.cdnfonts.com; " +
-            "font-src 'self' https://fonts.cdnfonts.com; " +
-            "img-src 'self' data: https: http:; " +
+            "script-src 'self' 'unsafe-inline'; " +
+            "style-src 'self' 'unsafe-inline'; " +
+            "font-src 'self'; " +
+            "img-src 'self' data:; " +
             "connect-src 'self'; " +
             "frame-ancestors 'none';"
         );
