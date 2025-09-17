@@ -1,7 +1,7 @@
 function setupCacheControl(app) {
     app.use('/styles', (req, res, next) => {
-        const maxAge = process.env.NODE_ENV === 'production' ? 86400 : 3600;
-        res.setHeader('Cache-Control', `public, max-age=${maxAge}`);
+        // Temporarily disable caching to force refresh after local asset migration
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
         res.removeHeader('Expires');
         res.setHeader('ETag', `"${Date.now()}"`);
         next();
