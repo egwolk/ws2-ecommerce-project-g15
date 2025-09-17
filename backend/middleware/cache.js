@@ -8,7 +8,8 @@ function setupCacheControl(app) {
         const maxAge = process.env.NODE_ENV === 'production' ? 86400 : 3600;
         
         res.setHeader('Cache-Control', `public, max-age=${maxAge}`);
-        res.removeHeader('Expires'); // Remove Expires header, use Cache-Control instead
+        // Remove deprecated Expires header completely
+        res.removeHeader('Expires');
         
         // Add ETag for cache validation
         res.setHeader('ETag', `"${Date.now()}"`);
@@ -21,17 +22,19 @@ function setupCacheControl(app) {
         const maxAge = process.env.NODE_ENV === 'production' ? 86400 : 3600;
         
         res.setHeader('Cache-Control', `public, max-age=${maxAge}`);
+        // Remove deprecated Expires header completely
         res.removeHeader('Expires');
         res.setHeader('ETag', `"${Date.now()}"`);
         
         next();
     });
     
-    // No cache for HTML pages (dynamic content)
+    // No cache for HTML pages (dynamic content) - updated without deprecated headers
     app.use((req, res, next) => {
         if (req.url.endsWith('.html') || req.url === '/' || !req.url.includes('.')) {
             res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-            res.setHeader('Pragma', 'no-cache');
+            // Remove deprecated Pragma header - it's no longer needed with modern Cache-Control
+            // res.setHeader('Pragma', 'no-cache'); // REMOVED
             res.removeHeader('Expires');
         }
         next();
