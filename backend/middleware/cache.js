@@ -1,7 +1,7 @@
 function setupCacheControl(app) {
     app.use('/styles', (req, res, next) => {
         // Temporarily disable caching to force refresh after local asset migration
-        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.setHeader('Cache-Control', 'no-cache');
         res.removeHeader('Expires');
         res.setHeader('ETag', `"${Date.now()}"`);
         next();
@@ -17,7 +17,7 @@ function setupCacheControl(app) {
     
     app.use((req, res, next) => {
         if (req.url.endsWith('.html') || req.url === '/' || !req.url.includes('.')) {
-            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+            res.setHeader('Cache-Control', 'no-cache');
             res.removeHeader('Expires');
         }
         next();
