@@ -4,7 +4,7 @@
     </div>
     <div class="form-sections">
         <div class="sect">
-            <form action="/products/admin/create" method="POST" autocomplete="off">
+            <form action="/products/admin/create" method="POST" enctype="multipart/form-data" autocomplete="off">
                 <label for="name">Product Name:</label>
                 <input type="text" name="name" id="name" autocomplete="off" required>
 
@@ -20,8 +20,9 @@
                 <label for="stock">Stock Quantity:</label>
                 <input type="number" name="stock" id="stock" min="0" required>
 
-                <label for="imageUrl">Image URL:</label>
-                <input type="url" name="imageUrl" id="imageUrl" autocomplete="off">
+                <label for="productImage">Product Image:</label>
+                <input type="file" name="productImage" id="productImage" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp">
+                <small>Supported formats: JPEG, PNG, GIF, WebP. Max size: 5MB</small>
 
                 <div class="btn-container">
                     <button type="submit">Create Product</button>

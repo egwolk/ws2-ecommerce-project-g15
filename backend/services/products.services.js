@@ -45,11 +45,13 @@ class ProductService {
     }
 
     async deleteProduct(productId) {
+        // Get product first to delete associated image file
+        const product = await this.getProductById(productId);
+        
         const db = this.client.db(this.dbName);
-        await db.collection('products').updateOne(
-            { _id: new ObjectId(productId) },
-            { $set: { isActive: false, updatedAt: new Date() } }
-        );
+        await db.collection('products').deleteOne({ _id: new ObjectId(productId) });
+        
+        return product; // Return product data so controller can delete image file
     }
 
     async searchProducts(query) {

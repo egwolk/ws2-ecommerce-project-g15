@@ -9,20 +9,28 @@ function setupSecurityHeaders(app) {
             return next();
         }
         
-        // Full security headers for HTML pages and API routes only
+        // Basic security headers for all routes
         res.setHeader('X-Content-Type-Options', 'nosniff');
-        res.setHeader('X-XSS-Protection', '1; mode=block');
         
         if (process.env.NODE_ENV === 'production') {
             res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
         }
+        
+        // API routes only need basic headers (they return JSON, not HTML)
+        if (req.url.startsWith('/api/')) {
+            res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+            return next();
+        }
+        
+        // Full security headers for HTML pages only
+        res.setHeader('X-XSS-Protection', '1; mode=block');
         
         res.setHeader('Content-Security-Policy', 
             "default-src 'self'; " +
             "script-src 'self' 'unsafe-inline'; " +
             "style-src 'self' 'unsafe-inline'; " +
             "font-src 'self'; " +
-            "img-src 'self' data:; " +
+            "img-src 'self' data: https: http:; " +
             "connect-src 'self'; " +
             "frame-ancestors 'none';"
         );

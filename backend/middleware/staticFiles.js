@@ -16,6 +16,9 @@ function setupStaticFiles(app) {
     app.use('/styles', addSecurityHeaders, express.static(path.join(__dirname, '../../frontend/styles')));
     app.use('/scripts', addSecurityHeaders, express.static(path.join(__dirname, '../../frontend/scripts')));
     app.use('/assets', addSecurityHeaders, express.static(path.join(__dirname, '../../frontend/assets')));
+    
+    // Ensure product images directory is properly served
+    app.use('/assets/images/products', addSecurityHeaders, express.static(path.join(__dirname, '../../frontend/assets/images/products')));
 }
 
 module.exports = setupStaticFiles;

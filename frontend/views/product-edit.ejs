@@ -4,7 +4,7 @@
     </div>
     <div class="form-sections">
         <div class="sect">
-            <form action="/products/admin/<%= product._id %>/edit" method="POST" autocomplete="off">
+            <form action="/products/admin/<%= product._id %>/edit" method="POST" enctype="multipart/form-data" autocomplete="off">
                 <label for="name">Product Name:</label>
                 <input type="text" name="name" id="name" value="<%= product.name %>" autocomplete="off" required>
 
@@ -20,8 +20,16 @@
                 <label for="stock">Stock Quantity:</label>
                 <input type="number" name="stock" id="stock" min="0" value="<%= product.stock %>" required>
 
-                <label for="imageUrl">Image URL:</label>
-                <input type="url" name="imageUrl" id="imageUrl" value="<%= product.imageUrl %>" autocomplete="off">
+                <% if (product.imageUrl) { %>
+                    <label>Current Image:</label>
+                    <div class="current-image">
+                        <img src="<%= product.imageUrl %>" alt="Current product image" style="max-width: 200px; max-height: 200px; object-fit: cover; border: 1px solid var(--warm-off-white);">
+                    </div>
+                <% } %>
+
+                <label for="productImage">Update Product Image:</label>
+                <input type="file" name="productImage" id="productImage" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp">
+                <small>Supported formats: JPEG, PNG, GIF, WebP. Max size: 5MB. Leave empty to keep current image.</small>
 
                 <label for="isActive">Status:</label>
                 <select name="isActive" id="isActive">
