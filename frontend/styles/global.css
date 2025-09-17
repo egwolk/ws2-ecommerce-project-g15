@@ -13,7 +13,7 @@
 --focus-outline-width: 0; 
 --focus-outline-style: none; 
 }
-  
+
 *,
 *:before,
 *:after {
@@ -24,8 +24,15 @@
 
 html {
   font-size: calc(100vw / 1512 * 10);
-   -ms-overflow-style: none;  
-  scrollbar-width: none; 
+  -ms-overflow-style: none;  
+  scrollbar-width: none;
+  /* Safari support for hiding scrollbar */
+  -webkit-scrollbar-width: none;
+}
+
+/* Hide scrollbar for webkit browsers */
+html::-webkit-scrollbar {
+  display: none;
 }
 
 
@@ -151,6 +158,8 @@ main {
   height: 100%;
   z-index: 1000;
   pointer-events: none; 
+  /* Safari support for backdrop-filter */
+  -webkit-backdrop-filter: blur(.4px);
   backdrop-filter: blur(.4px);
   background: 
     repeating-linear-gradient(

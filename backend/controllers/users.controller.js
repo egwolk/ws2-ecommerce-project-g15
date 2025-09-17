@@ -237,7 +237,21 @@ class UserController {
                 role: user.role,
                 isEmailVerified: user.isEmailVerified
             };
-            res.redirect('/users/dashboard');
+            
+            // Explicitly save the session before redirecting to prevent race conditions
+            req.session.save((err) => {
+                if (err) {
+                    console.error("Session save error during login:", err);
+                    return res.render('login', { 
+                        title: "Login", 
+                        message: "Login successful but there was a session error. Please try logging in again.",
+                        formData: req.body
+                    });
+                }
+                
+                console.log('Session saved successfully for user:', user.email);
+                res.redirect('/users/dashboard');
+            });
         } else {
             return res.render('login', { 
                 title: "Login", 
@@ -256,7 +270,15 @@ class UserController {
 }
 
     showDashboard(req, res) {
-        if (!req.session.user) return res.redirect('/users/login');
+        console.log('Dashboard accessed - Session user:', req.session.user ? 'Found' : 'Not found');
+        console.log('Session ID:', req.sessionID);
+        
+        if (!req.session.user) {
+            console.log('No session user found, redirecting to login');
+            return res.redirect('/users/login');
+        }
+        
+        console.log('Rendering dashboard for user:', req.session.user.email);
         res.render('dashboard', { title: "User Dashboard"});
     }
 
