@@ -13,7 +13,7 @@ function setupSecurityHeaders(app) {
         
         // Strict transport security (HTTPS only in production)
         if (process.env.NODE_ENV === 'production') {
-            res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+            res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
         }
         
         // Content Security Policy

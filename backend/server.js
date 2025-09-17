@@ -8,8 +8,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors({
-    origin: process.env.BASE_URL,
-    credentials: true
+    origin: process.env.BASE_URL || 'http://localhost:3000',
+    credentials: true,
+    optionsSuccessStatus: 200 // Some legacy browsers choke on 204
 }));
 
 

@@ -2,6 +2,8 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 
 function setupSession(app) {
+    const isProduction = process.env.NODE_ENV === 'production';
+    
     app.use(session({
         secret: process.env.SESSION_SECRET,
         resave: false,
@@ -12,13 +14,15 @@ function setupSession(app) {
             touchAfter: 24 * 3600 // lazy session update
         }),
         cookie: {
-            secure: process.env.NODE_ENV === 'production', // Only secure in production (HTTPS)
+            secure: isProduction, // Only secure in production (HTTPS)
             httpOnly: true,
             maxAge: 30 * 60 * 1000, // 30 minutes
-            sameSite: 'lax' // Add this for better security and compatibility
+            sameSite: isProduction ? 'none' : 'lax', // 'none' for cross-site in production
+            domain: isProduction ? '.onrender.com' : undefined // Set domain for production
         },
         rolling: true, // Reset expiration on activity
-        name: 'sessionId' // Custom session name for security
+        name: 'sessionId', // Custom session name for security
+        proxy: isProduction // Trust proxy in production
     }));
 }
 

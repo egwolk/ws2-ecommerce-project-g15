@@ -242,6 +242,12 @@ class UserController {
             req.session.save((err) => {
                 if (err) {
                     console.error("Session save error during login:", err);
+                    console.error("Session details:", {
+                        sessionID: req.sessionID,
+                        secure: req.session.cookie.secure,
+                        httpOnly: req.session.cookie.httpOnly,
+                        sameSite: req.session.cookie.sameSite
+                    });
                     return res.render('login', { 
                         title: "Login", 
                         message: "Login successful but there was a session error. Please try logging in again.",
@@ -250,6 +256,8 @@ class UserController {
                 }
                 
                 console.log('Session saved successfully for user:', user.email);
+                console.log('Environment:', process.env.NODE_ENV);
+                console.log('Session ID:', req.sessionID);
                 res.redirect('/users/dashboard');
             });
         } else {
