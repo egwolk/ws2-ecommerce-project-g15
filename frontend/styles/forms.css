@@ -62,8 +62,12 @@
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
     color: var(--warm-off-white);
-    letter-spacing: 0.2em;
-    font-size: 1rem;
+    font-size: 1.2rem;
+    word-wrap: break-word;
+    letter-spacing: .3em;
+    max-width: 100%;
+    font-weight: 100;
+    font-family: "TheGoodMonolith", monospace;
 }
 
 .sect form .input-msg.show {

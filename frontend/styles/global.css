@@ -1,6 +1,6 @@
 @font-face {
   font-family: "PP Neue Montreal";
-  src: url("/assets/fonts/pp-neue-montreal.woff") format("woff");
+  src: url("/assets/fonts/ppneuemontreal-medium.woff") format("woff");
   font-weight: 400;
 }
 
@@ -45,7 +45,7 @@ body {
   overflow-x: hidden;
   background-color: var(--warm-off-black);
   /* text-transform: uppercase; */
-  letter-spacing: -0.03em;
+  letter-spacing: .15em;
   color: var(--warm-off-white);
   position: relative;
   margin: 0;

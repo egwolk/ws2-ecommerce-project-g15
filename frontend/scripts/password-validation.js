@@ -56,23 +56,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 passwordMsg.classList.remove('weak', 'medium', 'strong');
                 
                 // Update message and class based on strength
-                switch (strength) {
+                let message = '';
+                switch (strength.level) {
                     case 'weak':
-                        passwordMsg.textContent = 'WEAK';
+                        message = strength.missing.length > 0 
+                            ? `WEAK - NEEDS: ${strength.missing.join(', ')}`
+                            : 'WEAK';
                         passwordMsg.classList.add('weak');
                         break;
                     case 'medium':
-                        passwordMsg.textContent = 'MEDIUM';
+                        message = strength.missing.length > 0 
+                            ? `MEDIUM - NEEDS: ${strength.missing.join(', ')}`
+                            : 'MEDIUM';
                         passwordMsg.classList.add('medium');
                         break;
                     case 'strong':
-                        passwordMsg.textContent = 'STRONG';
+                        message = 'STRONG';
                         passwordMsg.classList.add('strong');
                         break;
                     default:
-                        passwordMsg.textContent = 'WEAK';
+                        message = 'WEAK - NEEDS: 8+ characters, lowercase, uppercase, number, special character';
                         passwordMsg.classList.add('weak');
                 }
+                
+                passwordMsg.textContent = message;
                 
                 // Also check confirm password if it has value
                 if (confirmPasswordInput && confirmPasswordInput.value) {
@@ -95,20 +102,52 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function calculatePasswordStrength(password) {
         let score = 0;
+        let firstMissing = null;
         
-        // Length check
-        if (password.length >= 8) score++;
-        if (password.length >= 12) score++;
+        // Length check (highest priority)
+        if (password.length < 8) {
+            if (!firstMissing) firstMissing = '8+ characters';
+        } else {
+            score++;
+            if (password.length >= 12) score++;
+        }
         
-        // Character type checks
-        if (/[a-z]/.test(password)) score++;
-        if (/[A-Z]/.test(password)) score++;
-        if (/\d/.test(password)) score++;
-        if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) score++;
+        // Character type checks (in order of priority)
+        if (!/[a-z]/.test(password)) {
+            if (!firstMissing) firstMissing = 'lowercase letter';
+        } else {
+            score++;
+        }
         
-        if (score <= 2) return 'weak';
-        if (score <= 4) return 'medium';
-        return 'strong';
+        if (!/[A-Z]/.test(password)) {
+            if (!firstMissing) firstMissing = 'uppercase letter';
+        } else {
+            score++;
+        }
+        
+        if (!/\d/.test(password)) {
+            if (!firstMissing) firstMissing = 'number';
+        } else {
+            score++;
+        }
+        
+        if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+            if (!firstMissing) firstMissing = 'special character';
+        } else {
+            score++;
+        }
+        
+        // Return strength level with only the first missing criterion
+        // Only strong if ALL criteria are met (no missing requirements)
+        if (firstMissing) {
+            if (score <= 2) {
+                return { level: 'weak', missing: [firstMissing] };
+            } else {
+                return { level: 'medium', missing: [firstMissing] };
+            }
+        } else {
+            return { level: 'strong', missing: [] };
+        }
     }
 
     function checkPasswordMatch(passwordInput, confirmPasswordInput, confirmMsg) {

@@ -7,47 +7,29 @@ class UserController {
     }
 
     validatePassword(password) {
-        // Check length first (highest priority)
+        let firstMissing = null;
+        
+        // Check criteria in order of priority and return first missing
         if (!password || password.length < 8) {
+            firstMissing = '8+ characters';
+        } else if (!/[a-z]/.test(password)) {
+            firstMissing = 'lowercase letter';
+        } else if (!/[A-Z]/.test(password)) {
+            firstMissing = 'uppercase letter';
+        } else if (!/\d/.test(password)) {
+            firstMissing = 'number';
+        } else if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+            firstMissing = 'special character';
+        }
+        
+        // Return validation result
+        if (firstMissing) {
             return {
                 isValid: false,
-                errors: ["Password must be at least 8 characters long"]
+                errors: [`Password needs: ${firstMissing}`]
             };
         }
         
-        // Check lowercase letter second
-        if (!/[a-z]/.test(password)) {
-            return {
-                isValid: false,
-                errors: ["Password must include at least one lowercase letter"]
-            };
-        }
-        
-        // Check uppercase letter third
-        if (!/[A-Z]/.test(password)) {
-            return {
-                isValid: false,
-                errors: ["Password must include at least one uppercase letter"]
-            };
-        }
-        
-        // Check number fourth
-        if (!/\d/.test(password)) {
-            return {
-                isValid: false,
-                errors: ["Password must include at least one number"]
-            };
-        }
-        
-        // Check special character last
-        if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-            return {
-                isValid: false,
-                errors: ["Password must include at least one special character"]
-            };
-        }
-        
-        // All validations passed
         return {
             isValid: true,
             errors: []
