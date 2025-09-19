@@ -219,7 +219,7 @@ Response ← View Template ← Controller ← Service ← Model ← Database
 
 5. **Start the development server**
    ```bash
-   npm run dev
+   node server.js
    # or
    nodemon server.js
    ```
