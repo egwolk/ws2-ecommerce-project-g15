@@ -12,7 +12,7 @@ A full-stack digital marketplace built for WEBSYS2 college class, specializing i
 |------|-------|----------|---------|
 | **Customer** | `cus@to.mer` | `Customer1!` | Active |
 | **Inactive User** | `inactive@ina.ctive` | `Inactive1!` | Inactive |
-| **Admin** | `test5@test5.test` | `Welcome 2025` | Active |
+| **Admin** | `test5@test5.test` | `Welcome2025!` | Active |
 
 > **Note**: To test the registration functionality, you must [run the app locally](#local-development-setup) as it requires Resend email service for verification.
 
