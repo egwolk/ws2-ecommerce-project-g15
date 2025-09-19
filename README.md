@@ -236,7 +236,7 @@ For any issues or questions regarding this project:
 
 ## 🎓 Academic Context
 
-This project is developed as part of the WEBSYS2 (Web Systems 2) college course, demonstrating:
+This project is developed as part of the WEBSYS2 (Web Systems and Technologies 2) college course, demonstrating:
 - Full-stack web development skills
 - Database design and management
 - User authentication and authorization
