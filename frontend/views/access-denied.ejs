@@ -1,0 +1,27 @@
+<div class="error-container">
+        <% if (authenticated) { %>
+            <div class="error-code">403</div>
+            <h1 class="error-title">Forbidden</h1>
+            <p class="error-message">
+                Sorry, you don't have permission to access this administrative area.<br>
+                This section is restricted to administrators only.<br>
+                You are currently logged in as a customer.
+            </p>
+        <% } else { %>
+            <div class="error-code">401</div>
+            <h1 class="error-title">Unauthorized</h1>
+            <p class="error-message">
+                Authentication required to access this administrative area.<br>
+                Please log in with an administrator account to continue.
+            </p>
+        <% } %>
+        <div class="error-actions">
+            <% if (authenticated) { %>
+                <a href="/dashboard" class="btn btn-primary">Go to Dashboard</a>
+                <a href="/products" class="btn btn-secondary">Browse Products</a>
+            <% } else { %>
+                <a href="/users/login" class="btn btn-primary">Login</a>
+                <a href="/" class="btn btn-secondary">Go Home</a>
+            <% } %>
+        </div>
+    </div>

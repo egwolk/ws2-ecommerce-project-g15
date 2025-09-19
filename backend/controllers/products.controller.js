@@ -23,10 +23,6 @@ class ProductController {
     // Admin only - show all products including inactive ones
     async showAdminProducts(req, res) {
         try {
-            if (!req.session.user || req.session.user.role !== 'admin') {
-                return res.status(403).send("Access denied.");
-            }
-            
             const products = await this.productService.getAllProductsAdmin();
             res.render('products-admin', { 
                 title: 'Manage Products', 
@@ -55,9 +51,6 @@ class ProductController {
     }
 
     showCreateForm(req, res) {
-        if (!req.session.user || req.session.user.role !== 'admin') {
-            return res.redirect('/users/login?message=expired');
-        }
         res.render('product-create', { title: 'Add Product' });
     }
 
@@ -65,10 +58,6 @@ class ProductController {
         // Handle file upload first
         handleUpload(req, res, async (uploadError) => {
             try {
-                if (!req.session.user || req.session.user.role !== 'admin') {
-                    return res.redirect('/users/login?message=expired');
-                }
-                
                 // Check for upload errors
                 if (req.uploadError) {
                     return res.render('product-create', { 
@@ -111,10 +100,6 @@ class ProductController {
 
     async showEditForm(req, res) {
         try {
-            if (!req.session.user || req.session.user.role !== 'admin') {
-                return res.redirect('/users/login?message=expired');
-            }
-            
             const product = await this.productService.getProductById(req.params.id);
             if (!product) {
                 return res.render('product-edit', { 
@@ -141,10 +126,6 @@ class ProductController {
         // Handle file upload first
         handleUpload(req, res, async (uploadError) => {
             try {
-                if (!req.session.user || req.session.user.role !== 'admin') {
-                    return res.redirect('/users/login?message=expired');
-                }
-                
                 // Check for upload errors
                 if (req.uploadError) {
                     const product = await this.productService.getProductById(req.params.id);
@@ -210,10 +191,6 @@ class ProductController {
 
     async deleteProduct(req, res) {
         try {
-            if (!req.session.user || req.session.user.role !== 'admin') {
-                return res.status(403).send("Access denied.");
-            }
-            
             // Delete product and get product data to clean up image file
             const deletedProduct = await this.productService.deleteProduct(req.params.id);
             

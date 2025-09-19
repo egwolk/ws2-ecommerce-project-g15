@@ -272,9 +272,6 @@ class UserController {
     }
 
     async showAdminDashboard(req, res) {
-        if (!req.session.user || req.session.user.role !== 'admin') {
-            return res.status(403).send("Access denied.");
-        }
         const allUsers = await this.userService.getAllUsers();
 
         const users = allUsers.filter(user => user.userId !== req.session.user.userId);
@@ -296,10 +293,6 @@ class UserController {
 
     async deleteUser(req, res) {
         try {
-            if (!req.session.user || req.session.user.role !== 'admin') {
-                return res.status(403).send("Access denied.");
-            }
-            
             await this.userService.deleteUser(req.params.id);
             res.redirect('/users/admin');
         } catch (err) {
@@ -309,10 +302,6 @@ class UserController {
     }
     async showEditForm(req, res) {
         try {
-            if (!req.session.user || req.session.user.role !== 'admin') {
-                return res.redirect('/users/login?message=expired');
-            }
-            
             const userToEdit = await this.userService.getUserById(req.params.id);
             if (!userToEdit) {
                 return res.render('edit-user', { 
@@ -446,18 +435,11 @@ class UserController {
         }
     }
     showAdminCreateForm(req, res) {
-        if (!req.session.user || req.session.user.role !== 'admin') {
-            return res.status(403).send("Access denied.");
-        }
         res.render('admin-create', { title: "Add New User" });
     }
 
     async createUserByAdmin(req, res) {
         try {
-            if (!req.session.user || req.session.user.role !== 'admin') {
-                return res.status(403).send("Access denied.");
-            }
-
             // Check if user already exists
             const existingUser = await this.userService.getUserByEmail(req.body.email);
             if (existingUser) {
