@@ -14,7 +14,12 @@ A full-stack digital marketplace built for WEBSYS2 college class, specializing i
 | **Inactive User** | `inactive@ina.ctive` | `Inactive1!` | Inactive |
 | **Admin** | `test5@test5.test` | `Welcome 2025` | Active |
 
-> **Note**: To test the registration functionality, you must run the app locally as it requires Resend email service for verification.
+> **Note**: To test the registration functionality, you must [run the app locally](#local-development-setup) as it requires Resend email service for verification.
+
+### Testing Session Timeout
+To test the automatic session expiration feature:
+- **Production/Demo**: Sessions expire after 30 minutes of inactivity
+- **Local Testing**: For faster testing, [run the webapp locally](#local-development-setup), and modify `backend/middleware/session.js` and change `maxAge: 30 * 60 * 1000` to `maxAge: 1 * 60 * 1000` (1 minute), then restart the server
 
 ## 🚀 Technologies Used
 
@@ -41,6 +46,50 @@ A full-stack digital marketplace built for WEBSYS2 college class, specializing i
 - **Nodemon** - Development server
 - **Git** - Version control
 - **Render** - Deployment platform
+
+## 🏗️ Architecture & Design Patterns
+
+### System Architecture
+- **MVC Pattern** - Model-View-Controller separation for maintainable code
+- **Server-Side Rendering (SSR)** - EJS templates for dynamic content generation
+- **RESTful API Design** - Clean, predictable URL structure and HTTP methods
+- **Middleware Pipeline** - Modular request processing with Express middleware
+- **Service Layer Architecture** - Business logic separation from controllers
+
+### Database Design
+- **NoSQL Document Store** - MongoDB for flexible, scalable data storage
+- **UUID Primary Keys** - Universally unique identifiers for better data integrity
+- **Schema Validation** - Mongoose schemas for data consistency
+- **Connection Pooling** - Efficient database connection management
+
+### Security Architecture
+- **Authentication Middleware** - Centralized session and role validation
+- **Role-Based Access Control (RBAC)** - Admin/Customer permission system
+- **Input Sanitization** - Protection against injection attacks
+- **Password Security** - Bcrypt hashing with salt rounds
+- **Session Management** - Secure server-side session storage
+
+## 💻 Programming Approach
+
+### Development Methodology
+- **Modular Development** - Separation of concerns across files and directories
+- **Progressive Enhancement** - Basic functionality first, enhanced features layered on
+- **Component-Based UI** - Reusable templates and partials
+- **Environment-Driven Configuration** - Different settings for dev/production
+
+### Code Organization
+- **Feature-Based Structure** - Grouping related functionality together
+- **Layered Architecture** - Clear separation between routes, controllers, services, and models
+- **Dependency Injection** - Services injected into controllers for testability
+- **Configuration Management** - Environment variables for sensitive data
+- **Error Handling** - Centralized error processing and user-friendly messages
+
+### Data Flow
+```
+Request → Middleware → Route → Controller → Service → Model → Database
+                ↓
+Response ← View Template ← Controller ← Service ← Model ← Database
+```
 
 ## ✨ Current Features
 
@@ -70,13 +119,12 @@ A full-stack digital marketplace built for WEBSYS2 college class, specializing i
 - ✅ Digital product optimization (no stock management)
 
 ### 🎨 User Interface
-- ✅ Responsive design (mobile-first)
-- ✅ Dark theme with warm color palette
+- ✅ Dark theme with simple color palette
 - ✅ Animated corner decorations
 - ✅ Consistent button system with slide animations
 - ✅ Dropdown navigation
 - ✅ Professional error pages (404, 401/403)
-- ✅ Modern homepage with hero section
+- ✅ Homepage with hero section
 
 ### 🔒 Security
 - ✅ Access denied pages for unauthorized access
@@ -100,8 +148,6 @@ A full-stack digital marketplace built for WEBSYS2 college class, specializing i
 ### 🛒 E-Commerce Core
 - [ ] **Shopping Cart** - Add/remove items, quantity management
 - [ ] **Payment Integration** - Stripe/PayPal integration
-- [ ] Order management system
-- [ ] Digital product delivery system
 - [ ] Invoice generation
 
 ### 🔍 Search & Navigation
@@ -113,30 +159,23 @@ A full-stack digital marketplace built for WEBSYS2 college class, specializing i
 ### 📄 Legal Pages
 - [ ] **Terms & Conditions** page
 - [ ] **Privacy Policy** page
-- [ ] Cookie consent management
-- [ ] GDPR compliance features
 
 ### 🎨 UI/UX Improvements
 - [ ] **Enhanced Product Gallery** - Multiple images, zoom functionality
+- [ ] **Feedback Indicators** - Toast notifications, confirm dialogs, loading spinners
 - [ ] User reviews and ratings system
 - [ ] Wishlist functionality
 - [ ] Recently viewed products
 - [ ] Advanced loading states and animations
-- [ ] Dark/light theme toggle
 
 ### 📊 Analytics & Management
 - [ ] Sales dashboard for admins
-- [ ] Order tracking system
-- [ ] Inventory management
 - [ ] Customer analytics
-- [ ] Revenue reporting
 
 ### 🔧 Technical Enhancements
 - [ ] API documentation
 - [ ] Unit and integration testing
 - [ ] Performance optimization
-- [ ] SEO improvements
-- [ ] PWA functionality
 
 ## 🏃‍♂️ Running the Application
 
@@ -236,7 +275,7 @@ For any issues or questions regarding this project:
 
 ## 🎓 Academic Context
 
-This project is developed as part of the WEBSYS2 (Web Systems and Technologies 2) college course, demonstrating:
+This project is developed as part of the WEBSYS2 (Web Systems and Technologies 2) college class, demonstrating:
 - Full-stack web development skills
 - Database design and management
 - User authentication and authorization
