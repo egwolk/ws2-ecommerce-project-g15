@@ -29,7 +29,13 @@ app.use('/password', passwordRoute);
 app.use('/api', apiRoute);
 app.use('/products', productsRoute);
 
-
+// 404
+app.use((req, res, next) => {
+    res.status(404).render('404', { 
+        title: "Page Not Found",
+        currentPage: '404'
+    });
+});
 
 // Expose client & dbName to routes
 app.locals.client = client;

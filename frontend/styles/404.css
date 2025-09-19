@@ -1,0 +1,29 @@
+.error-container {
+    text-align: center;
+    padding: 4rem 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.error-container h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--warm-off-white);
+}
+
+.error-container p {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: var(--warm-off-white);
+    opacity: 0.8;
+}
+
+.error-actions {
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Button styles moved to buttons.css */

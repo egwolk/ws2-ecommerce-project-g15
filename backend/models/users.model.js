@@ -4,8 +4,8 @@ const saltRounds = 12;
 
 class User {
     constructor(data = {}) {
-        this._id = data._id;
-        this.userId = data.userId || uuidv4();
+        this.userId = data.userId || data._id || uuidv4();
+        this._id = this.userId; // For MongoDB compatibility
         this.firstName = data.firstName || '';
         this.lastName = data.lastName || '';
         this.email = data.email || '';
@@ -25,8 +25,7 @@ class User {
     static fromDocument(doc) {
         if (!doc) return null;
         return new User({
-            _id: doc._id,
-            userId: doc.userId,
+            userId: doc._id || doc.userId,
             firstName: doc.firstName,
             lastName: doc.lastName,
             email: doc.email,
@@ -46,7 +45,7 @@ class User {
     // Convert User instance to MongoDB document
     toDocument() {
         return {
-            userId: this.userId,
+            _id: this.userId,
             firstName: this.firstName,
             lastName: this.lastName,
             email: this.email,
@@ -76,7 +75,6 @@ class User {
     // Create session user object
     getSessionUser() {
         return {
-            _id: this._id, 
             userId: this.userId,
             firstName: this.firstName,
             lastName: this.lastName,

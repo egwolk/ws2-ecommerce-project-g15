@@ -71,23 +71,19 @@ class UserService {
     }
 
     async deleteUser(userId) {
-        await this.client.connect();
         const db = this.client.db(this.dbName);
         const usersCollection = db.collection('users');
         
-        const { ObjectId } = require('mongodb');
-        return await usersCollection.deleteOne({ _id: new ObjectId(userId) });
+        return await usersCollection.deleteOne({ _id: userId });
     }
 
     async getUserById(userId) {
         const db = this.client.db(this.dbName);
-        const { ObjectId } = require('mongodb');
-        const doc = await db.collection('users').findOne({ _id: new ObjectId(userId) });
+        const doc = await db.collection('users').findOne({ _id: userId });
         return User.fromDocument(doc);
     }
     async updateUser(userId, updateData) {
         const db = this.client.db(this.dbName);
-        const { ObjectId } = require('mongodb');
         // Hash password if provided
         if (updateData.password) {
             updateData.passwordHash = await User.hashPassword(updateData.password);
@@ -98,7 +94,7 @@ class UserService {
         updateData.updatedAt = new Date();
         
         await db.collection('users').updateOne(
-            { _id: new ObjectId(userId) },
+            { _id: userId },
             { $set: updateData }
         );
     }
@@ -130,8 +126,8 @@ class UserService {
             throw new Error('Invalid user data: ' + JSON.stringify(validation.errors));
         }
         
-        const result = await db.collection('users').insertOne(newUser.toDocument());
-        return { ...newUser, _id: result.insertedId };
+        await db.collection('users').insertOne(newUser.toDocument());
+        return newUser;
     }
 
     // Password reset methods

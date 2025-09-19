@@ -33,7 +33,7 @@
                             <a href="/products/admin/<%= product._id %>/edit">Edit</a>
                             <% if (product.isActive) { %>
                                 <form action="/products/admin/<%= product._id %>/delete" method="POST">
-                                    <button type="submit" onclick="return confirm('Are you sure you want to permanently delete this product? This action cannot be undone.')">Delete</button>
+                                    <button type="submit" class="btn-danger btn-small" onclick="return confirm('Are you sure you want to permanently delete this product? This action cannot be undone.')">Delete</button>
                                 </form>
                             <% } %>
                         </td>

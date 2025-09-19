@@ -211,7 +211,6 @@ class UserController {
         if (isPasswordValid) {
             // Store session
             req.session.user = {
-                _id: user._id,
                 userId: user.userId,
                 firstName: user.firstName,
                 lastName: user.lastName,
@@ -278,7 +277,7 @@ class UserController {
         }
         const allUsers = await this.userService.getAllUsers();
 
-        const users = allUsers.filter(user => user._id.toString() !== req.session.user._id.toString());
+        const users = allUsers.filter(user => user.userId !== req.session.user.userId);
         res.render('admin', {
             title: "Admin Dashboard",
             users

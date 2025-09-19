@@ -1,0 +1,205 @@
+/* ===== GLOBAL BUTTON STYLES ===== */
+
+/* Base button styles - applies to ALL button elements */
+button {
+    font-family: "TheGoodMonolith", monospace;
+    text-transform: uppercase;
+    border: 1px solid var(--warm-off-white);
+    background: none;
+    color: var(--warm-off-white);
+    padding: 1rem 2rem;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    min-width: 150px;
+    font-size: 1.5rem;
+    letter-spacing: 0.5px;
+}
+
+/* Base button hover effect */
+button::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: var(--warm-off-white);
+    z-index: -1;
+    transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+button:hover::after {
+    width: 100%;
+}
+
+button:hover {
+    color: var(--warm-off-black);
+    mix-blend-mode: difference;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+button:disabled:hover::after {
+    width: 0;
+}
+
+button:disabled:hover {
+    color: var(--warm-off-white);
+    mix-blend-mode: normal;
+}
+
+/* ===== BUTTON VARIANTS ===== */
+
+/* Primary button - filled style */
+.btn-primary {
+    background-color: var(--warm-off-white);
+    color: var(--warm-off-black);
+    font-weight: bold;
+}
+
+.btn-primary::after {
+    background-color: var(--warm-off-black);
+}
+
+.btn-primary:hover {
+    color: var(--warm-off-white);
+}
+
+/* Secondary button - outline style (default) */
+.btn-secondary {
+    background-color: transparent;
+    color: var(--warm-off-white);
+}
+
+.btn-secondary::after {
+    background-color: var(--warm-off-white);
+}
+
+.btn-secondary:hover {
+    color: var(--warm-off-black);
+}
+
+/* Danger/Delete button - red accent */
+.btn-danger {
+    border-color: #ff6b6b;
+    color: #ff6b6b;
+}
+
+.btn-danger::after {
+    background-color: #ff6b6b;
+}
+
+.btn-danger:hover {
+    color: var(--warm-off-black);
+}
+
+/* Success button - green accent */
+.btn-success {
+    border-color: #6bcf7f;
+    color: #6bcf7f;
+}
+
+.btn-success::after {
+    background-color: #6bcf7f;
+}
+
+.btn-success:hover {
+    color: var(--warm-off-black);
+}
+
+/* ===== BUTTON SIZES ===== */
+
+.btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    min-width: 100px;
+}
+
+.btn-large {
+    padding: 1.5rem 3rem;
+    font-size: 1.2rem;
+    min-width: 200px;
+}
+
+.btn-full-width {
+    width: 100%;
+    min-width: auto;
+}
+
+/* ===== BUTTON CONTAINERS ===== */
+
+.btn-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-container.left {
+    justify-content: flex-start;
+}
+
+.btn-container.right {
+    justify-content: flex-end;
+}
+
+.btn-container.space-between {
+    justify-content: space-between;
+}
+
+/* ===== SPECIAL BUTTON TYPES ===== */
+
+/* Form submission buttons */
+button[type="submit"] {
+    margin-top: 1rem;
+}
+
+/* Link-style buttons */
+a.btn-primary,
+a.btn-secondary,
+a.btn-danger,
+a.btn-success {
+    display: inline-block;
+    text-decoration: none;
+    font-family: "TheGoodMonolith", monospace;
+    text-transform: uppercase;
+    border: 1px solid var(--warm-off-white);
+    padding: 1rem 2rem;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    min-width: 150px;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+}
+
+/* Apply same hover effects to link buttons */
+a.btn-primary::after,
+a.btn-secondary::after,
+a.btn-danger::after,
+a.btn-success::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    transition: left 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: -1;
+}
+
+a.btn-primary:hover::after,
+a.btn-secondary:hover::after,
+a.btn-danger:hover::after,
+a.btn-success:hover::after {
+    left: 0;
+}

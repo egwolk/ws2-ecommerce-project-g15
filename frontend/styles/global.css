@@ -44,7 +44,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   background-color: var(--warm-off-black);
-  /* text-transform: uppercase; */
   letter-spacing: .15em;
   color: var(--warm-off-white);
   position: relative;

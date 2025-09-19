@@ -214,40 +214,5 @@
     color: black;
     cursor: pointer;
 }
-.sect form .btn-container {
-    display: flex;
-    justify-content: center;
-}
-.sect form button{
-    margin-top: 1rem;
-    width: 150px;
-    text-align: center;
-    background: none;
-    color: var(--warm-off-white);
-    border: 1px solid var(--warm-off-white);
-    padding: 1rem;
-    font-family: "TheGoodMonolith", monospace;
-    text-transform: uppercase;
-    position: relative;
-}
-.sect form button::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 100%;
-  background-color: white;
-  z-index: -1;
-  transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.sect form button:hover::after {
-  width: 100%;
-}
-.sect form button:hover {
-  color: black;
-  mix-blend-mode: difference;
-  cursor: pointer;
-}
+/* Button styles moved to buttons.css */
 

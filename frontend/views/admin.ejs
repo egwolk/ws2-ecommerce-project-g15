@@ -27,8 +27,8 @@
                         <td><%= userItem.accountStatus %></td>
                         <td><%= new Date(userItem.createdAt).toLocaleDateString() %></td>
                         <td>
-                            <a href="/users/edit/<%= userItem._id %>">Edit</a> |
-                            <form action="/users/delete/<%= userItem._id %>" method="POST" style="display:inline;">
+                            <a href="/users/edit/<%= userItem.userId %>">Edit</a> |
+                            <form action="/users/delete/<%= userItem.userId %>" method="POST" style="display:inline;">
                                 <button type="submit">Delete</button>
                             </form>
                         </td>
