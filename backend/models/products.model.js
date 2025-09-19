@@ -8,7 +8,6 @@ class Product {
         this.description = data.description || '';
         this.price = data.price || 0;
         this.category = data.category || '';
-        this.stock = data.stock || 0;
         this.imageUrl = data.imageUrl || '';
         this.isActive = data.isActive !== undefined ? data.isActive : true;
         this.createdAt = data.createdAt || new Date();
@@ -25,7 +24,6 @@ class Product {
             description: doc.description,
             price: doc.price,
             category: doc.category,
-            stock: doc.stock,
             imageUrl: doc.imageUrl,
             isActive: doc.isActive,
             createdAt: doc.createdAt,
@@ -41,7 +39,6 @@ class Product {
             description: this.description,
             price: this.price,
             category: this.category,
-            stock: this.stock,
             imageUrl: this.imageUrl,
             isActive: this.isActive,
             createdAt: this.createdAt,

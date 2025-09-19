@@ -15,15 +15,11 @@
         <div>
             <h2>$<%= product.price %></h2>
             <p><strong>Category:</strong> <%= product.category %></p>
-            <p><strong>Stock:</strong> <%= product.stock %> available</p>
             <p><strong>Description:</strong></p>
             <p><%= product.description %></p>
             
-            <% if (product.stock > 0) { %>
-                <button>Add to Cart</button>
-            <% } else { %>
-                <button disabled>Out of Stock</button>
-            <% } %>
+            <button>Purchase Now</button>
+            <button>Add to Cart</button>
         </div>
     </div>
     

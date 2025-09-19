@@ -27,13 +27,14 @@ header .nav-container {
     
 }
 
+.acct-sect ul,
 .nav-menu ul {
     display: flex;
     list-style: none;
     gap: 2rem;
 }
 
-
+.acct-sect a::after,
 .nav-menu a::after {
   content: "";
   position: absolute;
@@ -78,17 +79,120 @@ header .nav-container {
 }
 
 
-.contact-link {
+.acct-sect {
   text-align: right;
+  position: relative;
 }
 
-.contact-link a {
-  color: var(--warm-off-white);
-  text-decoration: none;
-  font-size: 1.4rem;
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.nav-icons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cart-icon,
+.dropdown-toggle {
+  cursor: pointer;
+  padding: 0.5rem;
   transition: opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.contact-link a:hover {
+.cart-icon:hover,
+.dropdown-toggle:hover {
   opacity: 0.7;
 }
+
+.nav-icons svg {
+  width: 20px;
+  height: 20px;
+  fill: var(--warm-off-white);
+}
+
+.dropdown-arrow {
+  width: 12px !important;
+  height: 12px !important;
+  transition: transform 0.3s ease;
+}
+
+.dropdown.active .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: var(--warm-off-black);
+  border: 1px solid var(--warm-off-white);
+  /* min-width: 180px; */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  text-align: start;
+  transition: all 0.3s ease;
+  z-index: 1000;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  margin-top: 0.5rem;
+}
+
+.dropdown.active .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-menu li {
+  border-bottom: 1px solid rgba(248, 245, 242, 0.1);
+}
+
+.dropdown-menu li:last-child {
+  border-bottom: none;
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 1rem 1.5rem;
+  color: var(--warm-off-white);
+  text-decoration: none;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  position: relative;
+  /* overflow: hidden; */
+}
+
+.dropdown-menu a::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 0;
+  height: 100%;
+  background-color: white;
+  z-index: -1;
+  transition: width 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dropdown-menu a:hover::after,
+.dropdown-menu a.active::after {
+  width: 100%;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu a.active {
+  color: black;
+  mix-blend-mode: difference;
+}
+
+.acct-sect .dropdown-menu {
+  display: block;
+}
+

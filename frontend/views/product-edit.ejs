@@ -17,9 +17,6 @@
                 <label for="category">Category:</label>
                 <input type="text" name="category" id="category" value="<%= product.category %>" autocomplete="off">
 
-                <label for="stock">Stock Quantity:</label>
-                <input type="number" name="stock" id="stock" min="0" value="<%= product.stock %>" required>
-
                 <% if (product.imageUrl) { %>
                     <label>Current Image:</label>
                     <div class="current-image">

@@ -115,7 +115,7 @@
 .sect form label{
     margin-bottom: 1rem;
 }
-.sect form input {
+.sect form input, textarea {
     margin-bottom: 10px;
     padding: 1rem;
     background: none;

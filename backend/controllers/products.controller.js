@@ -120,7 +120,7 @@ class ProductController {
                 return res.render('product-edit', { 
                     title: 'Edit Product', 
                     message: "Product not found.",
-                    product: { _id: req.params.id, name: '', description: '', price: 0, category: '', stock: 0, imageUrl: '', isActive: true }
+                    product: { _id: req.params.id, name: '', description: '', price: 0, category: '', imageUrl: '', isActive: true }
                 });
             }
             res.render('product-edit', { 
@@ -132,7 +132,7 @@ class ProductController {
             res.render('product-edit', { 
                 title: 'Edit Product', 
                 message: "Something went wrong loading the product.",
-                product: { _id: req.params.id, name: '', description: '', price: 0, category: '', stock: 0, imageUrl: '', isActive: true }
+                product: { _id: req.params.id, name: '', description: '', price: 0, category: '', imageUrl: '', isActive: true }
             });
         }
     }
@@ -151,7 +151,7 @@ class ProductController {
                     return res.render('product-edit', { 
                         title: 'Edit Product', 
                         message: req.uploadError,
-                        product: product || { _id: req.params.id, name: '', description: '', price: 0, category: '', stock: 0, imageUrl: '', isActive: true },
+                        product: product || { _id: req.params.id, name: '', description: '', price: 0, category: '', imageUrl: '', isActive: true },
                         formData: req.body
                     });
                 }
@@ -160,7 +160,6 @@ class ProductController {
                 const updateData = {
                     ...req.body,
                     price: parseFloat(req.body.price),
-                    stock: parseInt(req.body.stock),
                     isActive: req.body.isActive === 'true' // Convert string to boolean
                 };
                 
@@ -202,7 +201,7 @@ class ProductController {
                 res.render('product-edit', { 
                     title: 'Edit Product', 
                     message: "Error updating product. Please try again.",
-                    product: product || { _id: req.params.id, name: '', description: '', price: 0, category: '', stock: 0, imageUrl: '', isActive: true },
+                    product: product || { _id: req.params.id, name: '', description: '', price: 0, category: '', imageUrl: '', isActive: true },
                     formData: req.body
                 });
             }
