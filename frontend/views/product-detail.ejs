@@ -1,31 +1,41 @@
 <div class="product-detail">
     <h1><%= product.name %></h1>
     
-    <div>
-        <div>
-            <% if (product.imageUrl) { %>
-                <img src="<%= product.imageUrl %>" alt="<%= product.name %>">
-            <% } else { %>
-                <div>
-                    <span>No Image Available</span>
-                </div>
-            <% } %>
+    <div class="product-layout">
+        <div class="product-image-section">
+            <div class="product-image-container">
+                <% if (product.imageUrl) { %>
+                    <img src="<%= product.imageUrl %>" alt="<%= product.name %>">
+                <% } else { %>
+                    <div class="no-image-available">
+                        <span>No Image Available</span>
+                    </div>
+                <% } %>
+            </div>
         </div>
         
-        <div>
-            <h2>$<%= product.price %></h2>
-            <p><strong>Category:</strong> <%= product.category %></p>
-            <p><strong>Description:</strong></p>
-            <p><%= product.description %></p>
+        <div class="product-info">
+            <div class="product-price">$<%= parseFloat(product.price || 0).toFixed(2) %></div>
             
-            <div class="btn-container">
-                <button class="btn-primary">Purchase Now</button>
-                <button class="btn-secondary">Add to Cart</button>
+            <div class="product-meta">
+                <p><strong>Category:</strong> <%= product.category %></p>
+            </div>
+            
+            <div class="product-description-section">
+                <p><strong>Description:</strong></p>
+                <div class="product-description"><%= product.description %></div>
+            </div>
+            
+            <div class="product-actions">
+                <div class="btn-container">
+                    <button class="btn-secondary">Purchase Now</button>
+                    <button class="btn-secondary">Add to Cart</button>
+                </div>
             </div>
         </div>
     </div>
     
-    <p>
-        <a href="/products">← Back to Products</a>
-    </p>
+    <div class="back-link">
+        <a href="/products">Back to Products</a>
+    </div>
 </div>

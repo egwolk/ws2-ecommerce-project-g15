@@ -1,0 +1,149 @@
+/* ===== PRODUCT DETAIL STYLES ===== */
+
+.product-detail {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    color: var(--warm-off-white);
+    border: var(--warm-off-white) solid .1rem;
+}
+
+.product-detail h1 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: var(--warm-off-white)
+}
+
+/* Product Layout */
+.product-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 2rem;
+}
+
+/* Product Image Section */
+.product-image-section {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+   
+}
+
+.product-image-container {
+    max-width: 100%;
+    overflow: hidden;
+    border: var(--warm-off-white) solid .1rem;
+}
+
+.product-image-container img {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    object-fit: cover;
+    display: block;
+}
+
+.no-image-available {
+    width: 400px;
+    height: 300px;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 2px dashed #ddd;
+}
+
+.no-image-available span {
+    color: #999;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+/* Product Info Section */
+.product-info {
+    padding: 1rem 0;
+}
+
+.product-info .product-price {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: var(--warm-off-white);
+    margin-bottom: 1.5rem;
+}
+
+.product-info .product-meta {
+    margin-bottom: 2rem;
+}
+
+.product-info .product-meta p {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.product-info .product-meta strong {
+    color: var(--warm-off-white);
+    font-weight: 600;
+}
+
+.product-info .product-description-section {
+    margin-bottom: 2rem;
+}
+
+.product-info .product-description-section p:first-of-type {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--warm-off-white);
+}
+
+.product-info .product-description-section .product-description {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--warm-off-white);
+    padding: 1.5rem;
+   
+}
+
+/* Action Buttons */
+.product-actions {
+    margin-bottom: 2rem;
+}
+
+.product-actions .btn-container {
+    gap: 1rem;
+}
+
+.product-actions button {
+    flex: 1;
+    min-width: 150px;
+}
+
+/* Back Link */
+.back-link {
+    text-align: center;
+    padding-top: 2rem;
+}
+
+.back-link a {
+    color: var(--warm-off-white);
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.back-link a:hover {
+    opacity: 0.7;
+}
+
+.back-link a::before {
+    content: "←";
+    font-size: 1.2rem;
+}
+

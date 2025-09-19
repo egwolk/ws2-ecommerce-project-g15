@@ -97,7 +97,7 @@ header .nav-container {
   gap: 0.5rem;
 }
 
-.cart-icon,
+.cart-icon a,
 .dropdown-toggle {
   cursor: pointer;
   padding: 0.5rem;
@@ -107,7 +107,7 @@ header .nav-container {
   gap: 0.5rem;
 }
 
-.cart-icon:hover,
+.cart-icon:hover a,
 .dropdown-toggle:hover {
   opacity: 0.7;
 }

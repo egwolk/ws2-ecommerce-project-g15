@@ -6,21 +6,23 @@
     <% } else { %>
         <div class="products-grid">
             <% products.forEach(product => { %>
-                <div class="product-card">
-                    <% if (product.imageUrl) { %>
-                        <div class="img-container">
-                            <img src="<%= product.imageUrl %>" alt="<%= product.name %>">
-                        </div>
-                    <% } %>
-                    <div class="product-text">
-                        <h3><%= product.name %></h3>
-                        <!-- <p><%= product.description %></p> -->
-                        <p><strong>Price: $<%= product.price %></strong></p>
-                        <p>Category: <%= product.category %></p>
-                        <!-- <p>Stock: <%= product.stock %> available</p> -->
-                        <!-- <a href="/products/<%= product._id %>">View Details</a> -->
+                <a href="/products/<%= product._id %>" class="product-card">
+                    <div class="img-container">
+                        <% if (product.imageUrl) { %>
+                            <img src="<%= product.imageUrl %>" alt="<%= product.name %>" loading="lazy">
+                        <% } else { %>
+                            <div class="no-image-placeholder">No Image</div>
+                        <% } %>
                     </div>
-                </div>
+                    <div class="product-text">
+                        <h3 class="product-title"><%= product.name %></h3>
+                        <p class="product-description"><%= product.description.length > 50 ? product.description.substring(0, 50) + '...' : product.description %></p>
+                        <div class="product-pricing">
+                            <span class="product-price">$<%= parseFloat(product.price || 0).toFixed(2) %></span>
+                            <span class="product-category"><%= product.category %></span>
+                        </div>
+                    </div>
+                </a>
             <% }) %>
         </div>
     <% } %>

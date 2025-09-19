@@ -1,4 +1,43 @@
-<div>
+<div class="hero-section">
     <h1>Welcome to DigiMArt</h1>
     <p>Erin's official shop for digital products and art!</p>
 </div>
+
+<section class="featured-products">
+    <div class="container">
+        <h2>Featured Products</h2>
+        <% if (featuredProducts && featuredProducts.length > 0) { %>
+            <div class="products-container">
+                <div class="products-grid">
+                    <% featuredProducts.forEach(product => { %>
+                        <a href="/products/<%= product._id %>" class="product-card">
+                            <div class="img-container">
+                                <% if (product.imageUrl) { %>
+                                    <img src="<%= product.imageUrl %>" alt="<%= product.name %>" loading="lazy">
+                                <% } else { %>
+                                    <div class="no-image-placeholder">No Image</div>
+                                <% } %>
+                            </div>
+                            <div class="product-text">
+                                <h3 class="product-title"><%= product.name %></h3>
+                                <p class="product-description"><%= product.description.length > 50 ? product.description.substring(0, 50) + '...' : product.description %></p>
+                                <div class="product-pricing">
+                                    <span class="product-price">$<%= parseFloat(product.price || 0).toFixed(2) %></span>
+                                    <span class="product-category"><%= product.category %></span>
+                                </div>
+                            </div>
+                        </a>
+                    <% }); %>
+                </div>
+            </div>
+            <div class="view-all-container">
+                <a href="/products" class="btn btn-secondary">View All Products</a>
+            </div>
+        <% } else { %>
+            <div class="no-products">
+                <p>No featured products available at the moment.</p>
+                <a href="/products" class="btn btn-secondary">Browse Products</a>
+            </div>
+        <% } %>
+    </div>
+</section>
