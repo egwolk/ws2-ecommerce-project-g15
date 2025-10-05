@@ -70,9 +70,13 @@ app.use((req, res, next) => {
 })
 app.use((err, req, res, next) => {
     console.error(err)
-    res.status(500).render('500', { title: 'Server Error' })
+    res.status(500).render('500', { title: 'Server Error', req: req })
 })
-
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    if (res.headersSent) return next(err);
+    res.status(500).render('500', { title: 'Server Error', req: req });
+});
 
 // MongoDB Setup
 const uri = process.env.MONGO_URI;
