@@ -9,6 +9,7 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const verifyTurnstile = require('./utils/turnstileVerify');
 /*
 app.listen(PORT, () => {
     console.log(` Server running on port ${PORT}`);
@@ -17,7 +18,25 @@ app.listen(PORT, () => {
 
 // Security and performance middleware
 app.set('trust proxy', 1); // if behind Render proxy
-app.use(helmet()); // sensible security headers
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: [
+                "'self'",
+                "https://challenges.cloudflare.com"
+            ],
+            frameSrc: [
+                "'self'",
+                "https://challenges.cloudflare.com"
+            ],
+            connectSrc: [
+                "'self'",
+                "https://challenges.cloudflare.com"
+            ]
+        }
+    }
+})); // sensible security headers
 app.use(compression()); // smaller responses
 
 // Middleware
