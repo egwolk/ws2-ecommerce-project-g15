@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const UserService = require('../services/users.services');
 const UserController = require('../controllers/users.controller');
+const { requireTurnstile } = require('../middleware/turnstile');
 
 // Create controller with app.locals when router is used
 router.use((req, res, next) => {
@@ -14,10 +15,10 @@ router.use((req, res, next) => {
 
 // Forgot password routes
 router.get('/forgot', (req, res) => req.userController.showForgotPasswordForm(req, res));
-router.post('/forgot', (req, res) => req.userController.sendResetEmail(req, res));
+router.post('/forgot', requireTurnstile, (req, res) => req.userController.sendResetEmail(req, res));
 
 // Reset password routes  
 router.get('/reset/:token', (req, res) => req.userController.showResetPasswordForm(req, res));
-router.post('/reset/:token', (req, res) => req.userController.resetPassword(req, res));
+router.post('/reset/:token', requireTurnstile, (req, res) => req.userController.resetPassword(req, res));
 
 module.exports = router;

@@ -21,10 +21,18 @@
                 </div>
                 <sup class="forgot-password"><a href="/password/forgot">Forgot Password?</a></sup>
                 
+                <!-- Turnstile widget -->
+                <div class="cf-turnstile"
+                data-sitekey="<%= process.env.TURNSTILE_SITEKEY %>"></div>
+
                 <div class="btn-container">
                     <button type="submit" class="btn-secondary">Login</button>
                 </div>
             </form>
+
+
+           
+            
         </div>
         <div class="sect login-info">
             <div class="utils">
@@ -38,3 +46,4 @@
         </div>
     </div>
 </div>
+

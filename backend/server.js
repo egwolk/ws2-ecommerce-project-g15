@@ -17,6 +17,9 @@ app.use(cors({
 // Middlewares
 setupMiddleware(app);
 
+// health check
+app.get('/health', (req, res) => res.type('text').send('ok'));
+
 // Routes
 const indexRoute = require('./routes/index');
 const usersRoute = require('./routes/users');
@@ -28,7 +31,14 @@ app.use('/users', usersRoute);
 app.use('/password', passwordRoute);
 app.use('/api', apiRoute);
 app.use('/products', productsRoute);
-
+app.use((req, res, next) => {
+    //404 logger
+if (!res.headersSent) {
+        console.warn('404:', req.method, req.originalUrl, 'referrer:',
+        req.get('referer') || '-')
+    }
+    next()
+})
 // 404
 app.use((req, res, next) => {
     res.status(404).render('404', { 

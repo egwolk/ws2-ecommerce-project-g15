@@ -3,6 +3,8 @@ const router = express.Router();
 const UserService = require('../services/users.services');
 const UserController = require('../controllers/users.controller');
 const { requireAdmin } = require('../middleware/auth');
+const { requireTurnstile } = require('../middleware/turnstile');
+
 
 // Create controller with app.locals when router is used
 router.use((req, res, next) => {
@@ -16,14 +18,14 @@ router.use((req, res, next) => {
 
 // Registration routes
 router.get('/register', (req, res) => req.userController.showRegisterForm(req, res));
-router.post('/register', (req, res) => req.userController.registerUser(req, res));
+router.post('/register', requireTurnstile, (req, res) => req.userController.registerUser(req, res));
 
 // Verification route
 router.get('/verify/:token', (req, res) => req.userController.verifyEmail(req, res));
 
 // Login routes
 router.get('/login', (req, res) => req.userController.showLoginForm(req, res));
-router.post('/login', (req, res) => req.userController.loginUser(req, res));
+router.post('/login', requireTurnstile, (req, res) => req.userController.loginUser(req, res));
 
 // Dashboard routes
 router.get('/dashboard', (req, res) => req.userController.showDashboard(req, res));
