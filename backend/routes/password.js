@@ -15,7 +15,7 @@ router.use((req, res, next) => {
 
 // Forgot password routes
 router.get('/forgot', (req, res) => req.userController.showForgotPasswordForm(req, res));
-router.post('/forgot', requireTurnstile, (req, res) => req.userController.sendResetEmail(req, res));
+router.post('/forgot', (req, res) => req.userController.sendResetEmail(req, res));
 
 // Reset password routes  
 router.get('/reset/:token', (req, res) => req.userController.showResetPasswordForm(req, res));
