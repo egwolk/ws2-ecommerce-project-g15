@@ -1,0 +1,15 @@
+<div class="error-container">
+    <h1>500 — We hit a Snag</h1>
+    <p>Please try agin. If this keeps happening, return to the home page.</p>
+    <div class="error-actions">
+        <a href="/" class="btn-secondary"href="<%= (req && req.originalUrl) ? req.originalUrl : '/'%>">Try again</a>
+
+        <% if (user) { %>
+            <a href="/users/dashboard" class="btn-secondary">Dashboard</a>
+            <a href="/users/logout" class="btn-secondary">Logout</a>
+        <% } else { %>
+            <a href="/users/login" class="btn-secondary">Login</a>
+            <a href="/users/register" class="btn-secondary">Register</a>
+        <% } %>
+    </div>
+</div>

@@ -30,6 +30,10 @@ function setupSession(app) {
     }
     
     app.use(session(sessionConfig));
+    app.use((req, res, next) => {
+        res.locals.user = req.session?.user || null;
+        next();
+    });
 }
 
 module.exports = setupSession;

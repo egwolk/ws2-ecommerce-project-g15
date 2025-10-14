@@ -25,4 +25,18 @@ router.get('/', async (req, res) => {
     }
 });
 
+/* 500 testing
+router.get('/crash', (req, res) => {
+    throw new Error('Test crash');
+});
+
+router.get('/crash-async', async (req, res, next) => {
+    try {
+        throw new Error('Async crash');
+    } catch (err) {
+        next(err);
+    }
+});
+*/
+
 module.exports = router;

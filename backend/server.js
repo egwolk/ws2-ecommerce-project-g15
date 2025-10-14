@@ -36,6 +36,12 @@ app.use((req, res, next) => {
         currentPage: '404'
     });
 });
+// 500 handler (last)
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    if (res.headersSent) return next(err);
+    res.status(500).render('500', { title: 'Server Error', req: req });
+});
 
 // Expose client & dbName to routes
 app.locals.client = client;
