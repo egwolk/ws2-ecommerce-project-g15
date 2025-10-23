@@ -8,11 +8,11 @@
     <url>
         <loc>https://ws2-ecommerce-project-g15.onrender.com/products</loc>
         <lastmod>2025-04-08T00:00:00+00:00</lastmod>
-        <priority>1.00</priority>
+        <priority>0.80</priority>
     </url>
     <url>
         <loc>https://ws2-ecommerce-project-g15.onrender.com/contact</loc>
         <lastmod>2025-04-08T00:00:00+00:00</lastmod>
-        <priority>1.00</priority>
+        <priority>0.50</priority>
     </url>
 </urlset>
