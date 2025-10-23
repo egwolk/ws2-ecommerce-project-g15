@@ -13,6 +13,9 @@ function setupStaticFiles(app) {
         next();
     };
 
+    // Serve public directory files at root level (for sitemap.xml, robots.txt, etc.)
+    app.use(express.static(path.join(__dirname, '../../frontend/public')));
+
     app.use('/styles', addSecurityHeaders, express.static(path.join(__dirname, '../../frontend/styles')));
     app.use('/scripts', addSecurityHeaders, express.static(path.join(__dirname, '../../frontend/scripts')));
     app.use('/assets', addSecurityHeaders, express.static(path.join(__dirname, '../../frontend/assets')));
