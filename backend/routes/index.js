@@ -25,6 +25,17 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/about', (req, res) => {
+    const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+    res.render('about', {
+        title: 'About Me',
+        name: 'Erin Drew Covacha',
+        description: 'I am a web systems student building projects with Node.js,Express, and EJS.',
+        metaPreset: 'about',
+        canonicalUrl: `${baseUrl}/about`
+    });
+});
+
 /* 500 testing
 router.get('/crash', (req, res) => {
     throw new Error('Test crash');

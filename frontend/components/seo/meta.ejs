@@ -1,0 +1,35 @@
+
+<% if (typeof metaPreset !== 'undefined' && metaPreset === 'about') { %>
+	<meta name="description" content="Learn more about <%= name %> — web systems developer and student innovator.">
+	<meta name="keywords" content="about page, web systems, EJS, SEO, student project">
+	<meta name="author" content="<%= name %>">
+	<meta name="robots" content="index, follow">
+	<meta property="og:title" content="About <%= name %>">
+	<meta property="og:description" content="<%= description %>">
+	<meta property="og:type" content="website">
+	<meta property="og:image" content="/images/profile.png">
+	<meta name="twitter:card" content="summary_large_image">
+	<% if (typeof canonicalUrl !== 'undefined' && canonicalUrl) { %>
+		<link rel="canonical" href="<%= canonicalUrl %>">
+		<meta property="og:url" content="<%= canonicalUrl %>">
+	<% } %>
+<% } else { %>
+	<% const robots = typeof metaRobots !== 'undefined' ? metaRobots : 'index,follow'; %>
+	<meta name="robots" content="<%= robots %>">
+	<% if (typeof metaDescription !== 'undefined' && metaDescription) { %>
+	<meta name="description" content="<%= metaDescription %>">
+	<% } %>
+	<% if (typeof canonicalUrl !== 'undefined' && canonicalUrl) { %>
+	<link rel="canonical" href="<%= canonicalUrl %>">
+	<% } %>
+
+	<% const ogTitle = metaTitle || `DigiMArt | ${title}`; %>
+	<meta property="og:title" content="<%= ogTitle %>">
+	<% if (typeof metaDescription !== 'undefined' && metaDescription) { %>
+	<meta property="og:description" content="<%= metaDescription %>">
+	<% } %>
+	<% if (typeof canonicalUrl !== 'undefined' && canonicalUrl) { %>
+	<meta property="og:url" content="<%= canonicalUrl %>">
+	<% } %>
+	<meta property="og:type" content="website">
+<% } %>

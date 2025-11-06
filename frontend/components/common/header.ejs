@@ -13,6 +13,7 @@
                 <li><a href="/" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a></li>
                 <li><a href="/products" class="<%= currentPage === 'products' ? 'active' : '' %>">PRODUCTS</a></li>
                 <li><a href="/contact" class="<%= currentPage === 'contact' ? 'active' : '' %>">CONTACT</a></li>
+                <li><a href="/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT</a></li>
                 <% if (authenticated) { %>
                     <li><a href="/users/dashboard" class="<%= currentPage === 'dashboard' ? 'active' : '' %>">DASHBOARD</a></li>
                     <% if (user && user.role === 'admin') { %>
