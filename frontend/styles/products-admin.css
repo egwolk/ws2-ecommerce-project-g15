@@ -1,0 +1,138 @@
+/* Simple stylesheet for the Products Admin page */
+.products-admin {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    color: var(--warm-off-white);
+    border: var(--warm-off-white) solid .1rem;
+}
+
+
+
+.products-admin p {
+  margin: 0 0 14px 0;
+  color: var(--warm-off-white);
+}
+
+
+
+
+
+.products-admin table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  background: transparent;
+}
+
+.products-admin th,
+.products-admin td {
+  padding: 12px 10px;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.products-admin th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #444;
+  text-align: center;
+}
+
+.products-admin td span { color: #444; }
+
+
+.products-admin .status-active {
+  color: greenyellow;
+  font-weight: 600;
+}
+.products-admin .status-inactive {
+  color: red;
+  font-weight: 600;
+}
+
+.products-admin a { color: var(--warm-off-white); text-decoration: none; margin-right: 8px; }
+
+
+.products-admin .btn-danger {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 8px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.products-admin .btn-small { padding: 6px 8px; font-size: 0.9rem; }
+
+.products-admin form { display: inline; }
+
+@media (max-width: 720px) {
+  .products-admin table,
+  .products-admin thead,
+  .products-admin tbody,
+  .products-admin th,
+  .products-admin td,
+  .products-admin tr { display: block; }
+
+  .products-admin tr { margin-bottom: 12px; }
+
+  .products-admin th { display: none; }
+
+  .products-admin td { padding-left: 48%; position: relative; }
+  .products-admin td:before {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    width: 42%;
+    white-space: nowrap;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .products-admin td:nth-of-type(1):before{ content: "Name"; }
+  .products-admin td:nth-of-type(2):before{ content: "Category"; }
+  .products-admin td:nth-of-type(3):before{ content: "Price"; }
+  .products-admin td:nth-of-type(4):before{ content: "Status"; }
+  .products-admin td:nth-of-type(5):before{ content: "Actions"; }
+}
+
+.products-admin tbody tr:last-child td,
+.products-admin tbody tr:last-child th {
+  border-bottom: none;
+}
+
+.products-admin .actions { display: flex; gap: 8px; align-items: center; }
+
+/* Make anchor buttons match the compact size of the delete button inside this view */
+.products-admin a.btn-small {
+  min-width: auto; /* avoid global 150px min */
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  border-width: 1px;
+}
+
+/* Ensure anchor buttons render as inline-block for the button effects */
+.products-admin a.btn-primary,
+.products-admin a.btn-secondary,
+.products-admin a.btn-danger,
+.products-admin a.btn-success {
+  display: inline-block;
+}
+
+/* Remove default top margin on submit buttons inside the admin actions */
+.products-admin .actions form button[type="submit"] {
+  margin-top: 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.products-admin a.view-btn{
+    background: mediumaquamarine;
+}
+.products-admin a.edit-btn{
+    background: orange;
+}
+
+

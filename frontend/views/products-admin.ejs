@@ -1,8 +1,8 @@
-<div>
+<div class="products-admin">
     <h1>Manage Products</h1>
     <p>Welcome to the Products Administration Page.</p>
     
-    <a href="/products/admin/create">Add New Product</a>
+    <a href="/products/admin/create" class="button btn-secondary">Add New Product</a>
     
     <% if (products.length === 0) { %>
         <p>No products found.</p>
@@ -24,27 +24,22 @@
                         <td><%= product.category %></td>
                         <td>$<%= product.price %></td>
                         <td>
-                            <span>
+                            <span class="<%= product.isActive ? 'status-active' : 'status-inactive' %>">
                                 <%= product.isActive ? 'Active' : 'Inactive' %>
                             </span>
                         </td>
                         <td>
-                            <a href="/products/<%= product._id %>">View</a>
-                            <a href="/products/admin/<%= product._id %>/edit">Edit</a>
-                            <% if (product.isActive) { %>
+                            <div class="actions">
+                                <a href="/products/<%= product._id %>" class="btn-danger btn-small view-btn">View</a>
+                                <a href="/products/admin/<%= product._id %>/edit" class="btn-danger btn-small edit-btn">Edit</a>
                                 <form action="/products/admin/<%= product._id %>/delete" method="POST">
                                     <button type="submit" class="btn-danger btn-small" onclick="return confirm('Are you sure you want to permanently delete this product? This action cannot be undone.')">Delete</button>
                                 </form>
-                            <% } %>
+                            </div>
                         </td>
                     </tr>
                 <% }) %>
             </tbody>
         </table>
     <% } %>
-    
-    <p>
-        <a href="/users/admin">Back to User Management</a> |
-        <a href="/users/dashboard">Back to Dashboard</a>
-    </p>
 </div>
