@@ -32,8 +32,20 @@ function requireAdmin(req, res, next) {
     next();
 }
 
+function requireLogin(req, res, next) {
+    if (!req.session || !req.session.user) {
+        return res.status(401).render('access-denied', {
+            title: 'Access Denied',
+            authenticated: false,
+            user: null
+        });
+    }
+    next();
+}
+
 module.exports = {
     getAuthData,
     addAuthDataToLocals,
-    requireAdmin
+    requireAdmin,
+    requireLogin
 };
