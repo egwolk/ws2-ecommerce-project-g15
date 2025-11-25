@@ -1,0 +1,52 @@
+<h1>User Dashboard</h1>
+<section>
+    <h2>Welcome</h2>
+    <p>
+        <% if (user && user.firstName) { %>
+            Hello, <strong><%= user.firstName %> <%= user.lastName || "" %></strong>
+        <% } else { %>
+            Hello, <strong><%= user.email %></strong>
+        <% } %>
+    </p>
+</section>
+<section>
+    <h2>Order Summary</h2>
+    <p>Total Orders: <strong><%= totalOrders %></strong></p>
+    <table border="1" cellpadding="8" cellspacing="0">
+        <tr>
+            <th>Status</th>
+            <th>Count</th>
+        </tr>
+        <tr>
+            <td>To Pay</td>
+            <td><%= statusCounts.to_pay %></td>
+        </tr>
+        <tr>
+
+            <td>To Ship</td>
+            <td><%= statusCounts.to_ship %></td>
+        </tr>
+        <tr>
+            <td>To Receive</td>
+            <td><%= statusCounts.to_receive %></td>
+        </tr>
+        <tr>
+            <td>Completed</td>
+            <td><%= statusCounts.completed %></td>
+        </tr>
+        <tr>
+            <td>Return / Refund</td>
+            <td><%= statusCounts.refund %></td>
+        </tr>
+        <tr>
+            <td>Cancelled</td>
+            <td><%= statusCounts.cancelled %></td>
+        </tr>
+    </table>
+</section>
+<section>
+    <h2>Quick Links</h2>
+    <ul>
+        <li><a href="/users/orders">View Purchase History</a></li>
+    </ul>
+</section>

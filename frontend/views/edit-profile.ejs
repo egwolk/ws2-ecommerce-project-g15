@@ -1,10 +1,10 @@
 <div class="form-container">
     <div class="form-header">
-        <div class="form-title">EDIT PROFILE</div>
+        <div class="form-title">PROFILE</div>
     </div>
     <div class="form-sections">
         <div class="sect">
-            <form action="/users/edit-profile/<%= user.userId %>" method="POST" autocomplete="off">
+            <form action="/users/profile" method="POST" autocomplete="off">
                 <label for="firstName">First Name:</label>
                 <input type="text" name="firstName" value="<%= typeof formData !== 'undefined' && formData.firstName ? formData.firstName : user.firstName %>" autocomplete="given-name" required>
 
@@ -12,7 +12,10 @@
                 <input type="text" name="lastName" value="<%= typeof formData !== 'undefined' && formData.lastName ? formData.lastName : user.lastName %>" autocomplete="family-name" required>
 
                 <label for="email">Email:</label>
-                <input type="email" name="email" value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : user.email %>" autocomplete="email" required>
+                <input type="email" name="email" value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : user.email %>" autocomplete="email" required disabled>
+
+                <label for="contactNo">Contact Number (optional):</label>
+                <input type="text" name="contactNo" value="<%= typeof formData !== 'undefined' && formData.contactNo ? formData.contactNo : user.contactNo %>" autocomplete="tel">
 
                 <label for="password">New Password (leave blank to keep current):</label>
                 <div class="password-container">

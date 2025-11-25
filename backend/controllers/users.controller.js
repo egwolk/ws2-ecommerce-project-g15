@@ -1,5 +1,6 @@
 const { Resend } = require('resend');
 const resend = new Resend(process.env.RESEND_API_KEY);
+const OrdersService = require('../services/orders.service');
 
 class UserController {
     constructor(userService) {
@@ -258,17 +259,126 @@ class UserController {
     }
 }
 
-    showDashboard(req, res) {
+    async showDashboard(req, res) {
         console.log('Dashboard accessed - Session user:', req.session.user ? 'Found' : 'Not found');
         console.log('Session ID:', req.sessionID);
-        
+
         if (!req.session.user) {
             console.log('No session user found, redirecting to login');
             return res.redirect('/users/login');
         }
-        
-        console.log('Rendering dashboard for user:', req.session.user.email);
-        res.render('dashboard', { title: "User Dashboard"});
+
+        try {
+            const user = req.session.user;
+            // Default render data
+            const renderData = { title: "User Dashboard" };
+
+            // If user is not admin, load order counts to show the user-dashboard partial
+            if (user && user.role !== 'admin') {
+                const db = req.app.locals.client.db(req.app.locals.dbName);
+                const ordersCollection = db.collection('orders');
+
+                const userOrders = await ordersCollection
+                    .find({ userId: user.userId })
+                    .sort({ createdAt: -1 })
+                    .toArray();
+
+                const statusCounts = {
+                    to_pay: 0,
+                    to_ship: 0,
+                    to_receive: 0,
+                    completed: 0,
+                    refund: 0,
+                    cancelled: 0
+                };
+
+                userOrders.forEach(order => {
+                    const status = order.orderStatus;
+                    if (status && statusCounts[status] !== undefined) {
+                        statusCounts[status] += 1;
+                    }
+                });
+
+                renderData.user = user;
+                renderData.statusCounts = statusCounts;
+                renderData.totalOrders = userOrders.length;
+            }
+
+            console.log('Rendering dashboard for user:', req.session.user.email);
+            res.render('dashboard', renderData);
+        } catch (err) {
+            console.error('Error loading dashboard data:', err);
+            // Fall back to simple render if DB fails
+            res.render('dashboard', { title: "User Dashboard" });
+        }
+    }
+
+    async showProfile(req, res) {
+        try {
+            if (!req.session.user) {
+                return res.redirect('/users/login?message=expired');
+            }
+
+            const userFromSession = req.session.user;
+
+            // Prefer service method that looks up by session userId if available
+            let user;
+            if (this.userService.getUserByUserId) {
+                user = await this.userService.getUserByUserId(userFromSession.userId);
+            } else {
+                user = await this.userService.getUserById(userFromSession.userId);
+            }
+
+            const updated = req.query.updated === "1";
+            res.render('user-profile', {
+                title: "User Profile",
+                user,
+                updated
+            });
+        } catch (err) {
+            console.error("Error loading user profile:", err);
+            res.status(500).send("Error loading profile.");
+        }
+    }
+
+    async showOrders(req, res) {
+        try {
+            if (!req.session.user) {
+                return res.redirect('/users/login?message=expired');
+            }
+
+            const userFromSession = req.session.user;
+
+            // Use OrdersService to fetch orders for the user
+            const ordersService = new OrdersService(req.app.locals.client, req.app.locals.dbName);
+            const userOrders = await ordersService.getOrdersByUserId(userFromSession.userId);
+
+            // Group orders by status
+            const ordersByStatus = {
+                to_pay: [],
+                to_ship: [],
+                to_receive: [],
+                completed: [],
+                refund: [],
+                cancelled: []
+            };
+
+            (userOrders || []).forEach(order => {
+                const status = order.orderStatus;
+                if (status && ordersByStatus[status]) {
+                    ordersByStatus[status].push(order);
+                }
+            });
+
+            res.render('user-orders', {
+                title: "My Orders",
+                user: userFromSession,
+                ordersByStatus
+            });
+        } catch (err) {
+            console.error("Error loading user orders:", err);
+            res.status(500).send("Error loading orders.");
+        }
     }
 
     async showAdminDashboard(req, res) {
@@ -332,8 +442,15 @@ class UserController {
             if (!req.session.user || req.session.user.role !== 'admin') {
                 return res.redirect('/users/login?message=expired');
             }
-            
-            await this.userService.updateUser(req.params.id, req.body);
+            // Prevent admins from changing a user's personal identity fields
+            // even if a crafted request includes them. Only allow updating
+            // account-level fields (role, accountStatus, password, etc.).
+            const updateData = { ...req.body };
+            delete updateData.firstName;
+            delete updateData.lastName;
+            delete updateData.email;
+
+            await this.userService.updateUser(req.params.id, updateData);
             res.redirect('/users/admin');
         } catch (err) {
             console.error("Error updating user:", err);
@@ -352,21 +469,24 @@ class UserController {
             if (!req.session.user) {
                 return res.redirect('/users/login?message=expired');
             }
-            const user = await this.userService.getUserById(req.params.id);
+
+            const id = req.params.id || req.session.user.userId;
+            const user = await this.userService.getUserById(id);
             if (!user) {
-                return res.render('edit-profile', { 
-                    title: "Edit Profile", 
+                return res.render('edit-profile', {
+                    title: "Edit Profile",
                     message: "User profile not found.",
-                    user: { _id: req.params.id }
+                    user: { _id: id }
                 });
             }
+
             res.render('edit-profile', { title: "Edit Profile", user: user });
         } catch (err) {
             console.error("Error loading user:", err);
-            res.render('edit-profile', { 
-                title: "Edit Profile", 
+            res.render('edit-profile', {
+                title: "Edit Profile",
                 message: "Something went wrong loading your profile.",
-                user: { _id: req.params.id }
+                user: { _id: req.params.id || (req.session.user && req.session.user.userId) }
             });
         }
     }
@@ -376,60 +496,66 @@ class UserController {
             if (!req.session.user) {
                 return res.redirect('/users/login?message=expired');
             }
-            
+
+            const id = req.params.id || req.session.user.userId;
+
             const { password, confirmPassword } = req.body;
-            
+
             // If password is provided, confirmPassword must also be provided and match
             if (password || confirmPassword) {
                 if (!password || !confirmPassword) {
-                    const user = await this.userService.getUserById(req.params.id);
-                    return res.render('edit-profile', { 
-                        title: "Edit Profile", 
+                    const user = await this.userService.getUserById(id);
+                    return res.render('edit-profile', {
+                        title: "Edit Profile",
                         message: "Both password fields are required when changing your password.",
                         user: user,
                         formData: req.body
                     });
                 }
-                
+
                 if (password !== confirmPassword) {
-                    const user = await this.userService.getUserById(req.params.id);
-                    return res.render('edit-profile', { 
-                        title: "Edit Profile", 
+                    const user = await this.userService.getUserById(id);
+                    return res.render('edit-profile', {
+                        title: "Edit Profile",
                         message: "Passwords do not match.",
                         user: user,
                         formData: req.body
                     });
                 }
-                
+
                 // Validate password strength
                 const passwordValidation = this.validatePassword(password);
                 if (!passwordValidation.isValid) {
-                    const user = await this.userService.getUserById(req.params.id);
-                    return res.render('edit-profile', { 
-                        title: "Edit Profile", 
+                    const user = await this.userService.getUserById(id);
+                    return res.render('edit-profile', {
+                        title: "Edit Profile",
                         message: passwordValidation.errors.join(" "),
                         user: user,
                         formData: req.body
                     });
                 }
             }
-            
-            await this.userService.updateUser(req.params.id, req.body);
-            const updatedUser = await this.userService.getUserById(req.params.id);
+
+            // Prevent users from changing their email via the profile update form
+            const updateData = { ...req.body };
+            if (updateData.email) delete updateData.email;
+
+            await this.userService.updateUser(id, updateData);
+            const updatedUser = await this.userService.getUserById(id);
             req.session.user = updatedUser.getSessionUser();
-            
-            res.render('edit-profile', { 
-                title: "Edit Profile", 
+
+            res.render('edit-profile', {
+                title: "Edit Profile",
                 message: "Profile updated successfully!",
                 user: updatedUser
             });
         } catch (err) {
             console.error("Error updating user profile:", err);
-            const user = await this.userService.getUserById(req.params.id);
-            res.render('edit-profile', { 
-                title: "Edit Profile", 
+            const user = await this.userService.getUserById(req.params.id || (req.session.user && req.session.user.userId));
+            res.render('edit-profile', {
+                title: "Edit Profile",
                 message: "Something went wrong updating your profile. Please try again.",
-                user: user || { _id: req.params.id },
+                user: user || { _id: req.params.id || (req.session.user && req.session.user.userId) },
                 formData: req.body
             });
         }

@@ -18,6 +18,12 @@ class OrdersService {
         return ordersCollection.insertOne(orderDoc);
     }
 
+    async getOrdersByUserId(userId) {
+        const db = this.client.db(this.dbName);
+        const ordersCollection = db.collection('orders');
+        return ordersCollection.find({ userId }).sort({ createdAt: -1 }).toArray();
+    }
+
     async createOrderForUser(userId, itemsFromClient) {
         const productIds = itemsFromClient.map(item => item.productId);
         const products = await this.getProductsByIds(productIds);

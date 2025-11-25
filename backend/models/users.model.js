@@ -8,6 +8,7 @@ class User {
         this._id = this.userId; // For MongoDB compatibility
         this.firstName = data.firstName || '';
         this.lastName = data.lastName || '';
+        this.contactNo = data.contactNo || '';
         this.email = data.email || '';
         this.passwordHash = data.passwordHash || '';
         this.role = data.role || 'customer';
@@ -28,6 +29,7 @@ class User {
             userId: doc._id || doc.userId,
             firstName: doc.firstName,
             lastName: doc.lastName,
+            contactNo: doc.contactNo,
             email: doc.email,
             passwordHash: doc.passwordHash,
             role: doc.role,
@@ -48,6 +50,7 @@ class User {
             _id: this.userId,
             firstName: this.firstName,
             lastName: this.lastName,
+            ...(this.contactNo && { contactNo: this.contactNo }),
             email: this.email,
             passwordHash: this.passwordHash,
             role: this.role,

@@ -15,7 +15,7 @@
             <tr>
                 <td><%= order.orderId %></td>
                 <td><%= order.userEmail %></td>
-                <td>₱<%= Number(order.totalAmount).toFixed(2) %></td>
+                <td>$<%= Number(order.totalAmount).toFixed(2) %></td>
                 <td><%= order.orderStatus %></td>
                 <td>
                     <% if (order.createdAt && order.createdAt.toLocaleString) { %>

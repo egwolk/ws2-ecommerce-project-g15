@@ -13,6 +13,12 @@ class UserService {
         return User.fromDocument(doc);
     }
 
+    async getUserByUserId(userId) {
+        const db = this.client.db(this.dbName);
+        const doc = await db.collection('users').findOne({ userId });
+        return User.fromDocument(doc);
+    }
+
     async getUserByToken(token) {
         const db = this.client.db(this.dbName);
         const doc = await db.collection('users').findOne({ verificationToken: token });
@@ -27,6 +33,7 @@ class UserService {
         const newUser = new User({
             firstName: userData.firstName,
             lastName: userData.lastName,
+            contactNo: userData.contactNo || '',
             email: userData.email,
             passwordHash: passwordHash,
             verificationToken: token,
@@ -91,6 +98,13 @@ class UserService {
             delete updateData.confirmPassword; // Remove confirm password
         }
         
+        // Ensure contactNo is preserved/normalized if provided
+        if (typeof updateData.contactNo === 'undefined') {
+            // do nothing - leave as-is in DB
+        } else {
+            updateData.contactNo = updateData.contactNo || '';
+        }
+
         updateData.updatedAt = new Date();
         
         await db.collection('users').updateOne(
@@ -113,6 +127,7 @@ class UserService {
         const newUser = new User({
             firstName: userData.firstName,
             lastName: userData.lastName,
+            contactNo: userData.contactNo || '',
             email: userData.email,
             passwordHash: passwordHash,
             role: userData.role || 'customer',

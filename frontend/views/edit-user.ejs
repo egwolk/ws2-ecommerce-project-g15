@@ -6,13 +6,16 @@
         <div class="sect">
             <form action="/users/edit/<%= userToEdit.userId %>" method="POST" autocomplete="off">
                 <label for="firstName">First Name:</label>
-                <input type="text" name="firstName" value="<%= typeof formData !== 'undefined' && formData.firstName ? formData.firstName : userToEdit.firstName %>" autocomplete="given-name" required>
+                <input type="text" name="firstName" value="<%= typeof formData !== 'undefined' && formData.firstName ? formData.firstName : userToEdit.firstName %>" autocomplete="given-name" required disabled>
                 
                 <label for="lastName">Last Name:</label>
-                <input type="text" name="lastName" value="<%= typeof formData !== 'undefined' && formData.lastName ? formData.lastName : userToEdit.lastName %>" autocomplete="family-name" required>
+                <input type="text" name="lastName" value="<%= typeof formData !== 'undefined' && formData.lastName ? formData.lastName : userToEdit.lastName %>" autocomplete="family-name" required disabled>
                 
                 <label for="email">Email:</label>
-                <input type="email" name="email" value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : userToEdit.email %>" autocomplete="email" required>
+                <input type="email" name="email" value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : userToEdit.email %>" autocomplete="email" required disabled>
+                
+                <label for="contactNo">Contact Number:</label>
+                <input type="text" name="contactNo" value="<%= typeof formData !== 'undefined' && formData.contactNo ? formData.contactNo : userToEdit.contactNo %>" autocomplete="tel" disabled>
                 
                 <label for="accountStatus">Account Status:</label>
                 <select name="accountStatus" required>

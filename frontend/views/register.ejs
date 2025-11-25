@@ -14,6 +14,9 @@
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="email" autocomplete="off" required value="<%= typeof formData !== 'undefined' && formData.email ? formData.email : '' %>">
 
+                <label for="contactNo">Contact Number (optional):</label>
+                <input type="text" id="contactNo" name="contactNo" autocomplete="tel" value="<%= typeof formData !== 'undefined' && formData.contactNo ? formData.contactNo : '' %>">
+
                 <label for="password">Password:</label>
                 <div class="password-container">
                     <input type="password" id="password" name="password" autocomplete="new-password" required>

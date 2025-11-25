@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const UserService = require('../services/users.services');
 const UserController = require('../controllers/users.controller');
-const { requireAdmin } = require('../middleware/auth');
+const { requireAdmin, requireLogin } = require('../middleware/auth');
 const { requireTurnstile } = require('../middleware/turnstile');
 
 
@@ -28,7 +28,12 @@ router.get('/login', (req, res) => req.userController.showLoginForm(req, res));
 router.post('/login', requireTurnstile, (req, res) => req.userController.loginUser(req, res));
 
 // Dashboard routes
-router.get('/dashboard', (req, res) => req.userController.showDashboard(req, res));
+router.get('/dashboard', requireLogin, (req, res) => req.userController.showDashboard(req, res));
+// Profile routes (show edit form and update profile)
+router.get('/profile', requireLogin, (req, res) => req.userController.showEditProfileForm(req, res));
+router.post('/profile', requireLogin, (req, res) => req.userController.updateUserProfile(req, res));
+// Orders list for logged-in user
+router.get('/orders', requireLogin, (req, res) => req.userController.showOrders(req, res));
 router.get('/admin', requireAdmin, (req, res) => req.userController.showAdminDashboard(req, res));
 
 // Logout route
@@ -41,9 +46,7 @@ router.post('/delete/:id', requireAdmin, async (req, res) => req.userController.
 router.get('/edit/:id', requireAdmin, async (req, res) => req.userController.showEditForm(req, res));
 router.post('/edit/:id', requireAdmin, async (req, res) => req.userController.updateUser(req, res));
 
-// Edit profile routes
-router.get('/edit-profile/:id', async (req, res) => req.userController.showEditProfileForm(req, res));
-router.post('/edit-profile/:id', async (req, res) => req.userController.updateUserProfile(req, res));
+// (legacy) edit-profile routes removed; use /users/profile instead
 
 // Create user routes (admin only)
 router.get('/admin/create', requireAdmin, (req, res) => req.userController.showAdminCreateForm(req, res));
