@@ -164,3 +164,20 @@ main {
   background-blend-mode: overlay;
 }
 
+/* Admin message banner used on products-admin view */
+.admin-message {
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid transparent;
+}
+.admin-message.success {
+  border-color: green;
+  background-color: #e6ffed;
+  color: green;
+}
+.admin-message.error {
+  border-color: red;
+  background-color: #ffe6e6;
+  color: red;
+}
+

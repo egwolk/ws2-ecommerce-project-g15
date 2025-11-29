@@ -5,17 +5,30 @@
     <div class="form-sections">
         <div class="sect">
             <form action="/products/admin/create" method="POST" enctype="multipart/form-data" autocomplete="off">
+
+                <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+                <div style="color: red;">
+                    <p>Please fix the following errors:</p>
+                    <ul>
+                        <% errors.forEach(function(err) { %>
+                            <li><%= err %></li>
+                        <% }) %>
+                    </ul>
+                </div>
+                <% } %>
+
                 <label for="name">Product Name:</label>
-                <input type="text" name="name" id="name" autocomplete="off" required>
+                <input type="text" name="name" id="name" autocomplete="off" required
+                    value="<%= typeof formData !== 'undefined' && formData.name ? formData.name : "" %>">
 
                 <label for="description">Description:</label>
-                <textarea name="description" id="description" rows="4"></textarea>
+                <textarea name="description" id="description" rows="4"><%= typeof formData !== 'undefined' && formData.description ? formData.description : "" %></textarea>
 
                 <label for="price">Price:</label>
-                <input type="number" name="price" id="price" step="0.01" min="0" required>
+                <input type="text" name="price" id="price" value="<%= typeof formData !== 'undefined' && formData.price ? formData.price : "" %>" required>
 
                 <label for="category">Category:</label>
-                <input type="text" name="category" id="category" autocomplete="off">
+                <input type="text" name="category" id="category" autocomplete="off" value="<%= typeof formData !== 'undefined' && formData.category ? formData.category : "" %>">
 
                 <label for="productImage">Product Image:</label>
                 <input type="file" name="productImage" id="productImage" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp">

@@ -14,9 +14,11 @@ class ProductService {
     }
 
     // Admin method to get all products including inactive
-    async getAllProductsAdmin() {
+    // Accepts an optional filter object to allow searching/filtering
+    async getAllProductsAdmin(filter = {}) {
         const db = this.client.db(this.dbName);
-        const docs = await db.collection('products').find().toArray();
+        // sort newest first by createdAt
+        const docs = await db.collection('products').find(filter).sort({ createdAt: -1 }).toArray();
         return docs.map(doc => Product.fromDocument(doc));
     }
 

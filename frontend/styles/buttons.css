@@ -161,6 +161,10 @@ button[type="submit"] {
     margin-top: 1rem;
 }
 
+.clear {
+    transform: translateY(1.5rem);
+}
+
 /* Link-style buttons */
 a.btn-primary,
 a.btn-secondary,
@@ -171,13 +175,12 @@ a.btn-success {
     font-family: "TheGoodMonolith", monospace;
     text-transform: uppercase;
     border: 1px solid var(--warm-off-white);
-    padding: 1rem 2rem;
+    padding: 1.2rem 2rem;
     position: relative;
     overflow: hidden;
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: center;
-    min-width: 150px;
     font-size: 1rem;
     letter-spacing: 0.5px;
 }
@@ -203,3 +206,4 @@ a.btn-danger:hover::after,
 a.btn-success:hover::after {
     left: 0;
 }
+

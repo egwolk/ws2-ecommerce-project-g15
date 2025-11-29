@@ -1,21 +1,40 @@
-<div class="form-container">
+    <div class="form-container">
     <div class="form-header">
         <div class="form-title">EDIT PRODUCT</div>
     </div>
     <div class="form-sections">
         <div class="sect">
+            <% if (typeof message !== 'undefined' && message) { %>
+                <div class="message">
+                    <%= message %>
+                </div>
+            <% } %> 
+        </div>
+        <div class="sect">
             <form action="/products/admin/<%= product._id %>/edit" method="POST" enctype="multipart/form-data" autocomplete="off">
+
+                <% if (typeof errors !== 'undefined' && errors.length > 0) { %>
+                <div style="color: red;">
+                    <p>Please fix the following errors:</p>
+                    <ul>
+                        <% errors.forEach(function(err) { %>
+                            <li><%= err %></li>
+                        <% }) %>
+                    </ul>
+                </div>
+                <% } %>
+
                 <label for="name">Product Name:</label>
-                <input type="text" name="name" id="name" value="<%= product.name %>" autocomplete="off" required>
+                <input type="text" name="name" id="name" value="<%= typeof formData !== 'undefined' && formData.name ? formData.name : (product && product.name ? product.name : '') %>" autocomplete="off" required>
 
                 <label for="description">Description:</label>
-                <textarea name="description" id="description" rows="4"><%= product.description %></textarea>
+                <textarea name="description" id="description" rows="4"><%= typeof formData !== 'undefined' && formData.description ? formData.description : (product && product.description ? product.description : '') %></textarea>
 
                 <label for="price">Price:</label>
-                <input type="number" name="price" id="price" step="0.01" min="0" value="<%= product.price %>" required>
+                <input type="text" name="price" id="price" value="<%= typeof formData !== 'undefined' && formData.price ? formData.price : (product && (product.price || product.price === 0) ? product.price : '') %>" required>
 
                 <label for="category">Category:</label>
-                <input type="text" name="category" id="category" value="<%= product.category %>" autocomplete="off">
+                <input type="text" name="category" id="category" value="<%= typeof formData !== 'undefined' && formData.category ? formData.category : (product && product.category ? product.category : '') %>" autocomplete="off">
 
                 <% if (product.imageUrl) { %>
                     <label>Current Image:</label>
@@ -43,11 +62,6 @@
             <div class="utils">
                 <p><a href="/products/admin">← Back to Manage Products</a></p>
             </div>
-            <% if (typeof message !== 'undefined' && message) { %>
-                <div class="message">
-                    <%= message %>
-                </div>
-            <% } %> 
         </div>
     </div>
 </div>

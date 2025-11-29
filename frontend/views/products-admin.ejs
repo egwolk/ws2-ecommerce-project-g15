@@ -1,7 +1,29 @@
+<% if (message) { %>
+    <div class="admin-message <%= message.type === 'success' ? 'success' : 'error' %>">
+        <%= message.text %>
+    </div>
+<% } %>
+
 <div class="products-admin">
-    <h1>Manage Products</h1>
+    <h1>Admin – Products</h1>
+    <% if (message) { %>
+        <!-- message banner already rendered above; kept for backward compatibility -->
+    <% } %>
+
+        <section class="admin-search" style="margin-bottom:15px;">
+            <form action="/products/admin" method="GET">
+                <label for="searchName">Search by name:</label>
+                <input type="text" id="searchName" name="searchName" value="<%= typeof searchName !== 'undefined' ? searchName : '' %>" />
+
+                <label for="searchCategory">Category:</label>
+                <input type="text" id="searchCategory" name="searchCategory" value="<%= typeof searchCategory !== 'undefined' ? searchCategory : '' %>" />
+
+                <button type="submit" class="btn-secondary">Search</button>
+                <a href="/products/admin" class="clear btn-secondary">Clear</a>
+            </form>
+        </section>
+
     <p>Welcome to the Products Administration Page.</p>
-    
     <a href="/products/admin/create" class="button btn-secondary">Add New Product</a>
     
     <% if (products.length === 0) { %>
@@ -32,7 +54,7 @@
                             <div class="actions">
                                 <a href="/products/<%= product._id %>" class="btn-danger btn-small view-btn">View</a>
                                 <a href="/products/admin/<%= product._id %>/edit" class="btn-danger btn-small edit-btn">Edit</a>
-                                <form action="/products/admin/<%= product._id %>/delete" method="POST">
+                                <form action="/products/delete/<%= product.productId %>" method="POST">
                                     <button type="submit" class="btn-danger btn-small" onclick="return confirm('Are you sure you want to permanently delete this product? This action cannot be undone.')">Delete</button>
                                 </form>
                             </div>

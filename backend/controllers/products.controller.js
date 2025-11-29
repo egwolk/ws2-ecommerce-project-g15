@@ -2,6 +2,49 @@ const { handleUpload } = require('../middleware/upload');
 const path = require('path');
 const fs = require('fs');
 
+// Helper to validate product inputs for admin forms
+function validateProductInput(body) {
+    const errors = [];
+    const name = (body.name || "").trim();
+    const description = (body.description || "").trim();
+    const category = (body.category || "").trim();
+    const priceRaw = (body.price || "").toString().trim();
+    const price = Number(priceRaw);
+
+    if (!name) {
+        errors.push("Product name is required.");
+    } else if (name.length < 2) {
+        errors.push("Product name must be at least 2 characters.");
+    }
+
+    if (!description) {
+        errors.push("Description is required.");
+    } else if (description.length < 5) {
+        errors.push("Description must be at least 5 characters.");
+    }
+
+    if (!priceRaw) {
+        errors.push("Price is required.");
+    } else if (Number.isNaN(price)) {
+        errors.push("Price must be a valid number.");
+    } else if (price <= 0) {
+        errors.push("Price must be greater than 0.");
+    }
+
+    if (!category) {
+        errors.push("Category is required.");
+    }
+
+    const formData = {
+        name,
+        description,
+        price: priceRaw, // keep raw input for the form
+        category
+    };
+
+    return { errors, formData, priceNumber: price };
+}
+
 class ProductController {
     constructor(productService) {
         this.productService = productService;
@@ -23,10 +66,43 @@ class ProductController {
     // Admin only - show all products including inactive ones
     async showAdminProducts(req, res) {
         try {
-            const products = await this.productService.getAllProductsAdmin();
-            res.render('products-admin', { 
-                title: 'Manage Products', 
-                products 
+            // Read optional search filters from query params
+            const searchName = (req.query.searchName || '').trim();
+            const searchCategory = (req.query.searchCategory || '').trim();
+
+            // Build Mongo filter
+            const filter = {};
+            if (searchName) {
+                filter.name = { $regex: searchName, $options: 'i' };
+            }
+            if (searchCategory) {
+                // Case-insensitive partial match for category too
+                filter.category = { $regex: searchCategory, $options: 'i' };
+            }
+
+            const products = await this.productService.getAllProductsAdmin(filter);
+
+            // Read query parameters for messages
+            const success = req.query.success;
+            const action = req.query.action;
+            const error = req.query.error;
+            let message = null;
+            if (success === '1' && action === 'created') {
+                message = { type: 'success', text: 'Product created successfully.' };
+            } else if (success === '1' && action === 'updated') {
+                message = { type: 'success', text: 'Product updated successfully.' };
+            } else if (success === '1' && action === 'deleted') {
+                message = { type: 'success', text: 'Product deleted successfully.' };
+            } else if (error === 'cannot_delete_used') {
+                message = { type: 'error', text: 'Cannot delete this product because it is already used in one or more orders.' };
+            }
+
+            res.render('products-admin', {
+                title: 'Manage Products',
+                products,
+                message,
+                searchName,
+                searchCategory
             });
         } catch (err) {
             console.error("Error fetching products:", err);
@@ -66,15 +142,33 @@ class ProductController {
                         formData: req.body
                     });
                 }
-                
-                // Prepare product data
-                const productData = { ...req.body };
-                
+                // Validate input
+                const validation = validateProductInput(req.body);
+                if (validation.errors && validation.errors.length > 0) {
+                    // cleanup uploaded file if present
+                    if (req.file) {
+                        try { fs.unlinkSync(req.file.path); } catch (e) { console.error('Failed to delete uploaded file after validation error:', e); }
+                    }
+                    return res.render('product-create', {
+                        title: 'Add Product',
+                        message: validation.errors.join(' '),
+                        formData: validation.formData
+                    });
+                }
+
+                // Prepare product data using normalized values
+                const productData = {
+                    name: validation.formData.name,
+                    description: validation.formData.description,
+                    price: validation.priceNumber,
+                    category: validation.formData.category
+                };
+
                 // Set image path if file was uploaded
                 if (req.file) {
                     productData.imageUrl = `/assets/images/products/${req.file.filename}`;
                 }
-                
+
                 await this.productService.createProduct(productData);
                 res.redirect('/products/admin');
             } catch (err) {
@@ -136,21 +230,37 @@ class ProductController {
                         formData: req.body
                     });
                 }
-                
-                // Convert string values to appropriate types
-                const updateData = {
-                    ...req.body,
-                    price: parseFloat(req.body.price),
-                    isActive: req.body.isActive === 'true' // Convert string to boolean
-                };
-                
-                // Get current product to handle old image deletion
+                // Get current product to render in case of validation errors and to delete old image if replaced
                 const currentProduct = await this.productService.getProductById(req.params.id);
-                
+
+                // Validate input
+                const validation = validateProductInput(req.body);
+                if (validation.errors && validation.errors.length > 0) {
+                    // cleanup uploaded file if present
+                    if (req.file) {
+                        try { fs.unlinkSync(req.file.path); } catch (e) { console.error('Failed to delete uploaded file after validation error:', e); }
+                    }
+                    return res.render('product-edit', {
+                        title: 'Edit Product',
+                        message: validation.errors.join(' '),
+                        product: currentProduct || { _id: req.params.id, name: '', description: '', price: 0, category: '', imageUrl: '', isActive: true },
+                        formData: validation.formData
+                    });
+                }
+
+                // Convert string values to appropriate types and use normalized price
+                const updateData = {
+                    name: validation.formData.name,
+                    description: validation.formData.description,
+                    price: validation.priceNumber,
+                    category: validation.formData.category,
+                    isActive: req.body.isActive === 'true'
+                };
+
                 // Set new image path if file was uploaded
                 if (req.file) {
                     updateData.imageUrl = `/assets/images/products/${req.file.filename}`;
-                    
+
                     // Delete old image file if it exists and is a local file
                     if (currentProduct && currentProduct.imageUrl && currentProduct.imageUrl.startsWith('/assets/images/products/')) {
                         const oldImagePath = path.join(__dirname, '../../frontend', currentProduct.imageUrl);
@@ -163,7 +273,7 @@ class ProductController {
                         }
                     }
                 }
-                
+
                 await this.productService.updateProduct(req.params.id, updateData);
                 res.redirect('/products/admin');
             } catch (err) {

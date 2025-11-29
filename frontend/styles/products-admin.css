@@ -103,7 +103,12 @@
   border-bottom: none;
 }
 
-.products-admin .actions { display: flex; gap: 8px; align-items: center; }
+.products-admin .actions { 
+  display: flex; 
+  gap: 8px; 
+  align-items: center; 
+  justify-content: space-evenly;
+}
 
 /* Make anchor buttons match the compact size of the delete button inside this view */
 .products-admin a.btn-small {
