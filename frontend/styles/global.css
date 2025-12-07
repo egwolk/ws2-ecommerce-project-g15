@@ -164,6 +164,11 @@ main {
   background-blend-mode: overlay;
 }
 
+/* Hide overlay on authenticated pages (e.g., admin views) */
+body.authenticated-page .overlay {
+  display: none;
+}
+
 /* Admin message banner used on products-admin view */
 .admin-message {
   padding: 10px;

@@ -1,0 +1,121 @@
+<h1>Admin – Sales Overview</h1>
+<p>
+    <a href="/admin/products">Back to Products</a> |
+    <a href="/admin/orders">View Orders</a>
+</p>
+<section>
+    <h2>Filters</h2>
+    <form action="/admin/reports/sales" method="GET">
+        <p>
+            <label for="startDate">Start date:</label><br />
+            <input
+                type="date"
+                id="startDate"
+                name="startDate"
+                value="<%= filters.startDate %>"
+            />
+        </p>
+        <p>
+            <label for="endDate">End date:</label><br />
+            <input
+                type="date"
+                id="endDate"
+                name="endDate"
+                value="<%= filters.endDate %>"
+            />
+        </p>
+        <p>
+            <label for="status">Order status:</label><br />
+            <select id="status" name="status">
+                <option value="all" <%= filters.status === 'all' ? 'selected' : '' %>>
+                    All statuses
+                </option>
+                <option value="completed" <%= filters.status === 'completed' ? 'selected'
+                : '' %>>
+
+                    Completed only
+                </option>
+                <option value="to_pay" <%= filters.status === 'to_pay' ? 'selected' : ''
+                %>>
+
+                    To Pay
+                </option>
+
+                <option value="to_ship" <%= filters.status === 'to_ship' ? 'selected' :
+                '' %>>
+
+                    To Ship
+                </option>
+                <option value="to_receive" <%= filters.status === 'to_receive' ?
+                'selected' : '' %>>
+                    To Receive
+                </option>
+                <option value="refund" <%= filters.status === 'refund' ? 'selected' : ''
+                %>>
+
+                    Return / Refund
+                </option>
+                <option value="cancelled" <%= filters.status === 'cancelled' ? 'selected'
+                : '' %>>
+
+                    Cancelled
+                </option>
+            </select>
+        </p>
+        <p>
+            <button type="submit">Apply filters</button>
+            <a href="/admin/reports/sales">Clear</a>
+        </p>
+    </form>
+</section>
+<section>
+    <h2>Summary</h2>
+    <% if (dailySales.length === 0) { %>
+        <p>No sales data found for the selected filters.</p>
+    <% } else { %>
+        <p><strong>Total Sales:</strong> ₱<%= summary.totalSales.toFixed(2) %></p>
+        <p><strong>Total Orders:</strong> <%= summary.totalOrders %></p>
+        <p><strong>Average Order Value:</strong> ₱<%=
+        summary.averageOrderValue.toFixed(2) %></p>
+    <% } %>
+</section>
+<section>
+    <h2>Daily Sales Table</h2>
+    <% if (dailySales.length === 0) { %>
+        <p>No daily sales to display.</p>
+    <% } else { %>
+
+        <table border="1" cellpadding="8" cellspacing="0">
+            <tr>
+                <th>Date</th>
+                <th>Total Sales</th>
+                <th>Number of Orders</th>
+            </tr>
+            <% dailySales.forEach(function(day) { %>
+                <tr>
+                    <td><%= day.date %></td>
+                    <td>₱<%= Number(day.totalSales).toFixed(2) %></td>
+                    <td><%= day.orderCount %></td>
+                </tr>
+            <% }) %>
+        </table>
+    <% } %>
+</section>
+<section>
+    <h2>Sales Chart</h2>
+    <% if (dailySales.length === 0) { %>
+        <p>No sales data to chart for the selected filters.</p>
+    <% } else { %>
+        <% const labelsJson = JSON.stringify(labels || []); %>
+        <% const valuesJson = JSON.stringify(salesData || []); %>
+        <simple-bar-chart
+            title="Daily Sales"
+            labels='<%- labelsJson %>'
+            data='<%- valuesJson %>'
+            width="600"
+            height="300"
+            color="#1e88e5"
+            type="line"
+        ></simple-bar-chart>
+    <% } %>
+</section>

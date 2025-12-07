@@ -28,6 +28,7 @@ const apiRoute = require('./routes/api');
 const productsRoute = require('./routes/products');
 const ordersRoute = require("./routes/orders");
 const adminOrdersRoute = require("./routes/adminOrders");
+const adminReportsRoute = require("./routes/adminReports");
 app.use('/', indexRoute);
 app.use('/users', usersRoute);
 app.use('/password', passwordRoute);
@@ -35,6 +36,7 @@ app.use('/api', apiRoute);
 app.use('/products', productsRoute);
 app.use("/orders", ordersRoute);
 app.use("/admin", adminOrdersRoute);
+app.use("/admin", adminReportsRoute);
 app.use((req, res, next) => {
     //404 logger
 if (!res.headersSent) {

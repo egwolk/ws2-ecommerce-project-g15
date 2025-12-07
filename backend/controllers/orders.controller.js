@@ -5,7 +5,27 @@ class OrdersController {
 
     async checkout(req, res) {
         try {
-            const user = req.session && req.session.user;
+            let user = req.session && req.session.user;
+            // Debug: allow anonymous orders when enabled and devUserEmail provided
+            if (!user && process.env.DEBUG_ALLOW_ANON_ORDER === 'true') {
+                const devEmail = (req.body && req.body.devUserEmail) || '';
+                if (devEmail) {
+                    try {
+                        const db = req.app.locals.client.db(req.app.locals.dbName);
+                        const usersCollection = db.collection('users');
+                        const found = await usersCollection.findOne({ email: devEmail });
+                        if (found && found.userId) {
+                            user = { userId: found.userId, email: found.email, role: found.role || 'user' };
+                        }
+                    } catch (e) {
+                        console.warn('DEBUG anon order: user lookup failed:', e);
+                    }
+                }
+            }
+            // If still no user and debug flag is on, allow order with null userId
+            if (!user && process.env.DEBUG_ALLOW_ANON_ORDER === 'true') {
+                user = { userId: null };
+            }
             if (!user) return res.status(401).send('Unauthorized. Please login.');
 
             const itemsFromClient = req.body.items || [];

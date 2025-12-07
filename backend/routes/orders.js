@@ -12,6 +12,11 @@ router.use((req, res, next) => {
 });
 
 // POST /orders/checkout – create a new order
-router.post('/checkout', requireLogin, (req, res) => req.ordersController.checkout(req, res));
+// In debug mode, allow anonymous orders by skipping requireLogin
+const maybeRequireLogin = (req, res, next) => {
+    if (process.env.DEBUG_ALLOW_ANON_ORDER === 'true') return next();
+    return requireLogin(req, res, next);
+};
+router.post('/checkout', maybeRequireLogin, (req, res) => req.ordersController.checkout(req, res));
 
 module.exports = router;

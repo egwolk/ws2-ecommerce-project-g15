@@ -10,6 +10,9 @@ function setupSecurityHeaders(app) {
     // Compression middleware
     app.use(compression());
     
+    // Explicitly set X-Content-Type-Options header
+    app.use(helmet.xContentTypeOptions());
+
     // Helmet for security headers
     app.use(helmet({
         contentSecurityPolicy: {
@@ -18,7 +21,8 @@ function setupSecurityHeaders(app) {
                 scriptSrc: [
                     "'self'",
                     "'unsafe-inline'",
-                    "https://challenges.cloudflare.com"
+                    "https://challenges.cloudflare.com",
+                    "https://cdn.jsdelivr.net"
                 ],
                 frameSrc: [
                     "'self'",
@@ -26,7 +30,8 @@ function setupSecurityHeaders(app) {
                 ],
                 connectSrc: [
                     "'self'",
-                    "https://challenges.cloudflare.com"
+                    "https://challenges.cloudflare.com",
+                    "https://cdn.jsdelivr.net"
                 ],
                 styleSrc: [
                     "'self'",

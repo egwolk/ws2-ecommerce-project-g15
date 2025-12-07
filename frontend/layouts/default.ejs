@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- partial('../components/seo/meta', locals) %>
     <title>DigiMArt | <%= title %></title>
+    <!-- Local simple chart web component (no external libs) -->
+    <script src="/<%= versionedAsset('scripts/simple-bar-chart.js') %>"></script>
     <link rel="stylesheet" href="/<%= versionedAsset('styles/global.css') %>">
     <link rel="stylesheet" href="/<%= versionedAsset('styles/buttons.css') %>">
     <link rel="stylesheet" href="/<%= versionedAsset('styles/forms.css') %>">
