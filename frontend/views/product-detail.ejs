@@ -1,11 +1,23 @@
 <div class="product-detail">
     <h1><%= product.name %></h1>
     
+    <% if (typeof message !== 'undefined' && message) { %>
+        <% if (message.type === 'success') { %>
+            <div style="padding: 10px; margin-bottom: 15px; border-radius: 4px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;">
+                <%= message.text %>
+            </div>
+        <% } else { %>
+            <div style="padding: 10px; margin-bottom: 15px; border-radius: 4px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;">
+                <%= message.text %>
+            </div>
+        <% } %>
+    <% } %>
+    
     <div class="product-layout">
         <div class="product-image-section">
-            <div class="product-image-container">
+            <div class="product-image-container" oncontextmenu="return false;">
                 <% if (product.imageUrl) { %>
-                    <img src="<%= product.imageUrl %>" alt="<%= product.name %>">
+                    <img src="<%= product.imageUrl %>" alt="<%= product.name %>" draggable="false">
                 <% } else { %>
                     <div class="no-image-available">
                         <span>No Image Available</span>
@@ -15,7 +27,7 @@
         </div>
         
         <div class="product-info">
-            <div class="product-price">$<%= parseFloat(product.price || 0).toFixed(2) %></div>
+            <div class="product-price">₱<%= parseFloat(product.price || 0).toFixed(2) %></div>
             
             <div class="product-meta">
                 <p><strong>Category:</strong> <%= product.category %></p>
@@ -28,8 +40,58 @@
             
             <div class="product-actions">
                 <div class="btn-container">
-                    <button class="btn-secondary">Purchase Now</button>
-                    <button class="btn-secondary">Add to Cart</button>
+                    <% if (!authenticated) { %>
+                        <!-- Not logged in - show login and register -->
+                        <a href="/users/login" class="btn-secondary">Login</a>
+                        <a href="/users/register" class="btn-secondary">Register</a>
+                    <% } else if (user.role === 'admin') { %>
+                        <!-- Admin - show edit and delete -->
+                        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
+                            <p style="margin: 5px 0; font-size: 0.9em; color: #666;">
+                                <strong>Created:</strong> <%= new Date(product.createdAt).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
+                            </p>
+                            <p style="margin: 5px 0; font-size: 0.9em; color: #666;">
+                                <strong>Updated:</strong> <%= new Date(product.updatedAt).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %>
+                            </p>
+                        </div>
+                        <a href="/products/admin/<%= product._id %>/edit" class="btn-secondary">Edit</a>
+                        <form method="POST" action="/products/admin/<%= product._id %>/delete" style="display: inline;">
+                            <button type="submit" class="btn-secondary" onclick="return confirm('Are you sure you want to delete this product?');">Delete</button>
+                        </form>
+                    <% } else if (!user.isEmailVerified) { %>
+                        <!-- Logged in but not verified - show verification message -->
+                        <p style="color: #ffc107;">Please verify your email to purchase products.</p>
+                        <a href="/users/dashboard" class="btn-secondary">Go to Dashboard</a>
+                    <% } else if (typeof isPurchased !== 'undefined' && isPurchased) { %>
+                        <!-- Customer has already purchased this product - show download button -->
+                        <div style="padding: 10px; margin-bottom: 15px; border-radius: 4px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;">
+                            <p style="margin: 0 0 5px 0; font-weight: bold;">You own this product</p>
+                            <% if (typeof purchaseDate !== 'undefined' && purchaseDate) { %>
+                                <p style="margin: 0; font-size: 0.9em;">
+                                    Purchased on: <%= new Date(purchaseDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+                                </p>
+                            <% } %>
+                        </div>
+                        <a href="/products/<%= product.productId %>/download" class="btn-secondary">Download</a>
+                    <% } else { %>
+                        <!-- Verified customer - show purchase and add to cart or remove from cart -->
+                        <form method="POST" action="/users/cart/add" style="display: inline;">
+                            <input type="hidden" name="productId" value="<%= product.productId %>">
+                            <input type="hidden" name="redirectToCheckout" value="true">
+                            <button type="submit" class="btn-secondary">Purchase Now</button>
+                        </form>
+                        <% if (typeof isInCart !== 'undefined' && isInCart) { %>
+                            <form method="POST" action="/users/cart/remove-product" style="display: inline;">
+                                <input type="hidden" name="productId" value="<%= product.productId %>">
+                                <button type="submit" class="btn-secondary">Remove from Cart</button>
+                            </form>
+                        <% } else { %>
+                            <form method="POST" action="/users/cart/add" style="display: inline;">
+                                <input type="hidden" name="productId" value="<%= product.productId %>">
+                                <button type="submit" class="btn-secondary">Add to Cart</button>
+                            </form>
+                        <% } %>
+                    <% } %>
                 </div>
             </div>
         </div>

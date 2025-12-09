@@ -9,7 +9,6 @@ class Product {
         this.price = data.price || 0;
         this.category = data.category || '';
         this.imageUrl = data.imageUrl || '';
-        this.isActive = data.isActive !== undefined ? data.isActive : true;
         this.createdAt = data.createdAt || new Date();
         this.updatedAt = data.updatedAt || new Date();
     }
@@ -25,7 +24,6 @@ class Product {
             price: doc.price,
             category: doc.category,
             imageUrl: doc.imageUrl,
-            isActive: doc.isActive,
             createdAt: doc.createdAt,
             updatedAt: doc.updatedAt
         });
@@ -40,7 +38,6 @@ class Product {
             price: this.price,
             category: this.category,
             imageUrl: this.imageUrl,
-            isActive: this.isActive,
             createdAt: this.createdAt,
             updatedAt: this.updatedAt
         };

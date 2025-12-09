@@ -1,0 +1,76 @@
+<div class="products-admin">
+<h1>Checkout</h1>
+
+<% if (message) { %>
+    <% if (message.type === 'success') { %>
+        <div style="padding: 10px; margin-bottom: 15px; border-radius: 4px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb;">
+            <%= message.text %>
+        </div>
+    <% } else { %>
+        <div style="padding: 10px; margin-bottom: 15px; border-radius: 4px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb;">
+            <%= message.text %>
+        </div>
+    <% } %>
+<% } %>
+
+<section>
+    <h2>Order Summary</h2>
+    <p>Review your order before completing payment.</p>
+    
+    <table style="width: 100%; margin-top: 20px;">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% cartItems.forEach(item => { %>
+                <tr>
+                    <td><%= item.name %></td>
+                    <td>$<%= Number(item.price).toFixed(2) %></td>
+                </tr>
+            <% }) %>
+            <tr style="font-weight: bold; background-color: tra;">
+                <td>Total Amount</td>
+                <td>$<%= totalAmount.toFixed(2) %></td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section style="margin-top: 30px;">
+    <h2>Payment Information</h2>
+    <p style="color: white; font-style: italic;">This is a demonstration payment system. No real transactions will be processed.</p>
+    
+    <form method="POST" action="/users/process-payment" style="max-width: 500px;">
+        <input type="hidden" name="orderIds" value="<%= orderIds %>">
+        
+        <div style="margin-bottom: 15px;">
+            <label for="cardNumber" style="display: block; margin-bottom: 5px;">Card Number:</label>
+            <input type="text" id="cardNumber" name="cardNumber" value="4111 1111 1111 1111" readonly style="width: 100%; padding: 8px; background-color: #f5f5f5;">
+        </div>
+        
+        <div style="margin-bottom: 15px; display: flex; gap: 15px;">
+            <div style="flex: 1;">
+                <label for="expiryDate" style="display: block; margin-bottom: 5px;">Expiry Date:</label>
+                <input type="text" id="expiryDate" name="expiryDate" value="12/25" readonly style="width: 100%; padding: 8px; background-color: #f5f5f5;">
+            </div>
+            <div style="flex: 1;">
+                <label for="cvv" style="display: block; margin-bottom: 5px;">CVV:</label>
+                <input type="text" id="cvv" name="cvv" value="123" readonly style="width: 100%; padding: 8px; background-color: #f5f5f5;">
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label for="cardholderName" style="display: block; margin-bottom: 5px;">Cardholder Name:</label>
+            <input type="text" id="cardholderName" name="cardholderName" value="<%= user.firstName %> <%= user.lastName %>" readonly style="width: 100%; padding: 8px; background-color: #f5f5f5;">
+        </div>
+        
+        <div style="margin-top: 30px;">
+            <button type="submit" class="btn-secondary" style="padding: 12px 30px; font-size: 16px;">Complete Payment ($<%= totalAmount.toFixed(2) %>)</button>
+            <a href="/users/cart" style="margin-left: 15px;" class="btn-secondary clear">Cancel</a>
+        </div>
+    </form>
+</section>
+</div>

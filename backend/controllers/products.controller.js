@@ -52,10 +52,60 @@ class ProductController {
 
     async showAllProducts(req, res) {
         try {
-            const products = await this.productService.getAllProducts();
+            const search = (req.query.search || '').trim();
+            const showOwnedOnly = req.query.owned === 'true';
+            let products;
+
+            if (search) {
+                // Search products by name or category
+                const db = req.app.locals.client.db(req.app.locals.dbName);
+                const docs = await db.collection('products').find({
+                    $or: [
+                        { name: { $regex: search, $options: 'i' } },
+                        { category: { $regex: search, $options: 'i' } }
+                    ]
+                }).toArray();
+                products = docs.map(doc => require('../models/products.model').fromDocument(doc));
+            } else {
+                products = await this.productService.getAllProducts();
+            }
+
+            // Check which products the user owns (for logged-in verified users)
+            let ownedProductIds = [];
+            if (req.session && req.session.user && req.session.user.isEmailVerified) {
+                const OrdersService = require('../services/orders.service');
+                const ordersService = new OrdersService(req.app.locals.client, req.app.locals.dbName);
+                
+                // Get all completed orders for this user
+                const db = req.app.locals.client.db(req.app.locals.dbName);
+                const completedOrders = await db.collection('orders').find({
+                    userId: req.session.user.userId,
+                    orderStatus: 'completed'
+                }).toArray();
+                
+                // Extract all product IDs from completed orders
+                completedOrders.forEach(order => {
+                    if (order.items && Array.isArray(order.items)) {
+                        order.items.forEach(item => {
+                            if (item.productId && !ownedProductIds.includes(item.productId)) {
+                                ownedProductIds.push(item.productId);
+                            }
+                        });
+                    }
+                });
+                
+                // Filter to show only owned products if requested
+                if (showOwnedOnly) {
+                    products = products.filter(product => ownedProductIds.includes(product.productId));
+                }
+            }
+
             res.render('products', { 
                 title: 'Products', 
-                products 
+                products,
+                search,
+                ownedProductIds,
+                showOwnedOnly
             });
         } catch (err) {
             console.error("Error fetching products:", err);
@@ -66,18 +116,17 @@ class ProductController {
     // Admin only - show all products including inactive ones
     async showAdminProducts(req, res) {
         try {
-            // Read optional search filters from query params
-            const searchName = (req.query.searchName || '').trim();
-            const searchCategory = (req.query.searchCategory || '').trim();
+            // Read search query from query params
+            const search = (req.query.search || '').trim();
 
             // Build Mongo filter
             const filter = {};
-            if (searchName) {
-                filter.name = { $regex: searchName, $options: 'i' };
-            }
-            if (searchCategory) {
-                // Case-insensitive partial match for category too
-                filter.category = { $regex: searchCategory, $options: 'i' };
+            if (search) {
+                // Search in both name and category
+                filter.$or = [
+                    { name: { $regex: search, $options: 'i' } },
+                    { category: { $regex: search, $options: 'i' } }
+                ];
             }
 
             const products = await this.productService.getAllProductsAdmin(filter);
@@ -86,6 +135,7 @@ class ProductController {
             const success = req.query.success;
             const action = req.query.action;
             const error = req.query.error;
+            const productName = req.query.productName || '';
             let message = null;
             if (success === '1' && action === 'created') {
                 message = { type: 'success', text: 'Product created successfully.' };
@@ -93,6 +143,10 @@ class ProductController {
                 message = { type: 'success', text: 'Product updated successfully.' };
             } else if (success === '1' && action === 'deleted') {
                 message = { type: 'success', text: 'Product deleted successfully.' };
+            } else if (error === 'in_orders') {
+                message = { type: 'error', text: `Cannot delete "${productName}" because it is in one or more customer orders/carts.` };
+            } else if (error === 'delete_failed') {
+                message = { type: 'error', text: 'Failed to delete product. Please try again.' };
             } else if (error === 'cannot_delete_used') {
                 message = { type: 'error', text: 'Cannot delete this product because it is already used in one or more orders.' };
             }
@@ -101,8 +155,7 @@ class ProductController {
                 title: 'Manage Products',
                 products,
                 message,
-                searchName,
-                searchCategory
+                search
             });
         } catch (err) {
             console.error("Error fetching products:", err);
@@ -112,13 +165,65 @@ class ProductController {
 
     async showProduct(req, res) {
         try {
-            const product = await this.productService.getProductById(req.params.id);
+            // Try to find by MongoDB _id first (for backward compatibility)
+            let product = null;
+            try {
+                product = await this.productService.getProductById(req.params.id);
+            } catch (e) {
+                // If it fails (not a valid ObjectId), try by productId
+                product = await this.productService.getProductByProductId(req.params.id);
+            }
+            
             if (!product) {
                 return res.status(404).send("Product not found.");
             }
+
+            // Check if product is in user's cart (for logged-in users)
+            let isInCart = false;
+            let isPurchased = false;
+            let purchaseDate = null;
+            if (req.session && req.session.user) {
+                const OrdersService = require('../services/orders.service');
+                const ordersService = new OrdersService(req.app.locals.client, req.app.locals.dbName);
+                isInCart = await ordersService.isProductInUserCart(req.session.user.userId, product.productId);
+                isPurchased = await ordersService.hasUserPurchasedProduct(req.session.user.userId, product.productId);
+                
+                // If purchased, get the purchase date
+                if (isPurchased) {
+                    const db = req.app.locals.client.db(req.app.locals.dbName);
+                    const completedOrder = await db.collection('orders').findOne({
+                        userId: req.session.user.userId,
+                        orderStatus: 'completed',
+                        'items.productId': product.productId
+                    }, {
+                        sort: { createdAt: 1 } // Get the earliest completed order
+                    });
+                    
+                    if (completedOrder && completedOrder.createdAt) {
+                        purchaseDate = completedOrder.createdAt;
+                    }
+                }
+            }
+
+            // Check for messages
+            let message = null;
+            if (req.query.added === '1') {
+                message = { type: 'success', text: 'Product added to cart successfully!' };
+            } else if (req.query.removed === '1') {
+                message = { type: 'success', text: 'Product removed from cart successfully!' };
+            } else if (req.query.error === 'add_failed') {
+                message = { type: 'error', text: 'Failed to add product to cart. Please try again.' };
+            } else if (req.query.error === 'remove_failed') {
+                message = { type: 'error', text: 'Failed to remove product from cart. Please try again.' };
+            }
+            
             res.render('product-detail', { 
                 title: product.name, 
-                product 
+                product,
+                isInCart,
+                isPurchased,
+                purchaseDate,
+                message
             });
         } catch (err) {
             console.error("Error fetching product:", err);
@@ -199,7 +304,7 @@ class ProductController {
                 return res.render('product-edit', { 
                     title: 'Edit Product', 
                     message: "Product not found.",
-                    product: { _id: req.params.id, name: '', description: '', price: 0, category: '', imageUrl: '', isActive: true }
+                    product: { _id: req.params.id, name: '', description: '', price: 0, category: '', imageUrl: '' }
                 });
             }
             res.render('product-edit', { 
@@ -211,7 +316,7 @@ class ProductController {
             res.render('product-edit', { 
                 title: 'Edit Product', 
                 message: "Something went wrong loading the product.",
-                product: { _id: req.params.id, name: '', description: '', price: 0, category: '', imageUrl: '', isActive: true }
+                product: { _id: req.params.id, name: '', description: '', price: 0, category: '', imageUrl: '' }
             });
         }
     }
@@ -226,7 +331,7 @@ class ProductController {
                     return res.render('product-edit', { 
                         title: 'Edit Product', 
                         message: req.uploadError,
-                        product: product || { _id: req.params.id, name: '', description: '', price: 0, category: '', imageUrl: '', isActive: true },
+                        product: product || { _id: req.params.id, name: '', description: '', price: 0, category: '', imageUrl: '' },
                         formData: req.body
                     });
                 }
@@ -243,7 +348,7 @@ class ProductController {
                     return res.render('product-edit', {
                         title: 'Edit Product',
                         message: validation.errors.join(' '),
-                        product: currentProduct || { _id: req.params.id, name: '', description: '', price: 0, category: '', imageUrl: '', isActive: true },
+                        product: currentProduct || { _id: req.params.id, name: '', description: '', price: 0, category: '', imageUrl: '' },
                         formData: validation.formData
                     });
                 }
@@ -253,8 +358,7 @@ class ProductController {
                     name: validation.formData.name,
                     description: validation.formData.description,
                     price: validation.priceNumber,
-                    category: validation.formData.category,
-                    isActive: req.body.isActive === 'true'
+                    category: validation.formData.category
                 };
 
                 // Set new image path if file was uploaded
@@ -292,7 +396,7 @@ class ProductController {
                 res.render('product-edit', { 
                     title: 'Edit Product', 
                     message: "Error updating product. Please try again.",
-                    product: product || { _id: req.params.id, name: '', description: '', price: 0, category: '', imageUrl: '', isActive: true },
+                    product: product || { _id: req.params.id, name: '', description: '', price: 0, category: '', imageUrl: '' },
                     formData: req.body
                 });
             }
@@ -301,6 +405,24 @@ class ProductController {
 
     async deleteProduct(req, res) {
         try {
+            // First, check if the product is in any orders
+            const OrdersService = require('../services/orders.service');
+            const ordersService = new OrdersService(req.app.locals.client, req.app.locals.dbName);
+            
+            // Get the product first to get its productId
+            const product = await this.productService.getProductById(req.params.id);
+            if (!product) {
+                return res.status(404).send("Product not found.");
+            }
+            
+            // Check if product is in any orders
+            const isInOrders = await ordersService.isProductInOrders(product.productId);
+            
+            if (isInOrders) {
+                // Redirect back with error message
+                return res.redirect('/products/admin?error=in_orders&productName=' + encodeURIComponent(product.name));
+            }
+            
             // Delete product and get product data to clean up image file
             const deletedProduct = await this.productService.deleteProduct(req.params.id);
             
@@ -317,10 +439,10 @@ class ProductController {
                 }
             }
             
-            res.redirect('/products/admin');
+            res.redirect('/products/admin?success=1&action=deleted');
         } catch (err) {
             console.error("Error deleting product:", err);
-            res.send("Something went wrong.");
+            res.redirect('/products/admin?error=delete_failed');
         }
     }
 }

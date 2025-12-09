@@ -9,11 +9,11 @@ class ProductService {
 
     async getAllProducts() {
         const db = this.client.db(this.dbName);
-        const docs = await db.collection('products').find({ isActive: true }).toArray();
+        const docs = await db.collection('products').find({}).toArray();
         return docs.map(doc => Product.fromDocument(doc));
     }
 
-    // Admin method to get all products including inactive
+    // Admin method to get all products
     // Accepts an optional filter object to allow searching/filtering
     async getAllProductsAdmin(filter = {}) {
         const db = this.client.db(this.dbName);
@@ -25,6 +25,12 @@ class ProductService {
     async getProductById(productId) {
         const db = this.client.db(this.dbName);
         const doc = await db.collection('products').findOne({ _id: new ObjectId(productId) });
+        return Product.fromDocument(doc);
+    }
+
+    async getProductByProductId(productId) {
+        const db = this.client.db(this.dbName);
+        const doc = await db.collection('products').findOne({ productId: productId });
         return Product.fromDocument(doc);
     }
 
@@ -59,7 +65,6 @@ class ProductService {
     async searchProducts(query) {
         const db = this.client.db(this.dbName);
         const docs = await db.collection('products').find({
-            isActive: true,
             $or: [
                 { name: { $regex: query, $options: 'i' } },
                 { description: { $regex: query, $options: 'i' } }

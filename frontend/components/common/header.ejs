@@ -12,25 +12,27 @@
             <ul class="links">
                 <li><a href="/" class="<%= currentPage === 'home' ? 'active' : '' %>">HOME</a></li>
                 <li><a href="/products" class="<%= currentPage === 'products' ? 'active' : '' %>">PRODUCTS</a></li>
-                <li><a href="/contact" class="<%= currentPage === 'contact' ? 'active' : '' %>">CONTACT</a></li>
-                <li><a href="/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT</a></li>
-                <% if (authenticated) { %>
-                    <li><a href="/users/dashboard" class="<%= currentPage === 'dashboard' ? 'active' : '' %>">DASHBOARD</a></li>
-                    <% if (user && user.role === 'admin') { %>
-                        <li><a href="/users/admin" class="<%= currentPage === 'admin' ? 'active' : '' %>">USERS</a></li>
-                        <li><a href="/products/admin" class="<%= currentPage === 'products-admin' ? 'active' : '' %>">MANAGE PRODUCTS</a></li>
-                        <li><a href="/admin/orders" class="<%= currentPage === 'admin-orders' ? 'active' : '' %>">ORDERS</a></li>
-                    <% } %>
+                <% if (!authenticated || !user || user.role !== 'admin') { %>
+                    <li><a href="/contact" class="<%= currentPage === 'contact' ? 'active' : '' %>">CONTACT</a></li>
+                    <li><a href="/about" class="<%= currentPage === 'about' ? 'active' : '' %>">ABOUT</a></li>
+                <% } %>
+                <% if (authenticated && user && user.role === 'admin') { %>
+                    <li><a href="/users/admin" class="<%= currentPage === 'admin' ? 'active' : '' %>">USERS</a></li>
+                    <li><a href="/products/admin" class="<%= currentPage === 'products-admin' ? 'active' : '' %>">MANAGE PRODUCTS</a></li>
+                    <li><a href="/admin/orders" class="<%= currentPage === 'admin-orders' ? 'active' : '' %>">ORDERS</a></li>
+                    <li><a href="/admin/reports/sales" class="<%= currentPage === 'admin-reports-sales' ? 'active' : '' %>">SALES REPORTS</a></li>
                 <% } %>
             </ul>
         </nav>
         <div class="acct-sect dropdown">
             <div class="nav-icons">
-                <div class="cart-icon">
-                    <a href="/cart">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M24-16C10.7-16 0-5.3 0 8S10.7 32 24 32l45.3 0c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3c6.2 34.2 36 59.1 70.8 59.1L456 384c13.3 0 24-10.7 24-24s-10.7-24-24-24l-255.9 0c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3 303.6 0c30.8 0 57.2-21.9 62.9-52.2L568.9 69.9C572.6 50.2 557.5 32 537.4 32l-412.7 0-.4-2c-4.8-26.6-28-46-55.1-46L24-16zM208 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/></svg>
-                    </a>
-                </div>
+                <% if (authenticated && user && user.role !== 'admin' && user.isEmailVerified) { %>
+                    <div class="cart-icon">
+                        <a href="/users/cart">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path d="M24-16C10.7-16 0-5.3 0 8S10.7 32 24 32l45.3 0c3.9 0 7.2 2.8 7.9 6.6l52.1 286.3c6.2 34.2 36 59.1 70.8 59.1L456 384c13.3 0 24-10.7 24-24s-10.7-24-24-24l-255.9 0c-11.6 0-21.5-8.3-23.6-19.7l-5.1-28.3 303.6 0c30.8 0 57.2-21.9 62.9-52.2L568.9 69.9C572.6 50.2 557.5 32 537.4 32l-412.7 0-.4-2c-4.8-26.6-28-46-55.1-46L24-16zM208 512a48 48 0 1 0 0-96 48 48 0 1 0 0 96zm224 0a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/></svg>
+                        </a>
+                    </div>
+                <% } %>
                 <div class="dropdown-toggle">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M406.5 399.6C387.4 352.9 341.5 320 288 320l-64 0c-53.5 0-99.4 32.9-118.5 79.6-35.6-37.3-57.5-87.9-57.5-143.6 0-114.9 93.1-208 208-208s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3l64 0c38.8 0 71.2 27.6 78.5 64.3zM256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z"/></svg>
                     <svg class="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><path d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z"/></svg>
@@ -38,6 +40,7 @@
             </div>
             <ul class="dropdown-menu">
                 <% if (authenticated) { %>
+                    <li><a href="/users/dashboard" class="<%= currentPage === 'dashboard' ? 'active' : '' %>">DASHBOARD</a></li>
                     <li><a href="/users/logout">LOGOUT</a></li>
                 <% } else { %>
                     <li><a href="/users/login" class="<%= currentPage === 'login' ? 'active' : '' %>">LOGIN</a></li>

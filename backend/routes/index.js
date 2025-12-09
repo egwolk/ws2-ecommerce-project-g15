@@ -63,6 +63,15 @@ router.get('/about', (req, res) => {
     });
 });
 
+router.get('/contact', (req, res) => {
+    const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+    res.render('contact', {
+        title: 'Contact',
+        metaPreset: 'contact',
+        canonicalUrl: `${baseUrl}/contact`
+    });
+});
+
 /* 500 testing
 router.get('/crash', (req, res) => {
     throw new Error('Test crash');

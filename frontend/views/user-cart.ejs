@@ -1,0 +1,55 @@
+<div class="products-admin">
+<h1>My Cart</h1>
+<% if (message) { %>
+    <div style="padding: 10px; background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; margin-bottom: 15px;">
+        <%= message %>
+    </div>
+<% } %>
+
+<% if (!cartItems || cartItems.length === 0) { %>
+    <section>
+        <p>Your cart is empty. All items with "To Pay" status will appear here.</p>
+        <p><a href="/products" class="btn-secondary">Browse Products</a></p>
+    </section>
+<% } else { %>
+    <section>
+        <h2>Items to Pay</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% cartItems.forEach(item => { %>
+                    <tr>
+                        <td><%= item.name %></td>
+                        <td>$<%= Number(item.price).toFixed(2) %></td>
+                        <td>
+                            <div class="actions">
+                                <form method="POST" action="/users/cart/remove" style="display: inline;">
+                                    <input type="hidden" name="orderId" value="<%= item.orderId %>">
+                                    <input type="hidden" name="productId" value="<%= item.productId %>">
+                                    <button type="submit" class="btn-danger btn-small" onclick="return confirm('Remove this item from cart?');">Remove</button>
+                                </form>
+                                <a href="/products/<%= item.productId %>" class="btn-danger btn-small view-btn">View</a>
+                            </div>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        
+        <div style="margin-top: 20px;">
+            <p><strong>Total Amount: $<%= totalAmount.toFixed(2) %></strong></p>
+            <a href="/users/checkout" class="btn-secondary" style="text-decoration: none; display: inline-block; padding: 10px 20px;">Proceed to Checkout</a>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <p>Complete payment for these items to receive access to your digital products.</p>
+        </div>
+    </section>
+<% } %>
+</div>

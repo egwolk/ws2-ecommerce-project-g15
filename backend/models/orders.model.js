@@ -6,30 +6,26 @@ class Order {
         this.orderId = data.orderId || uuidv4();
         this.userId = data.userId || '';
 
-        // items: array of { productId, name, price, quantity, subtotal }
+        // items: array of { productId, name, price }
         this.items = Array.isArray(data.items) ? data.items.map(item => ({
             productId: item.productId,
             name: item.name,
-            price: typeof item.price === 'number' ? item.price : Number(item.price) || 0,
-            quantity: typeof item.quantity === 'number' ? item.quantity : Number(item.quantity) || 0,
-            subtotal: typeof item.subtotal === 'number' ? item.subtotal : ((Number(item.price) || 0) * (Number(item.quantity) || 0))
+            price: typeof item.price === 'number' ? item.price : Number(item.price) || 0
         })) : [];
 
-        this.totalAmount = data.totalAmount !== undefined ? Number(data.totalAmount) : this.items.reduce((s, it) => s + (Number(it.subtotal) || 0), 0);
+        this.totalAmount = data.totalAmount !== undefined ? Number(data.totalAmount) : this.items.reduce((s, it) => s + (Number(it.price) || 0), 0);
         this.orderStatus = data.orderStatus || 'to_pay';
         this.createdAt = data.createdAt || new Date();
         this.updatedAt = data.updatedAt || new Date();
     }
 
-    // Recalculate subtotals and totalAmount, update updatedAt
+    // Recalculate totalAmount, update updatedAt
     recalcTotals() {
         this.items = this.items.map(it => {
             const price = Number(it.price) || 0;
-            const quantity = Number(it.quantity) || 0;
-            const subtotal = price * quantity;
-            return Object.assign({}, it, { price, quantity, subtotal });
+            return Object.assign({}, it, { price });
         });
-        this.totalAmount = this.items.reduce((s, it) => s + (it.subtotal || 0), 0);
+        this.totalAmount = this.items.reduce((s, it) => s + (it.price || 0), 0);
         this.updatedAt = new Date();
     }
 
@@ -42,9 +38,7 @@ class Order {
             items: Array.isArray(doc.items) ? doc.items.map(i => ({
                 productId: i.productId,
                 name: i.name,
-                price: i.price,
-                quantity: i.quantity,
-                subtotal: i.subtotal
+                price: i.price
             })) : [],
             totalAmount: doc.totalAmount,
             orderStatus: doc.orderStatus,
@@ -60,9 +54,7 @@ class Order {
             items: Array.isArray(this.items) ? this.items.map(i => ({
                 productId: i.productId,
                 name: i.name,
-                price: i.price,
-                quantity: i.quantity,
-                subtotal: i.subtotal
+                price: i.price
             })) : [],
             totalAmount: this.totalAmount,
             orderStatus: this.orderStatus,

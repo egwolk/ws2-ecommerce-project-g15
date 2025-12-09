@@ -1,32 +1,66 @@
-<div>
-    <!-- <h1>Welcome, <%= user.firstName %> <%= user.lastName %>!</h1>
-    <p><strong>User ID:</strong> <%= user.userId %></p>
-    <p><strong>Email:</strong> <%= user.email %></p>
-    <p><strong>Role:</strong> <%= user.role %></p>
-    <p><strong>Status:</strong> Active</p>
-    <p><strong>Email Verified:</strong> <%= user.isEmailVerified ? "Yes" : "No" %></p> -->
-
-<% if (user && user.role !== 'admin') { %>
+<div class="products-admin" style="width: 100%;">
+    
+<% if (user && user.role === 'admin') { %>
+    <h1>Admin Dashboard</h1>
+    <section>
+        <h2>Welcome, Administrator</h2>
+        <p>
+            Hello, <strong><%= user.firstName %> <%= user.lastName || "" %></strong>
+        </p>
+        <p>You have full administrative access to DigiMart.</p>
+    </section>
+    
+    <section>
+        <h2>Admin Actions</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 20px;">
+            <div style="background-color: transparent; padding: 20px; border: 1px solid white;">
+                <h3 style="margin-top: 0;">User Management</h3>
+                <p style="color: white; font-size: 0.9em;">Manage user accounts and permissions</p>
+                <a href="/users/admin" class="btn-secondary" style="display: inline-block; margin-top: 10px;">Manage Users</a>
+            </div>
+            
+            <div style="background-color: transparent; padding: 20px; border: 1px solid white;">
+                <h3 style="margin-top: 0;">Product Management</h3>
+                <p style="color: white; font-size: 0.9em;">Create, edit, and manage products</p>
+                <a href="/products/admin" class="btn-secondary" style="display: inline-block; margin-top: 10px;">Manage Products</a>
+            </div>
+            
+            <div style="background-color: transparent; padding: 20px; border: 1px solid white;">
+                <h3 style="margin-top: 0;">Order Management</h3>
+                <p style="color: white; font-size: 0.9em;">View and track all customer orders</p>
+                <a href="/admin/orders" class="btn-secondary" style="display: inline-block; margin-top: 10px;">View Orders</a>
+            </div>
+            
+            <div style="background-color: transparent; padding: 20px; border: 1px solid white;  ">
+                <h3 style="margin-top: 0;">Sales Reports</h3>
+                <p style="color: white; font-size: 0.9em;">View analytics and sales data</p>
+                <a href="/admin/reports/sales" class="btn-secondary" style="display: inline-block; margin-top: 10px;">View Reports</a>
+            </div>
+        </div>
+    </section>
+    
+    <section>
+        <h2>Quick Links</h2>
+        <ul style="padding-left: 20px; display: flex;">
+            <li style="list-style: none;"><a href="/users/profile" class="btn-secondary">Edit Profile</a></li>
+            <li style="list-style: none;"><a href="/users/logout" class="btn-secondary">Logout</a></li>
+        </ul>
+    </section>
+<% } else if (user && user.role !== 'admin') { %>
     <%- partial('user-dashboard', {
         user: user,
         totalOrders: typeof totalOrders !== 'undefined' ? totalOrders : 0,
         statusCounts: statusCounts || {
             to_pay: 0,
-            to_ship: 0,
-            to_receive: 0,
-            completed: 0,
-            refund: 0,
-            cancelled: 0
+            completed: 0
         }
     }) %>
-<% } %>
-    <ul>
-        <li><a href="/users/profile">Edit Profile</a></li>
-        <% if (user.role === 'admin') { %>
-
-        <li><a href="/users/admin">Admin Dashboard</a></li>
-        <% } %>
+    <ul style="display: flex;">
+        <li style="list-style: none;"><a href="/users/orders" class="btn-secondary">View Purchase History</a></li>
+        <li style="list-style: none;" ><a href="/users/profile" class="btn-secondary">Edit Profile</a></li>
+        <li style="list-style: none;"><a href="/users/logout" class="btn-secondary">Logout</a></li>
     </ul>
-    <a href="/users/logout">Logout</a>
+    
+<% } %>
 
 </div>

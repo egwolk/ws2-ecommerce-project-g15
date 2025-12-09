@@ -35,6 +35,10 @@
     max-width: 100%;
     overflow: hidden;
     border: var(--warm-off-white) solid .1rem;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
 
 .product-image-container img {
@@ -43,6 +47,11 @@
     max-height: 500px;
     object-fit: cover;
     display: block;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    pointer-events: none;
 }
 
 .no-image-available {

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const UserService = require('../services/users.services');
 const UserController = require('../controllers/users.controller');
-const { requireAdmin, requireLogin } = require('../middleware/auth');
+const { requireAdmin, requireLogin, requireCustomer } = require('../middleware/auth');
 const { requireTurnstile } = require('../middleware/turnstile');
 
 
@@ -34,6 +34,15 @@ router.get('/profile', requireLogin, (req, res) => req.userController.showEditPr
 router.post('/profile', requireLogin, (req, res) => req.userController.updateUserProfile(req, res));
 // Orders list for logged-in user
 router.get('/orders', requireLogin, (req, res) => req.userController.showOrders(req, res));
+// Cart routes - only for verified customers (not admins)
+router.get('/cart', requireCustomer, (req, res) => req.userController.showCart(req, res));
+router.post('/cart/remove', requireCustomer, (req, res) => req.userController.removeFromCart(req, res));
+router.post('/cart/add', requireCustomer, (req, res) => req.userController.addToCart(req, res));
+router.post('/cart/remove-product', requireCustomer, (req, res) => req.userController.removeFromCartOnProduct(req, res));
+// Checkout routes
+router.get('/checkout', requireCustomer, (req, res) => req.userController.showCheckout(req, res));
+router.post('/process-payment', requireCustomer, (req, res) => req.userController.processPayment(req, res));
+router.get('/payment-success', requireCustomer, (req, res) => req.userController.showPaymentSuccess(req, res));
 router.get('/admin', requireAdmin, (req, res) => req.userController.showAdminDashboard(req, res));
 
 // Logout route

@@ -12,11 +12,8 @@
 
         <section class="admin-search" style="margin-bottom:15px;">
             <form action="/products/admin" method="GET">
-                <label for="searchName">Search by name:</label>
-                <input type="text" id="searchName" name="searchName" value="<%= typeof searchName !== 'undefined' ? searchName : '' %>" />
-
-                <label for="searchCategory">Category:</label>
-                <input type="text" id="searchCategory" name="searchCategory" value="<%= typeof searchCategory !== 'undefined' ? searchCategory : '' %>" />
+                <label for="search">Search products:</label>
+                <input type="text" id="search" name="search" value="<%= typeof search !== 'undefined' ? search : '' %>" placeholder="Search by name or category..." />
 
                 <button type="submit" class="btn-secondary">Search</button>
                 <a href="/products/admin" class="clear btn-secondary">Clear</a>
@@ -35,7 +32,6 @@
                     <th>Name</th>
                     <th>Category</th>
                     <th>Price</th>
-                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -44,12 +40,7 @@
                     <tr>
                         <td><%= product.name %></td>
                         <td><%= product.category %></td>
-                        <td>$<%= product.price %></td>
-                        <td>
-                            <span class="<%= product.isActive ? 'status-active' : 'status-inactive' %>">
-                                <%= product.isActive ? 'Active' : 'Inactive' %>
-                            </span>
-                        </td>
+                        <td>₱<%= product.price %></td>
                         <td>
                             <div class="actions">
                                 <a href="/products/<%= product._id %>" class="btn-danger btn-small view-btn">View</a>

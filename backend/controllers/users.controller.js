@@ -285,11 +285,7 @@ class UserController {
 
                 const statusCounts = {
                     to_pay: 0,
-                    to_ship: 0,
-                    to_receive: 0,
-                    completed: 0,
-                    refund: 0,
-                    cancelled: 0
+                    completed: 0
                 };
 
                 userOrders.forEach(order => {
@@ -356,11 +352,7 @@ class UserController {
             // Group orders by status
             const ordersByStatus = {
                 to_pay: [],
-                to_ship: [],
-                to_receive: [],
-                completed: [],
-                refund: [],
-                cancelled: []
+                completed: []
             };
 
             (userOrders || []).forEach(order => {
@@ -378,6 +370,221 @@ class UserController {
         } catch (err) {
             console.error("Error loading user orders:", err);
             res.status(500).send("Error loading orders.");
+        }
+    }
+
+    async showCart(req, res) {
+        try {
+            if (!req.session.user) {
+                return res.redirect('/users/login?message=expired');
+            }
+
+            const userFromSession = req.session.user;
+
+            // Use OrdersService to fetch orders for the user
+            const ordersService = new OrdersService(req.app.locals.client, req.app.locals.dbName);
+            const userOrders = await ordersService.getOrdersByUserId(userFromSession.userId);
+
+            // Get all orders with "to_pay" status
+            const cartOrders = userOrders.filter(order => order.orderStatus === 'to_pay');
+
+            // Extract all items from cart orders
+            const cartItems = [];
+            cartOrders.forEach(order => {
+                if (order.items && Array.isArray(order.items)) {
+                    order.items.forEach(item => {
+                        cartItems.push({
+                            orderId: order.orderId,
+                            productId: item.productId,
+                            name: item.name,
+                            price: item.price
+                        });
+                    });
+                }
+            });
+
+            // Calculate total
+            const totalAmount = cartItems.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
+
+            // Check for success message
+            const message = req.query.removed === '1' ? 'Item removed from cart successfully.' : null;
+
+            res.render('user-cart', {
+                title: "My Cart",
+                user: userFromSession,
+                cartItems,
+                totalAmount,
+                message
+            });
+        } catch (err) {
+            console.error("Error loading user cart:", err);
+            res.status(500).send("Error loading cart.");
+        }
+    }
+
+    async removeFromCart(req, res) {
+        try {
+            if (!req.session.user) {
+                return res.redirect('/users/login?message=expired');
+            }
+
+            const { orderId, productId } = req.body;
+            
+            if (!orderId || !productId) {
+                return res.status(400).send('Missing orderId or productId');
+            }
+
+            const ordersService = new OrdersService(req.app.locals.client, req.app.locals.dbName);
+            await ordersService.removeItemFromOrder(orderId, productId, req.session.user.userId);
+
+            res.redirect('/users/cart?removed=1');
+        } catch (err) {
+            console.error("Error removing item from cart:", err);
+            res.status(500).send("Error removing item from cart.");
+        }
+    }
+
+    async addToCart(req, res) {
+        try {
+            if (!req.session.user) {
+                return res.redirect('/users/login?message=expired');
+            }
+
+            const { productId, redirectToCheckout } = req.body;
+            
+            if (!productId) {
+                return res.status(400).send('Missing productId');
+            }
+
+            const ordersService = new OrdersService(req.app.locals.client, req.app.locals.dbName);
+            
+            // Create a new order with this single product
+            await ordersService.createOrderForUser(req.session.user.userId, [{ productId }]);
+
+            // If redirectToCheckout is set, go to checkout instead of back to product
+            if (redirectToCheckout === 'true') {
+                return res.redirect('/users/checkout');
+            }
+
+            // Redirect back to product with success message
+            res.redirect(`/products/${productId}?added=1`);
+        } catch (err) {
+            console.error("Error adding item to cart:", err);
+            res.redirect(`/products/${req.body.productId || ''}?error=add_failed`);
+        }
+    }
+
+    async removeFromCartOnProduct(req, res) {
+        try {
+            if (!req.session.user) {
+                return res.redirect('/users/login?message=expired');
+            }
+
+            const { productId } = req.body;
+            
+            if (!productId) {
+                return res.status(400).send('Missing productId');
+            }
+
+            const ordersService = new OrdersService(req.app.locals.client, req.app.locals.dbName);
+            await ordersService.removeProductFromUserCart(req.session.user.userId, productId);
+
+            res.redirect(`/products/${productId}?removed=1`);
+        } catch (err) {
+            console.error("Error removing item from cart:", err);
+            res.redirect(`/products/${req.body.productId || ''}?error=remove_failed`);
+        }
+    }
+
+    async showCheckout(req, res) {
+        try {
+            if (!req.session.user) {
+                return res.redirect('/users/login?message=expired');
+            }
+
+            const userFromSession = req.session.user;
+            const ordersService = new OrdersService(req.app.locals.client, req.app.locals.dbName);
+            const userOrders = await ordersService.getOrdersByUserId(userFromSession.userId);
+
+            // Get all orders with "to_pay" status
+            const cartOrders = userOrders.filter(order => order.orderStatus === 'to_pay');
+
+            if (cartOrders.length === 0) {
+                return res.redirect('/users/cart?error=empty');
+            }
+
+            // Extract all items from cart orders
+            const cartItems = [];
+            const orderIds = [];
+            cartOrders.forEach(order => {
+                orderIds.push(order.orderId);
+                if (order.items && Array.isArray(order.items)) {
+                    order.items.forEach(item => {
+                        cartItems.push({
+                            orderId: order.orderId,
+                            productId: item.productId,
+                            name: item.name,
+                            price: item.price
+                        });
+                    });
+                }
+            });
+
+            // Calculate total
+            const totalAmount = cartItems.reduce((sum, item) => sum + (Number(item.price) || 0), 0);
+
+            res.render('checkout', {
+                title: "Checkout",
+                user: userFromSession,
+                cartItems,
+                totalAmount,
+                orderIds: orderIds.join(','),
+                message: req.query.error === 'payment_failed' ? { type: 'error', text: 'Payment failed. Please try again.' } : null
+            });
+        } catch (err) {
+            console.error("Error loading checkout:", err);
+            res.status(500).send("Error loading checkout.");
+        }
+    }
+
+    async processPayment(req, res) {
+        try {
+            if (!req.session.user) {
+                return res.redirect('/users/login?message=expired');
+            }
+
+            const { orderIds } = req.body;
+            
+            if (!orderIds) {
+                return res.status(400).send('Missing orderIds');
+            }
+
+            const ordersService = new OrdersService(req.app.locals.client, req.app.locals.dbName);
+            const orderIdArray = orderIds.split(',');
+
+            // Update all orders to completed status
+            await ordersService.completeOrders(orderIdArray, req.session.user.userId);
+
+            res.redirect('/users/payment-success');
+        } catch (err) {
+            console.error("Error processing payment:", err);
+            res.redirect('/users/checkout?error=payment_failed');
+        }
+    }
+
+    async showPaymentSuccess(req, res) {
+        try {
+            if (!req.session.user) {
+                return res.redirect('/users/login?message=expired');
+            }
+
+            res.render('payment-success', {
+                title: "Payment Successful",
+                user: req.session.user
+            });
+        } catch (err) {
+            console.error("Error showing payment success:", err);
+            res.status(500).send("Error loading page.");
         }
     }
 

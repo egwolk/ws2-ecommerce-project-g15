@@ -88,7 +88,6 @@ router.post('/', requireAdmin, async (req, res) => {
             description: formData.description,
             price: priceNumber,
             category: formData.category,
-            isActive: true,
             createdAt: now,
             updatedAt: now
         };
@@ -179,5 +178,54 @@ router.post('/delete/:productId', requireAdmin, async (req, res) => {
 // Public product routes AFTER (parameterized routes last)
 router.get('/', (req, res) => req.productController.showAllProducts(req, res));
 router.get('/:id', (req, res) => req.productController.showProduct(req, res));
+
+// Download route for purchased products
+router.get('/:productId/download', async (req, res) => {
+    try {
+        // Check if user is logged in
+        if (!req.session || !req.session.user) {
+            return res.redirect('/users/login');
+        }
+
+        const db = req.app.locals.client.db(req.app.locals.dbName);
+        const ordersCollection = db.collection('orders');
+        const productsCollection = db.collection('products');
+        const productId = req.params.productId;
+
+        // Check if user has purchased this product (has completed order with it)
+        const purchasedOrder = await ordersCollection.findOne({
+            userId: req.session.user.userId,
+            orderStatus: 'completed',
+            'items.productId': productId
+        });
+
+        if (!purchasedOrder) {
+            return res.status(403).send('You have not purchased this product.');
+        }
+
+        // Get product details
+        const product = await productsCollection.findOne({ productId });
+        if (!product) {
+            return res.status(404).send('Product not found.');
+        }
+
+        // For demonstration, we'll send a text file with product info
+        // In a real system, you'd serve the actual digital product file
+        const downloadContent = `DIGITAL PRODUCT DOWNLOAD\n\n` +
+            `Product: ${product.name}\n` +
+            `Category: ${product.category}\n` +
+            `Description: ${product.description}\n\n` +
+            `Thank you for your purchase!\n` +
+            `This is a demonstration download file.\n` +
+            `In a production system, this would be your actual digital product.`;
+
+        res.setHeader('Content-Type', 'text/plain');
+        res.setHeader('Content-Disposition', `attachment; filename="${product.name.replace(/[^a-z0-9]/gi, '_')}.txt"`);
+        res.send(downloadContent);
+    } catch (err) {
+        console.error('Error downloading product:', err);
+        res.status(500).send('Error downloading product.');
+    }
+});
 
 module.exports = router;

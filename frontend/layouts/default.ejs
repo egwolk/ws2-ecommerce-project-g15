@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="/<%= versionedAsset('styles/products-admin.css') %>">
     <link rel="stylesheet" href="/<%= versionedAsset('styles/homepage.css') %>">
     <link rel="stylesheet" href="/<%= versionedAsset('styles/err.css') %>">
+    <!-- Inject view-specific extracted styles -->
+    <%- style %>
 </head>
 <body<% if (authenticated) { %> class="authenticated-page"<% } %>>
     <%- partial('../components/common/header', locals) %>
@@ -29,5 +31,7 @@
      <!-- Turnstile script -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async
     defer></script>
+    <!-- Inject view-specific extracted scripts (e.g., /scripts/print.js) -->
+    <%- script %>
 </body>
 </html>

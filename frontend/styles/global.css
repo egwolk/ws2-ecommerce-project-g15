@@ -186,3 +186,32 @@ body.authenticated-page .overlay {
   color: red;
 }
 
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  /* Force black text everywhere and remove color effects */
+  html, body, * {
+    color: #000 !important;
+    text-shadow: none !important;
+    -webkit-print-color-adjust: economy;
+    print-color-adjust: economy;
+  }
+  body {
+    margin: 10mm;
+    background: #fff !important;
+  }
+  /* Hide noisy overlays and textures in print */
+  body::before,
+  body::after,
+  .overlay {
+    display: none !important;
+    content: none !important;
+  }
+  h1 {
+    font-size: 20px;
+  }
+  h2 {
+    font-size: 16px;
+  }
+}

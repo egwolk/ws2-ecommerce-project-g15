@@ -3,16 +3,24 @@
             <div class="error-code">403</div>
             <h1 class="error-title">Forbidden</h1>
             <p class="error-message">
-                Sorry, you don't have permission to access this administrative area.<br>
-                This section is restricted to administrators only.<br>
-                You are currently logged in as a customer.
+                <% if (message) { %>
+                    <%= message %>
+                <% } else { %>
+                    Sorry, you don't have permission to access this administrative area.<br>
+                    This section is restricted to administrators only.<br>
+                    You are currently logged in as a customer.
+                <% } %>
             </p>
         <% } else { %>
             <div class="error-code">401</div>
             <h1 class="error-title">Unauthorized</h1>
             <p class="error-message">
-                Authentication required to access this administrative area.<br>
-                Please log in with an administrator account to continue.
+                <% if (message) { %>
+                    <%= message %>
+                <% } else { %>
+                    Authentication required to access this administrative area.<br>
+                    Please log in with an administrator account to continue.
+                <% } %>
             </p>
         <% } %>
         <div class="error-actions">

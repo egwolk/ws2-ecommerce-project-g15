@@ -1,11 +1,44 @@
+<div class="products-admin">
 <h1>Admin – Sales Overview</h1>
-<p>
+<p class="no-print">
     <a href="/admin/products">Back to Products</a> |
     <a href="/admin/orders">View Orders</a>
 </p>
-<section>
+<section style="margin-bottom: 15px;" class="no-print">
+    <h2>Report Actions</h2>
+    <div style="display:flex;">
+        <p>
+            <!-- Daily sales XLSX export -->
+            <a
+                href="/admin/reports/sales/export/daily?startDate=<%= filters.startDate
+                %>&endDate=<%= filters.endDate %>&status=<%= filters.status %>"
+                class="btn-secondary"
+            >
+                Download Daily Sales (XLSX)
+            </a>
+        </p>
+        <p>
+            <!-- Detailed orders XLSX export (you will implement later) -->
+            <a
+                href="/admin/reports/sales/export/orders?startDate=<%= filters.startDate
+                %>&endDate=<%= filters.endDate %>&status=<%= filters.status %>"
+                class="btn-secondary"
+            >
+                Download Detailed Orders (Excel)
+            </a>
+        </p>
+        <p>
+            <!-- Print / Save as PDF (handled via external script to satisfy CSP) -->
+            <button type="button" id="printReportBtn" class="btn-secondary">
+                Print / Save as PDF
+            </button>
+        </p>
+    </div>
+</section>
+
+<section class="no-print">
     <h2>Filters</h2>
-    <form action="/admin/reports/sales" method="GET">
+    <form action="/admin/reports/sales" method="GET" style="display: flex;">
         <p>
             <label for="startDate">Start date:</label><br />
             <input
@@ -30,44 +63,47 @@
                 <option value="all" <%= filters.status === 'all' ? 'selected' : '' %>>
                     All statuses
                 </option>
-                <option value="completed" <%= filters.status === 'completed' ? 'selected'
-                : '' %>>
-
-                    Completed only
-                </option>
                 <option value="to_pay" <%= filters.status === 'to_pay' ? 'selected' : ''
                 %>>
-
                     To Pay
                 </option>
-
-                <option value="to_ship" <%= filters.status === 'to_ship' ? 'selected' :
-                '' %>>
-
-                    To Ship
-                </option>
-                <option value="to_receive" <%= filters.status === 'to_receive' ?
-                'selected' : '' %>>
-                    To Receive
-                </option>
-                <option value="refund" <%= filters.status === 'refund' ? 'selected' : ''
-                %>>
-
-                    Return / Refund
-                </option>
-                <option value="cancelled" <%= filters.status === 'cancelled' ? 'selected'
+                <option value="completed" <%= filters.status === 'completed' ? 'selected'
                 : '' %>>
-
-                    Cancelled
+                    Completed
                 </option>
             </select>
         </p>
         <p>
-            <button type="submit">Apply filters</button>
-            <a href="/admin/reports/sales">Clear</a>
+            <button type="submit" class="btn-secondary ">Apply filters</button>
+            <a href="/admin/reports/sales" class="clear btn-secondary">Clear</a>
         </p>
     </form>
 </section>
+<section>
+<h2>Current Filter Summary</h2>
+    <% if (!filters.startDate && !filters.endDate && filters.status === 'all') { %>
+        <p>Showing all orders for all dates and all statuses.</p>
+    <% } else { %>
+        <p>
+            Showing orders
+            <% if (filters.status === 'all') { %>
+                with all statuses
+            <% } else { %>
+                with status "<%= filters.status %>"
+            <% } %>
+            <% if (filters.startDate && filters.endDate) { %>
+                from <%= filters.startDate %> to <%= filters.endDate %>.
+            <% } else if (filters.startDate && !filters.endDate) { %>
+                from <%= filters.startDate %> onwards.
+            <% } else if (!filters.startDate && filters.endDate) { %>
+                up to <%= filters.endDate %>.
+            <% } else { %>
+                for all dates.
+            <% } %>
+        </p>
+    <% } %>
+</section>
+
 <section>
     <h2>Summary</h2>
     <% if (dailySales.length === 0) { %>
@@ -85,19 +121,23 @@
         <p>No daily sales to display.</p>
     <% } else { %>
 
-        <table border="1" cellpadding="8" cellspacing="0">
-            <tr>
-                <th>Date</th>
-                <th>Total Sales</th>
-                <th>Number of Orders</th>
-            </tr>
-            <% dailySales.forEach(function(day) { %>
+        <table>
+            <thead>
                 <tr>
-                    <td><%= day.date %></td>
-                    <td>₱<%= Number(day.totalSales).toFixed(2) %></td>
-                    <td><%= day.orderCount %></td>
+                    <th>Date</th>
+                    <th>Total Sales</th>
+                    <th>Number of Orders</th>
                 </tr>
-            <% }) %>
+            </thead>
+            <tbody>
+                <% dailySales.forEach(function(day) { %>
+                    <tr>
+                        <td><%= day.date %></td>
+                        <td>₱<%= Number(day.totalSales).toFixed(2) %></td>
+                        <td><%= day.orderCount %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
         </table>
     <% } %>
 </section>
@@ -115,7 +155,8 @@
             width="600"
             height="300"
             color="#1e88e5"
-            type="line"
         ></simple-bar-chart>
     <% } %>
 </section>
+<script src="/scripts/print.js?v=1"></script>
+</div>

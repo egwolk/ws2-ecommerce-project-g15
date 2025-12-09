@@ -1,133 +1,56 @@
+<div class="products-admin">
 <h1>My Orders</h1>
-<p>
-    <a href="/users/dashboard">Back to Dashboard</a> |
-    <a href="/users/profile">My Profile</a>
-</p>
+
 <section>
     <h2>To Pay</h2>
     <% if (ordersByStatus.to_pay.length === 0) { %>
         <p>No orders in this status.</p>
     <% } else { %>
-        <table border="1" cellpadding="8" cellspacing="0">
-            <tr>
-                <th>Order ID</th>
-                <th>Total Amount</th>
-                <th>Created At</th>
-            </tr>
-            <% ordersByStatus.to_pay.forEach(order => { %>
+        <table>
+            <thead>
                 <tr>
-                    <td><%= order.orderId %></td>
-                    <td>$<%= Number(order.totalAmount).toFixed(2) %></td>
-                    <td>
-                    <% if (order.createdAt && order.createdAt.toLocaleString) { %>
-                        <%= order.createdAt.toLocaleString() %>
-                    <% } else { %>
-                        <%= order.createdAt %>
-                    <% } %>
-                    </td>
+                    <th>Order ID</th>
+                    <th>Total Amount</th>
+                    <th>Created At</th>
                 </tr>
-            <% }) %>
+            </thead>
+            <tbody>
+                <% ordersByStatus.to_pay.forEach(order => { %>
+                    <tr>
+                        <td><%= order.orderId %></td>
+                        <td>₱<%= Number(order.totalAmount).toFixed(2) %></td>
+                        <td>
+                        <% if (order.createdAt && order.createdAt.toLocaleString) { %>
+                            <%= order.createdAt.toLocaleString() %>
+                        <% } else { %>
+                            <%= order.createdAt %>
+                        <% } %>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
         </table>
     <% } %>
 </section>
 
-<section>
-    <h2>To Ship</h2>
-    <% if (ordersByStatus.to_ship.length === 0) { %>
-        <p>No orders in this status.</p>
-    <% } else { %>
-        <table border="1" cellpadding="8" cellspacing="0">
-            <tr>
-                <th>Order ID</th>
-                <th>Total Amount</th>
-                <th>Created At</th>
-            </tr>
-            <% ordersByStatus.to_ship.forEach(order => { %>
-                <tr>
-                    <td><%= order.orderId %></td>
-                    <td>$<%= Number(order.totalAmount).toFixed(2) %></td>
-                    <td>
-                    <% if (order.createdAt && order.createdAt.toLocaleString) { %>
-                        <%= order.createdAt.toLocaleString() %>
-                    <% } else { %>
-                        <%= order.createdAt %>
-                    <% } %>
-                    </td>
-                </tr>
-            <% }) %>
-        </table>
-    <% } %>
-</section>
-<section>
-    <h2>To Receive</h2>
-    <% if (ordersByStatus.to_receive.length === 0) { %>
-        <p>No orders in this status.</p>
-    <% } else { %>
-        <table border="1" cellpadding="8" cellspacing="0">
-            <tr>
-                <th>Order ID</th>
-                <th>Total Amount</th>
-                <th>Created At</th>
-            </tr>
-            <% ordersByStatus.to_receive.forEach(order => { %>
-                <tr>
-                    <td><%= order.orderId %></td>
-                    <td>$<%= Number(order.totalAmount).toFixed(2) %></td>
-                    <td>
-                    <% if (order.createdAt && order.createdAt.toLocaleString) { %>
-                        <%= order.createdAt.toLocaleString() %>
-                    <% } else { %>
-                        <%= order.createdAt %>
-                    <% } %>
-                    </td>
-                </tr>
-            <% }) %>
-        </table>
-    <% } %>
-</section>
 <section>
     <h2>Completed</h2>
     <% if (ordersByStatus.completed.length === 0) { %>
-
         <p>No orders in this status.</p>
     <% } else { %>
-        <table border="1" cellpadding="8" cellspacing="0">
-            <tr>
-                <th>Order ID</th>
-                <th>Total Amount</th>
-                <th>Created At</th>
-            </tr>
-            <% ordersByStatus.completed.forEach(order => { %>
-            <tr>
-                <td><%= order.orderId %></td>
-                <td>$<%= Number(order.totalAmount).toFixed(2) %></td>
-                <td>
-                <% if (order.createdAt && order.createdAt.toLocaleString) { %>
-                    <%= order.createdAt.toLocaleString() %>
-                <% } else { %>
-                    <%= order.createdAt %>
-                <% } %>
-                </td>
-            </tr>
-            <% }) %>
-        </table>
-    <% } %>
-</section>
-<section>
-    <h2>Return / Refund</h2>
-    <% if (ordersByStatus.refund.length === 0) { %>
-        <p>No orders in this status.</p>
-    <% } else { %>
-        <table border="1" cellpadding="8" cellspacing="0">
-            <tr>
-                <th>Order ID</th>
-                <th>Total Amount</th>
-                <th>Created At</th>
-            </tr>
-            <% ordersByStatus.refund.forEach(order => { %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Total Amount</th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% ordersByStatus.completed.forEach(order => { %>
                 <tr>
                     <td><%= order.orderId %></td>
-                    <td>$<%= Number(order.totalAmount).toFixed(2) %></td>
+                    <td>₱<%= Number(order.totalAmount).toFixed(2) %></td>
                     <td>
                     <% if (order.createdAt && order.createdAt.toLocaleString) { %>
                         <%= order.createdAt.toLocaleString() %>
@@ -136,35 +59,9 @@
                     <% } %>
                     </td>
                 </tr>
-            <% }) %>
+                <% }) %>
+            </tbody>
         </table>
     <% } %>
 </section>
-<section>
-    <h2>Cancelled</h2>
-    <% if (ordersByStatus.cancelled.length === 0) { %>
-        <p>No orders in this status.</p>
-    <% } else { %>
-        <table border="1" cellpadding="8" cellspacing="0">
-            <tr>
-                <th>Order ID</th>
-
-                <th>Total Amount</th>
-                <th>Created At</th>
-            </tr>
-            <% ordersByStatus.cancelled.forEach(order => { %>
-                <tr>
-                    <td><%= order.orderId %></td>
-                    <td>$<%= Number(order.totalAmount).toFixed(2) %></td>
-                    <td>
-                    <% if (order.createdAt && order.createdAt.toLocaleString) { %>
-                        <%= order.createdAt.toLocaleString() %>
-                    <% } else { %>
-                        <%= order.createdAt %>
-                    <% } %>
-                    </td>
-                </tr>
-            <% }) %>
-        </table>
-    <% } %>
-</section>
+</div>
